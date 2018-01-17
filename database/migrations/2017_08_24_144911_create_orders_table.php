@@ -20,6 +20,9 @@ class CreateOrdersTable extends Migration
             $table->decimal('change', 10, 2);
             $table->decimal('payable', 10, 2);
             $table->decimal('discount', 10, 2);
+            $table->decimal('vat', 10, 2);
+            $table->decimal('charge', 10, 2);
+            $table->decimal('total', 10, 2);
             $table->string('type');
             $table->integer('table_no');
             $table->string('status');

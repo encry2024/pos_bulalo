@@ -32,7 +32,7 @@ class DeliveryController extends Controller
 			$delivery->quantity  = $request->quantity;
 			$delivery->date 	 = $request->date;
 			$delivery->deliver_to= $request->deliver_to;
-			$delivery->price 	 = count($inventory->stocks) ? $inventory->stocks->last()->price : 0;
+			$delivery->price 	 = count($inventory->stocks) ? ($inventory->stocks->last()->price / $inventory->stocks->last()->quantity) : 0;
 			$delivery->save();
 
 			$inventory->stock = $inventory->stock - $request->quantity;

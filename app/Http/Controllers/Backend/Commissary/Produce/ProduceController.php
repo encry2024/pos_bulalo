@@ -75,27 +75,20 @@ class ProduceController extends Controller
             foreach ($ingredients as $ingredient) 
             {
                 $qty_left = 0;
-                
                 $i        = 0;
 
                 if($ingredient->physical_quantity == 'Mass')
                 {
-                    $stock_qty = new Mass($ingredient->stock, $ingredient->unit_type);
-
+                    $stock_qty = new Mass($request->quantity, $ingredient->unit_type);
                     $req_qty   = new Mass(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
-
                     $qty_left  = $stock_qty->subtract($req_qty);
-
                     $i = $qty_left->toUnit($ingredient->unit_type);
                 }
                 elseif($ingredient->physical_quantity == 'Volume')
                 {
-                    $stock_qty = new Volume($ingredient->stock, $ingredient->unit_type);
-
+                    $stock_qty = new Volume($request->quantity, $ingredient->unit_type);
                     $req_qty   = new Volume(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
-
                     $qty_left  = $stock_qty->subtract($req_qty);
-
                     $i = $qty_left->toUnit($ingredient->unit_type);
                 }
                 else
@@ -103,20 +96,35 @@ class ProduceController extends Controller
                     $i = $inventory->stock - $request->quantity;
                 }
 
-
                 $ingredient->stock = $i;
 
                 if(count($ingredient->stocks))
                 {
+                    if($ingredient->physical_quantity == 'Mass')
+                    {
+                        $stock_qty = new Mass(1, $ingredient->unit_type);
+                        $req_qty   = new Mass($ingredient->pivot->quantity, $ingredient->pivot->unit_type);
+                        $qty_left  = $stock_qty->subtract($req_qty);
+                        $i = $qty_left->toUnit($ingredient->unit_type);
+                    }
+                    elseif($ingredient->physical_quantity == 'Volume')
+                    {
+                        $stock_qty = new Volume(1, $ingredient->unit_type);
+                        $req_qty   = new Volume($ingredient->pivot->quantity, $ingredient->pivot->unit_type);
+                        $qty_left  = $stock_qty->subtract($req_qty);
+                        $i = $qty_left->toUnit($ingredient->unit_type);
+                    }
+                    else
+                    {
+                        $i = $inventory->stock - $request->quantity;
+                    }
+
                     $total      = 0;
                     $price      = $ingredient->stocks->last()->price;
                     $last_stock = $ingredient->stocks->last()->quantity;
-
-                    $total      = ($price / $last_stock) * $ingredient->pivot->quantity;
-
+                    $total      = ($price / $last_stock) * $i;
                     $cost       = $cost + $total;
                 }
-
                 $ingredient->save();
             }
             

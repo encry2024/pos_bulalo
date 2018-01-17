@@ -185,7 +185,7 @@
                                     
                                 </select>
                             </div>                         
-                            <div class="form-group col-lg-12" id="panel_discount_type" hidden>
+                            <div class="form-group col-lg-6" id="panel_discount_type" hidden>
                                 <label for="discount">Discount Type</label>
                                 <select class="form-control" id="discount_type" onchange="discount_change(this)">
                                     <option value="0">None</option>
@@ -202,14 +202,26 @@
                                 <label for="discount">Discount</label>
                                 <input type="input" class="form-control" id="discount" value='0.00' readonly>
                             </div>
-                            <div class="form-group col-lg-12" id="panel_cash" hidden>
-                                <label for="cash">Cash</label>
-                                <input type="input" class="form-control" id="cash" value='0.00' onkeyup="change()" onfocus="this.value = ''" onblur="isFocus()" pattern="[0-9]">
-                            </div>
-                            <div class="form-group col-lg-12" id="panel_change" hidden>
+                            <div class="form-group col-lg-6" id="panel_change" hidden>
                                 <label for="change">Change</label>
                                 <input type="input" class="form-control" id="change" value='0.00' readonly>
                             </div>  
+                            <div class="form-group col-lg-6" id="panel_vat" hidden>
+                                <label for="vat">12% VAT</label>
+                                <input type="input" class="form-control" id="vat" value='0.00' readonly>
+                            </div>
+                            <div class="form-group col-lg-6" id="panel_service_charge" hidden>
+                                <label for="vat">5% Service Charge</label>
+                                <input type="input" class="form-control" id="service_charge" value='0.00' readonly>
+                            </div>
+                            <div class="form-group col-lg-6" id="panel_total_amount" hidden>
+                                <label for="total_amount_due">Total Amount Due</label>
+                                <input type="input" class="form-control" id="total_amount_due" value='0.00' readonly>
+                            </div>
+                            <div class="form-group col-lg-6" id="panel_cash" hidden>
+                                <label for="cash">Cash</label>
+                                <input type="input" class="form-control" id="cash" value='0.00' onkeyup="change()" onfocus="this.value = ''" onblur="isFocus()" pattern="[0-9]">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -690,7 +702,7 @@
         });
 
         $('#btn-save').on('click', function() {
-            $('#payable').val(recompute());
+
             if($('#order_list tbody tr').length > 0){
                 get_available_table();
 
@@ -824,6 +836,9 @@
                 $('#panel_change').hide();
                 $('#panel_discount').hide();
                 $('#panel_discount_type').hide();
+                $('#panel_vat').hide();
+                $('#panel_service_charge').hide();
+                $('#panel_total_amount').hide();
                 $('#panel_table').show();
                 $('#btn_submit').css('visibility', 'visible');
                 $('#btn_submit').text('Submit');
@@ -833,6 +848,10 @@
             $('#payable').val('0.00');
             $('#cash').val('0.00');
             $('#change').val('0.00');
+            $('#vat').val('0.00');
+            $('#discount').val('0.00');
+            $('#service_charge').val('0.00');
+            $('#total_amount_due').val('0.00');
             // $('#official_receipt').hide();
             // $('#payment').show();
         });
@@ -886,10 +905,12 @@
         }
 
         function change(){
-            var payable = recompute();
-            var discount = $('#discount').val();
-            var cash    = $('#cash').val();
-            var change  = cash - (payable - discount);
+            var payable     = recompute();
+            var discount    = parseFloat($('#discount').val());
+            var cash        = parseFloat($('#cash').val());
+            var vat         = parseFloat($('#vat').val());
+            var srv_charge  = parseFloat($('#service_charge').val());
+            var change      = cash - ((payable - discount) + vat + srv_charge);
 
             if(change < 0 || change == undefined || isNaN(change)){
                 change = 0;
@@ -966,6 +987,9 @@
                 $('#panel_cash').hide();
                 $('#panel_change').hide();
                 $('#panel_discount').hide();
+                $('#panel_vat').hide();
+                $('#panel_service_charge').hide();
+                $('#panel_total_amount').hide();
                 $('#panel_discount_type').hide();
                 $('#panel_table').show();
                 $('#btn_submit').text('Submit');
@@ -977,6 +1001,9 @@
                 $('#panel_cash').show();
                 $('#panel_change').show();
                 $('#panel_discount').show();
+                $('#panel_vat').show();
+                $('#panel_service_charge').show();
+                $('#panel_total_amount').show();
                 $('#panel_discount_type').show();
                 $('#panel_table').hide();
                 $('#btn_submit').text('Charge');
@@ -1337,6 +1364,36 @@
             // $('#official_receipt').show();
             $('#btn_print').css('visibility', 'visible');
             $('#btn_submit').css('visibility', 'hidden');
+        }
+
+        function get_amount_due(amount, discount, discount_type, companion) {
+            var bill        = amount;
+            var net_vat     = 0;
+            var vat         = 0;
+            var charge      = 0;
+            var amount_due  = 0;
+
+            if(discount_type == 'Senior Citizen')
+            {
+
+            }
+            else if(discount_type == 'PWD')
+            {
+                var discounted      = bill * (discount / 100);
+                var less_discount   = bill - discounted;
+
+                vat         = less_discount / 1.12;
+                less_vat    = less_discount - vat;
+                charge      = vat * 0.05;
+                amount_due  = bill + charge;
+            }
+            else
+            {
+                net_vat = bill / 1.12;
+                vat     = bill - net_vat;
+                charge  = vat * 0.5;
+                amount_due = net_vat + vat + charge
+            }
         }
     </script>
 @endsection
