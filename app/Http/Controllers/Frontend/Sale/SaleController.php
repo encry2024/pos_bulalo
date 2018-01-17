@@ -82,6 +82,9 @@ class SaleController extends Controller
                     'change'    => $request->change,
                     'payable'   => $request->payable,
                     'discount'  => $request->discount,
+                    'vat'       => $request->vat,
+                    'charge'    => $request->charge,
+                    'total'     => $request->amount_due,
                     'type'      => $request->order_type,
                     'status'    => ($request->order_type == 'Take Out' ? 'Paid':'Unpaid'),
                     'user_id'   => Auth::user()->id
@@ -166,6 +169,9 @@ class SaleController extends Controller
         $order->payable     = $request->payable;
         $order->discount    = $request->discount;
         $order->change      = $request->change;
+        $order->vat         = $request->vat;
+        $order->charge      = $request->charge;
+        $order->total       = $request->amount_due;
         $order->status      = 'Paid';
         $order->save();
 

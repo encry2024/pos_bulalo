@@ -16,13 +16,13 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
             $table->string('transaction_no');
-            $table->decimal('cash', 10, 2);
-            $table->decimal('change', 10, 2);
-            $table->decimal('payable', 10, 2);
-            $table->decimal('discount', 10, 2);
-            $table->decimal('vat', 10, 2);
-            $table->decimal('charge', 10, 2);
-            $table->decimal('total', 10, 2);
+            $table->decimal('cash', 10, 2)->default(0);
+            $table->decimal('change', 10, 2)->default(0);
+            $table->decimal('payable', 10, 2)->default(0);
+            $table->decimal('discount', 10, 2)->default(0);
+            $table->decimal('vat', 10, 2)->default(0);
+            $table->decimal('charge', 10, 2)->default(0);
+            $table->decimal('total', 10, 2)->default(0);
             $table->string('type');
             $table->integer('table_no');
             $table->string('status');

@@ -100,6 +100,8 @@ class ProduceController extends Controller
 
                 if(count($ingredient->stocks))
                 {
+                    $divisor = 1;
+                    
                     if($ingredient->physical_quantity == 'Mass')
                     {
                         $stock_qty = new Mass(1, $ingredient->unit_type);
@@ -147,9 +149,8 @@ class ProduceController extends Controller
         }
     }
 
-
     public function destroy(Produce $produce){
-        if(!empty($product->product))
+        if(!empty($produce->product))
         {
             $product = $produce->product;
             $product->produce = $product->produce - $produce->quantity;
@@ -158,16 +159,11 @@ class ProduceController extends Controller
             $ingredients = $product->ingredients;
 
             foreach ($ingredients as $ingredient) {
-                $ingredient->stock = $ingredient->stock + $produce->quantity;
+                $ingredient->stock = $ingredient->stock + ($produce->quantity * $ingredient->pivot->quantity);
                 $ingredient->save();
             }
-
-            
         }
-        
         $produce->delete();
-
     	return redirect()->route('admin.commissary.produce.index')->withFlashDanger('Produce Product Deleted Successfully!');
     }
-
 }

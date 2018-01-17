@@ -110,13 +110,13 @@ class ProductController extends Controller
         foreach ($products as $prod) 
         {
             $cost = 0;
-
             foreach ($prod->ingredient as $item) 
             {
                 $price      = 0;
                 $qty_left   = 0;
                 $last_stock = 0;
                 $total      = 0;
+                $stock_use  = 0;
 
                 $ingredient = Inventory::findOrFail($item->id);
 
@@ -130,43 +130,41 @@ class ProductController extends Controller
                 {
                     if($ingredient->unit_type == $item->unit_type)
                     {
-                        $qty_left = $item->quantity;
+                        $stock_use = $item->quantity;
                     }
                     else
                     {
                         $stock_qty = new Mass(1, $ingredient->unit_type);
-
                         $req_qty   = new Mass($item->quantity, $item->unit_type);
-
-                        $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
+                        $qty_left  = $stock_qty->subtract($req_qty);
+                        $stock_use = $stock_qty->subtract($qty_left)->toUnit($ingredient->unit_type);
                     }
                 }
                 elseif($ingredient->physical_quantity == 'Volume')
                 {
                     if($ingredient->unit_type == $item->unit_type)
                     {
-                        $qty_left = $item->quantity;
+                        $stock_use = $item->quantity;
                     }
                     else
                     {
                         $stock_qty = new Volume(1, $ingredient->unit_type);
-
                         $req_qty   = new Volume($item->quantity, $item->unit_type);
-
-                        $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
+                        $qty_left  = $stock_qty->subtract($req_qty);
+                        $stock_use = $stock_qty->subtract($qty_left)->toUnit($ingredient->unit_type);
                     }
                 }
                 else
                 {
-                    $qty_left = $item->quantity;
+                    $stock_use = $item->quantity;
                 }
                 
                 if($price != 0 && $last_stock != 0)
                 {
-                    if($qty_left < 0 || $qty_left == 0)
-                        $qty_left = $item->quantity;                        
+                    if($stock_use < 0 || $stock_use == 0)
+                        $stock_use = $item->quantity;                        
 
-                    $total = ($price / $last_stock) * $qty_left;
+                    $total = ($price / $last_stock) * $stock_use;
                 }
                 else
                     $total = 0;
@@ -317,6 +315,7 @@ class ProductController extends Controller
                         $price      = 0;
                         $last_stock = 0;
                         $qty_left   = 0;
+                        $stock_use  = 0;
 
                         //update quantity to use
                         $ingredient->pivot->quantity = $prod->ingredient[$i]->quantity;
@@ -331,13 +330,14 @@ class ProductController extends Controller
                         {
                             if($ingredient->unit_type == $prod->ingredient[$i]->unit_type)
                             {
-                                $qty_left = $prod->ingredient[$i]->quantity;
+                                $stock_use = $prod->ingredient[$i]->quantity;
                             }
                             else
                             {
                                 $stock_qty = new Mass(1, $ingredient->unit_type);
                                 $req_qty   = new Mass($prod->ingredient[$i]->quantity, $prod->ingredient[$i]->unit_type);
-                                $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
+                                $qty_left  = $stock_qty->subtract($req_qty);
+                                $stock_use = $stock_qty->subtract($qty_left)->toUnit($ingredient->unit_type);
                             }
                             
                         }
@@ -345,26 +345,27 @@ class ProductController extends Controller
                         {
                             if($ingredient->unit_type == $prod->ingredient[$i]->unit_type)
                             {
-                                $qty_left = $prod->ingredient[$i]->quantity;
+                                $stock_use = $prod->ingredient[$i]->quantity;
                             }
                             else
                             {
                                 $stock_qty = new Volume(1, $ingredient->unit_type);
                                 $req_qty   = new Volume($prod->ingredient[$i]->quantity, $prod->ingredient[$i]->unit_type);
-                                $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
+                                $qty_left  = $stock_qty->subtract($req_qty);
+                                $stock_use = $stock_qty->subtract($qty_left)->toUnit($ingredient->unit_type);
                             }
                         }
                         else
                         {
-                            $qty_left = $prod->ingredient[$i]->quantity;
+                            $stock_use = $prod->ingredient[$i]->quantity;
                         }
                         
                         if($price != 0 && $last_stock != 0)
                         {
-                            if($qty_left < 0 || $qty_left == 0)
-                                $qty_left = $ingredient->pivot->quantity;                        
+                            if($stock_use < 0 || $stock_use == 0)
+                                $stock_use = $ingredient->pivot->quantity;                        
 
-                            $total = ($price / $last_stock) * $qty_left;
+                            $total = ($price / $last_stock) * $stock_use;
                         }
                         else
                             $total = 0;
@@ -393,6 +394,7 @@ class ProductController extends Controller
                 {
                     if($id == $item->id)
                     {
+                        $stock_use = 0;
                         $ingredient->product_size()->attach($prod_size, ['quantity' => $item->quantity, 'unit_type' => $item->unit_type]);
 
                         if(count($ingredient->stocks))
@@ -405,36 +407,38 @@ class ProductController extends Controller
                         {
                             if($ingredient->unit_type == $item->unit_type)
                             {
-                                $qty_left = $item->quantity;
+                                $stock_use = $item->quantity;
                             }
                             else
                             {
                                 $stock_qty = new Mass(1, $ingredient->unit_type);
                                 $req_qty   = new Mass($item->quantity, $item->unit_type);
-                                $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
+                                $qty_left  = $stock_qty->subtract($req_qty);
+                                $stock_use = $stock_qty->subtract($qty_left)->toUnit($ingredient->unit_type);
                             }
                         }
                         elseif($ingredient->physical_quantity == 'Volume')
                         {
                             if($ingredient->unit_type == $item->unit_type)
                             {
-                                $qty_left = $item->quantity;
+                                $stock_use = $item->quantity;
                             }
                             else
                             {
                                 $stock_qty = new Volume(1, $ingredient->unit_type);
                                 $req_qty   = new Volume($item->quantity, $item->unit_type);
-                                $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
+                                $qty_left  = $stock_qty->subtract($req_qty);
+                                $stock_use = $stock_qty->subtract($qty_left)->toUnit($ingredient->unit_type);
                             }
                         }
                         else
                         {
-                            $qty_left = $item->quantity;
+                            $stock_use = $item->quantity;
                         }
 
                         if($price != 0 && $last_stock != 0)
                         {
-                            if($qty_left < 0 || $qty_left == 0)
+                            if($stock_use < 0 || $stock_use == 0)
                             {
                                 $_ingredients = ProductSize::where('product_id', $product->id)
                                         ->where('size', $prod_size->size)
@@ -443,11 +447,11 @@ class ProductController extends Controller
                                 foreach($ingredients as $_ing)
                                 {
                                     if($_ing->id = $ingredient->id)
-                                        $qty_left = $_ing->pivot->quantity;    
+                                        $stock_use = $_ing->pivot->quantity;    
                                 }                   
                             }
 
-                            $total = ($price / $last_stock) * $qty_left;
+                            $total = ($price / $last_stock) * $stock_use;
                         }
                         else
                             $total = 0;

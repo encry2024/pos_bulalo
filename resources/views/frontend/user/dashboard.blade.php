@@ -187,7 +187,7 @@
                             </div>                         
                             <div class="form-group col-lg-6" id="panel_discount_type" hidden>
                                 <label for="discount">Discount Type</label>
-                                <select class="form-control" id="discount_type" onchange="discount_change(this)">
+                                <select class="form-control" id="discount_type">
                                     <option value="0">None</option>
                                     @foreach($settings as $setting)
                                     <option value="{{ $setting->discount }}">{{ $setting->name }}</option>
@@ -202,10 +202,6 @@
                                 <label for="discount">Discount</label>
                                 <input type="input" class="form-control" id="discount" value='0.00' readonly>
                             </div>
-                            <div class="form-group col-lg-6" id="panel_change" hidden>
-                                <label for="change">Change</label>
-                                <input type="input" class="form-control" id="change" value='0.00' readonly>
-                            </div>  
                             <div class="form-group col-lg-6" id="panel_vat" hidden>
                                 <label for="vat">12% VAT</label>
                                 <input type="input" class="form-control" id="vat" value='0.00' readonly>
@@ -214,6 +210,10 @@
                                 <label for="vat">5% Service Charge</label>
                                 <input type="input" class="form-control" id="service_charge" value='0.00' readonly>
                             </div>
+                            <div class="form-group col-lg-6" id="panel_change" hidden>
+                                <label for="change">Change</label>
+                                <input type="input" class="form-control" id="change" value='0.00' readonly>
+                            </div>  
                             <div class="form-group col-lg-6" id="panel_total_amount" hidden>
                                 <label for="total_amount_due">Total Amount Due</label>
                                 <input type="input" class="form-control" id="total_amount_due" value='0.00' readonly>
@@ -346,17 +346,29 @@
                                 <input type="input" class="form-control" id="payable" value='0.00' readonly>
                             </div>
                             <div class="form-group col-lg-6">
+                                <label for="vat">12% VAT</label>
+                                <input type="input" class="form-control" id="vat" value='0.00' readonly>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label for="vat">5% Service Charge</label>
+                                <input type="input" class="form-control" id="service_charge" value='0.00' readonly>
+                            </div>
+                            <div class="form-group col-lg-6">
                                 <label for="discount">Discount</label>
                                 <input type="input" class="form-control" id="discount" value='0.00' readonly>
                             </div>
-                            <div class="form-group col-lg-12">
+                            <div class="form-group col-lg-6">
+                                <label for="change">Change</label>
+                                <input type="input" class="form-control" id="change" value='0.00' readonly>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label for="change">Total Amount Due</label>
+                                <input type="input" class="form-control" id="total_amount_due" value='0.00' readonly>
+                            </div>
+                            <div class="form-group col-lg-6">
                                 <label for="cash">Cash</label>
                                 <input type="input" class="form-control" id="cash" value='0.00' onkeyup="charge_change()" onfocus="this.value = ''" onblur="isFocus()" pattern="[0-9]">
                             </div>
-                            <div class="form-group col-lg-12">
-                                <label for="change">Change</label>
-                                <input type="input" class="form-control" id="change" value='0.00' readonly>
-                            </div>  
                         </div>
                     </div>
                 </div>
@@ -380,32 +392,43 @@
                     <h4 class="modal-title"></h4>
                 </div>
                 <div class="modal-body">
-                    <div id="official_receipt">
-                        <h5>OFFICIAL RECEIPT</h5>
-                        <div id="printable">
-                            <p><h4 style="text-align:center;margin-bottom:25px">MANDA'S BEST</h4></p>
-                            <p>Transaction No: <span class="pull-right" id="transaction_no">#00000000</span></p>
-                            <p>Date: <span class="pull-right">{{ date('m-d-Y') }}</span></p>
-                            <p>Cashier: <span class="pull-right">{{ Auth::user()->name }}</span></p>
-                            <p>Order Type: <span class="pull-right" id="print_type"></span></p>
-                            <p>Table #: <span class="pull-right" id="print_table"></span></p>
-                            <hr>
-                            <div style="min-height:150px">
-                                <table id="items">
-                                    <thead>
-                                        <th style="width:25%">Qty</th>
-                                        <th>Item(s)</th>
-                                        <th style="width:25%">Total</th>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                    <div class="scrollable">
+                        <div id="official_receipt">
+                            <h5>OFFICIAL RECEIPT</h5>
+                            <div id="printable">
+                                <p><h4 id="receipt_header">MANDA’S BULALOHAN & GRILL</h4></p>
+                                <p class="text-center">#468 BARANGKA DRIVE, BARANGAY PLAINVIEW MANDALUYONG CITY</p>
+                                <p class="text-center">SEC reg #: CS201733365</p>
+                                <p class="text-center">TIN# 009-841-115-000</p>
+                                <br>
+                                <hr>
+                                <br>
+                                <p>Transaction No: <span class="pull-right" id="transaction_no">#00000000</span></p>
+                                <p>Date: <span class="pull-right">{{ date('m-d-y - h:i:s A') }}</span></p>
+                                <p>Cashier: <span class="pull-right">{{ Auth::user()->name }}</span></p>
+                                <p>Order Type: <span class="pull-right" id="print_type"></span></p>
+                                <p>Table #: <span class="pull-right" id="print_table"></span></p>
+                                <hr>
+                                <div style="min-height:150px">
+                                    <table id="items">
+                                        <thead>
+                                            <th style="width:25%">Qty</th>
+                                            <th>Item(s)</th>
+                                            <th style="width:25%">Total</th>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <hr>
+                                <p>Sub Total <span class="pull-right" id="print_total">0.00</span></p>
+                                <p>Service Charge <span class="pull-right" id="print_charge">0.00</span></p>
+                                <p>VAT <span class="pull-right" id="print_vat">0.00</span></p>
+                                <p>Cash <span class="pull-right" id="print_cash">0.00</span></p>
+                                <p>Change <span class="pull-right" id="print_change">0.00</span></p>
+                                <p>Discount <span class="pull-right" id="print_discount">0.00</span></p>
+                                <p>Amoun Due <span class="pull-right" id="print_amount_due">0.00</span></p>
                             </div>
-                            <hr>
-                            <p>Total Amount Due <span class="pull-right" id="print_total">0.00</span></p>
-                            <p>Cash <span class="pull-right" id="print_cash">0.00</span></p>
-                            <p>Change <span class="pull-right" id="print_change">0.00</span></p>
-                            <p>Discount <span class="pull-right" id="print_discount">0.00</span></p>
                         </div>
                     </div>
                 </div>
@@ -701,11 +724,10 @@
             }
         });
 
-        $('#btn-save').on('click', function() {
-
+        $('#btn-save').on('click', function() 
+        {
             if($('#order_list tbody tr').length > 0){
                 get_available_table();
-
                 if(global_table != 0)
                 {
                     $('#btn_submit').trigger('click');
@@ -717,8 +739,6 @@
                     backdrop: 'static',
                     keyboard: false
                 })
-                // $('#saveModal').find('.modal-dialog').css({'width': '80%','height':'80%'});
-                // $('#saveModal').find('.modal-dialog').find('.modal-content').css('height','80%');
             }
         });
 
@@ -727,10 +747,13 @@
             var change      = parseFloat($('#change').val());
             var payable     = parseFloat($('#payable').val());
             var discount    = parseFloat($('#discount').val());
+            var vat         = parseFloat($('#vat').val());
+            var charge      = parseFloat($('#service_charge').val());
+            var amount_due  = parseFloat($('#total_amount_due').val());
             var order_type  = $('#order_type').val();
             var table_no    = order_type == 'Take Out' ? 0 : $('#table').val();
 
-            if(cash >= (payable - discount) && order_type == 'Take Out')
+            if((cash >= amount_due) && (order_type == 'Take Out'))
             {
                $('#btn_submit').attr('readonly','');
 
@@ -738,13 +761,16 @@
                     url: '{{  url("sale/save") }}',
                     type: 'POST',
                     data: {
-                        orders      : JSON.stringify(order_list),
-                        cash        : cash,
-                        change      : change,
-                        payable     : payable,
-                        discount    : discount,
-                        table       : table_no,
-                        order_type  : order_type
+                        orders          : JSON.stringify(order_list),
+                        cash            : cash,
+                        change          : change,
+                        payable         : payable,
+                        discount        : discount,
+                        vat             : vat,
+                        charge          : charge,
+                        amount_due      : amount_due,
+                        table           : table_no,
+                        order_type      : order_type
                     },
                     success: function(data){
                         data = JSON.parse(data);
@@ -794,13 +820,15 @@
                         change      : change,
                         payable     : payable,
                         discount    : discount,
+                        vat         : vat,
+                        charge      : charge,
+                        amount_due  : amount_due,
                         table       : table_no,
                         order_type  : order_type,
                         transaction_no: transaction_no
                     },
                     success: function(data){
                         data = JSON.parse(data);
-
                         if(data.status == 'success')
                         {
                             flag = true;
@@ -827,23 +855,22 @@
         });        
 
         $('#saveModal').on('hidden.bs.modal', function(){
-            if(flag)
-            {
-                $('#order_type').val('Dine-in');
-                $('#panel_discount_type').hide();
-                $('#panel_payable').hide();
-                $('#panel_cash').hide();
-                $('#panel_change').hide();
-                $('#panel_discount').hide();
-                $('#panel_discount_type').hide();
-                $('#panel_vat').hide();
-                $('#panel_service_charge').hide();
-                $('#panel_total_amount').hide();
-                $('#panel_table').show();
-                $('#btn_submit').css('visibility', 'visible');
-                $('#btn_submit').text('Submit');
+            if(flag) {
                 clearAll();
             }
+
+            $('#order_type').val('Dine-in');
+            $('#panel_payable').hide();
+            $('#panel_cash').hide();
+            $('#panel_change').hide();
+            $('#panel_discount').hide();
+            $('#panel_discount_type').hide();
+            $('#panel_vat').hide();
+            $('#panel_service_charge').hide();
+            $('#panel_total_amount').hide();
+            $('#panel_table').show();
+            $('#btn_submit').css('visibility', 'visible');
+            $('#btn_submit').text('Submit');
 
             $('#payable').val('0.00');
             $('#cash').val('0.00');
@@ -905,12 +932,12 @@
         }
 
         function change(){
-            var payable     = recompute();
-            var discount    = parseFloat($('#discount').val());
-            var cash        = parseFloat($('#cash').val());
-            var vat         = parseFloat($('#vat').val());
-            var srv_charge  = parseFloat($('#service_charge').val());
-            var change      = cash - ((payable - discount) + vat + srv_charge);
+            var type = $('#discount_type option:selected').text();
+            var val  = $('#discount_type').val();
+
+            get_amount_due(recompute(), val, type, 0);
+            var total  = parseFloat($('#total_amount_due').val());
+            var change = parseFloat($('#cash').val()) - total;
 
             if(change < 0 || change == undefined || isNaN(change)){
                 change = 0;
@@ -921,10 +948,12 @@
 
         function charge_change(){
             var charge = $('#chargeSaveModal');
-            var payable = $(charge).find('#payable').val();
-            var discount = $(charge).find('#discount').val();
-            var cash    = $(charge).find('#cash').val();
-            var change  = cash - (payable - discount);
+            var type = $(charge).find('#discount_type option:selected').text();
+            var val  = $(charge).find('#discount_type').val();
+
+            charge_get_amount_due($(charge).find('#payable').val(), val, type, 0);
+            var total  = parseFloat($(charge).find('#total_amount_due').val());
+            var change = parseFloat($(charge).find('#cash').val()) - total;
 
             if(change < 0 || change == undefined || isNaN(change)){
                 change = 0;
@@ -944,22 +973,12 @@
             $('#cash').val(val.toFixed(2));
         }
 
-        function discount_change(e){
-            if($(e).text() != 'None')
-            {
-                var percent = $(e).val();
-                var payable  = $('#payable').val();
-                var total    = payable * (percent / 100);
-
-                $('#discount').val(total.toFixed(2));
-
-                change();
-            }
-            else
-            {
-                $('#discount').val('0.00');
-            }
-        }
+        $('#discount_type').on('change', function(){
+            var type = $('#discount_type option:selected').text();
+            var val  = $('#discount_type').val();
+            get_amount_due(recompute(), val, type, 0);
+            change();
+        });
 
         function charge_discount_change(e){
             if($(e).text() != 'None')
@@ -990,12 +1009,12 @@
                 $('#panel_vat').hide();
                 $('#panel_service_charge').hide();
                 $('#panel_total_amount').hide();
-                $('#panel_discount_type').hide();
                 $('#panel_table').show();
                 $('#btn_submit').text('Submit');
             }
             else
             {
+                get_amount_due(recompute(), 0, 'None', 0);
                 $('#panel_discount_type').show();
                 $('#panel_payable').show();
                 $('#panel_cash').show();
@@ -1004,7 +1023,6 @@
                 $('#panel_vat').show();
                 $('#panel_service_charge').show();
                 $('#panel_total_amount').show();
-                $('#panel_discount_type').show();
                 $('#panel_table').hide();
                 $('#btn_submit').text('Charge');
             }
@@ -1112,73 +1130,82 @@
             order_list.splice(0, order_list.length);
             clearAll();
 
-            $.ajax({
-                type: 'GET',
-                url : '{{ url("sale/get_order_list") }}/' + transact_no,
-                success: function(data) {
-                    var html = '';
-                    $('#charge_table tbody').find('tr').remove();
-                    $('#charge_transaction_no').text(data.transaction_no);
-                    $('#charge_total').text(parseFloat(data.payable).toFixed(2));
+            if($('#table_list').find('option').length > 0)
+            {
+                $.ajax({
+                    type: 'GET',
+                    url : '{{ url("sale/get_order_list") }}/' + transact_no,
+                    success: function(data) {
+                        var html = '';
+                        var total = 0;
 
-                    for(var i = 0; i < Object.keys(data.order_list).length; i++)
-                    {
-                        var product = {};
-                        var order   = data.order_list[i];
+                        $('#charge_table tbody').find('tr').remove();
+                        $('#charge_transaction_no').text(data.transaction_no);
 
-                        product['id']   = order.product.id;
-                        product['code'] = order.product.code;
-                        product['price']= order.product_size.price;
-                        product['qty']  = order.quantity;
-                        product['size'] = order.product_size.size;
+                        for(var i = 0; i < Object.keys(data.order_list).length; i++)
+                        {
+                            var product = {};
+                            var order   = data.order_list[i];
+                            total = total + (order.quantity * order.product_size.price);
 
-                        //
-                        //append product to orderlist
-                        //
-                        order_list.push(product);
+                            product['id']   = order.product.id;
+                            product['code'] = order.product.code;
+                            product['price']= order.product_size.price;
+                            product['qty']  = order.quantity;
+                            product['size'] = order.product_size.size;
+
+                            //
+                            //append product to orderlist
+                            //
+                            order_list.push(product);
+                            
+                            //
+                            // check product size and increase price
+                           //
+                            if(product.size == 'Large' || product.size == 'Medium')
+                            {
+                                product.price   = (parseFloat(product.price)).toFixed(2);
+                                code_sz         = product.code  + ' ' + product.size;
+                                qty             = product.qty;
+                                product.price   = parseFloat(product.qty * product.price).toFixed(2);
+                            }
+                            else 
+                            {
+                                code_sz         = product.code;
+                                qty             = product.qty;
+                                product.price   = (product.qty * product.price).toFixed(2);
+                            }
+
+                            //
+                            // add table row
+                            //
+                            html  = '<tr data-id="' + product.id + '" data-size="' + product.size + '" onclick="toggleActive(this)" data-fixed="1">';
+                            html  = html + '<td>' + code_sz + '</td><td>' + qty + '</td><td>' + product.price + '</td></tr>';
+                        }
                         
-                        //
-                        // check product size and increase price
-                       //
-                        if(product.size == 'Large' || product.size == 'Medium')
-                        {
-                            product.price   = (parseFloat(product.price)).toFixed(2);
-                            code_sz         = product.code  + ' ' + product.size;
-                            qty             = product.qty;
-                            product.price   = parseFloat(product.qty * product.price).toFixed(2);
-                        }
-                        else 
-                        {
-                            code_sz         = product.code;
-                            qty             = product.qty;
-                            product.price   = (product.qty * product.price).toFixed(2);
-                        }
-
-                        //
-                        // add table row
-                        //
-                        html  = '<tr data-id="' + product.id + '" data-size="' + product.size + '" onclick="toggleActive(this)" data-fixed="1">';
-                        html  = html + '<td>' + code_sz + '</td><td>' + qty + '</td><td>' + product.price + '</td></tr>';
+                        $('#charge_table tbody').append(html);
+                        $('#charge_total').text(total.toFixed(2));
+                        $('#tablesModal').modal('hide');
                     }
-                    
-                    $('#charge_table tbody').append(html);
-                    $('#tablesModal').modal('hide');
-                }
-            });
+                });
 
-            $('#chargeModal').modal({
-                backdrop: 'static',
-                keyboard: false
-            });
+                $('#chargeModal').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+            }
         });
 
         $('#btn_charge_submit').on('click', function() {
-            var charge      = $('#chargeSaveModal');
-            var cash        = parseFloat($(charge).find('#cash').val());
-            var change      = parseFloat($(charge).find('#change').val());
-            var payable     = parseFloat($(charge).find('#payable').val());
-            var discount    = parseFloat($(charge).find('#discount').val());
-            var transact    = $(charge).find('.modal-title').text();
+            var modal      = $('#chargeSaveModal');
+            var cash        = parseFloat($(modal).find('#cash').val());
+            var change      = parseFloat($(modal).find('#change').val());
+            var payable     = parseFloat($(modal).find('#payable').val());
+            var discount    = parseFloat($(modal).find('#discount').val());
+            var vat         = parseFloat($(modal).find('#vat').val());
+            var amount_due  = parseFloat($(modal).find('#total_amount_due').val());
+            var charge      = parseFloat($(modal).find('#service_charge').val());
+            var transact    = $(modal).find('.modal-title').text();
 
             if(cash >= (payable - discount))
             {
@@ -1192,7 +1219,10 @@
                         cash        : cash,
                         change      : change,
                         payable     : payable,
-                        discount    : discount
+                        discount    : discount,
+                        vat         : vat,
+                        charge      : charge,
+                        amount_due  : amount_due
                     },
                     success: function(data){
                         data = JSON.parse(data);
@@ -1276,6 +1306,10 @@
                 $('#chargeModal').modal('hide');
                 $(this).find('.modal-title').text(transact);
                 $(this).find('#payable').val(charge_total);
+                var val = $(this).find('#discount_type option:selected').val();
+                var type = $(this).find('#discount_type option:selected').text();
+
+                charge_get_amount_due(charge_total, val, type, 0);
             });
         });
 
@@ -1356,7 +1390,10 @@
             $('#print_total').text(parseFloat(data.order.payable).toFixed(2));
             $('#print_cash').text(parseFloat(data.order.cash).toFixed(2));
             $('#print_change').text(parseFloat(data.order.change).toFixed(2));
-            $('#print_discount').text(parseFloat(data.order.change).toFixed(2));
+            $('#print_discount').text(parseFloat(data.order.discount).toFixed(2));
+            $('#print_vat').text(parseFloat(data.order.vat).toFixed(2));
+            $('#print_charge').text(parseFloat(data.order.charge).toFixed(2));
+            $('#print_amount_due').text(parseFloat(data.order.total).toFixed(2));
             $('#print_type').text(data.order.type);
             $('#print_table').text(data.order.type == 'Take Out' ? 'N/A' : data.order.table_no);
             $('#items tbody').append(list);
@@ -1366,34 +1403,92 @@
             $('#btn_submit').css('visibility', 'hidden');
         }
 
-        function get_amount_due(amount, discount, discount_type, companion) {
-            var bill        = amount;
-            var net_vat     = 0;
+        function get_amount_due(bill, discount, discount_type, companion) {
+            bill            = parseFloat(bill);
+            discount        = parseFloat(discount);
+            var discounted  = 0;
             var vat         = 0;
+            var less_vat    = 0;
             var charge      = 0;
             var amount_due  = 0;
 
             if(discount_type == 'Senior Citizen')
             {
+                var discounted      = bill * (discount / 100);  //discount
+                var less_discount   = bill - discounted;        //less discount
 
+                vat         = less_discount / 1.12; //net of vat
+                less_vat    = less_discount - vat;  //less vat
+                charge      = vat * 0.05;           //service charge
+                amount_due  = bill + charge;        //total amount due
             }
             else if(discount_type == 'PWD')
             {
-                var discounted      = bill * (discount / 100);
-                var less_discount   = bill - discounted;
+                var discounted      = bill * (discount / 100);  //discount
+                var less_discount   = bill - discounted;        //less discount
 
-                vat         = less_discount / 1.12;
-                less_vat    = less_discount - vat;
-                charge      = vat * 0.05;
-                amount_due  = bill + charge;
+                vat         = less_discount / 1.12; //net of vat
+                less_vat    = less_discount - vat;  //less vat
+                charge      = vat * 0.05;           //service charge
+                amount_due  = bill + charge;        //total amount due
             }
             else
             {
-                net_vat = bill / 1.12;
-                vat     = bill - net_vat;
-                charge  = vat * 0.5;
-                amount_due = net_vat + vat + charge
+                vat         = bill / 1.12;
+                less_vat    = bill - vat;
+                charge      = vat * 0.05;
+                amount_due  = bill + charge;
             }
+
+            $('#vat').val(less_vat.toFixed(2));
+            $('#discount').val(discounted.toFixed(2));
+            $('#service_charge').val(charge.toFixed(2));
+            $('#payable').val(bill.toFixed(2));
+            $('#total_amount_due').val(amount_due.toFixed(2));
+        }
+
+        function charge_get_amount_due(bill, discount, discount_type, companion) {
+            bill            = parseFloat(bill);
+            discount        = parseFloat(discount);
+            var discounted  = 0;
+            var vat         = 0;
+            var less_vat    = 0;
+            var charge      = 0;
+            var amount_due  = 0;
+
+            if(discount_type == 'Senior Citizen')
+            {
+                var discounted      = bill * (discount / 100);  //discount
+                var less_discount   = bill - discounted;        //less discount
+
+                vat         = less_discount / 1.12; //net of vat
+                less_vat    = less_discount - vat;  //less vat
+                charge      = vat * 0.05;           //service charge
+                amount_due  = bill + charge;        //total amount due
+            }
+            else if(discount_type == 'PWD')
+            {
+                var discounted      = bill * (discount / 100);  //discount
+                var less_discount   = bill - discounted;        //less discount
+
+                vat         = less_discount / 1.12; //net of vat
+                less_vat    = less_discount - vat;  //less vat
+                charge      = vat * 0.05;           //service charge
+                amount_due  = bill + charge;        //total amount due
+            }
+            else
+            {
+                vat         = bill / 1.12;
+                less_vat    = bill - vat;
+                charge      = vat * 0.05;
+                amount_due  = bill + charge;
+            }
+            var modal = $('#chargeSaveModal');
+            $(modal).find('#vat').val(less_vat.toFixed(2));
+            $(modal).find('#discount').val(discounted.toFixed(2));
+            $(modal).find('#service_charge').val(charge.toFixed(2));
+            $(modal).find('#payable').val(bill.toFixed(2));
+            $(modal).find('#total_amount_due').val(amount_due.toFixed(2));
         }
     </script>
 @endsection
