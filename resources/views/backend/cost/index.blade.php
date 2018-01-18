@@ -61,7 +61,8 @@
                     <tr>
                         <th>ITEM</th>
                         <th>QUANTITY</th>
-                        <th>COST</th>
+                        <th>PRICE</th>
+                        <th>TOTAL COST</th>
                         <th>DATE</th>
                     </tr>
                     </thead>
@@ -100,23 +101,24 @@
                                         $name = $inventory->dry_good_inventory->name;
                                     }
 
-                                    $total = $total + $stock->price;
+                                    $total = $total + ($stock->price * $stock->quantity);
 
                                     echo '<tr>';
                                     echo '<td>'.strtoupper($name).'</td>';
-                                    echo '<td>'.$stock->quantity.'</td>';
-                                    echo '<td>'.$stock->price.'</td>';
+                                    echo '<td>'.$stock->quantity.' '.$stock->inventory->unit_type.'</td>';
+                                    echo '<td>'.number_format($stock->price, 2).'</td>';
+                                    echo '<td>'.number_format($stock->price * $stock->quantity).'</td>';
                                     echo '<td>'.$stock->received.'</td>';
                                     echo '</tr>';
                                 }
                             }
                             else
                             {
-                                echo '<tr><td colspan="4">No records found.</td></tr>';
+                                echo '<tr><td colspan="5">No records found.</td></tr>';
                             }
 
-                            echo '<tr><td colspan="4">&nbsp;</td></tr>';
-                            echo '<tr><td colspan="4"><b>TOTAL COST : '.number_format($total, 2).'</b></td></tr>';
+                            echo '<tr><td colspan="5">&nbsp;</td></tr>';
+                            echo '<tr><td colspan="5"><b>TOTAL COST : '.number_format($total, 2).'</b></td></tr>';
                         ?>
                     </tbody>
                 </table>

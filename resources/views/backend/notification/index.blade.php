@@ -28,6 +28,7 @@
                         <th>ITEM</th>
                         <th>DATE</th>
                         <th>DESCRIPTION</th>
+                        <th>STOCK FROM</th>
                         <th>STATUS</th>
                     </tr>
                     </thead>
@@ -55,10 +56,11 @@
                 serverSide: false,
                 ajax: '{!! route('admin.notification.get') !!}',
                 columns: [
-                    { data: 8 },
-                    { data: 1 },
-                    { data: 2 },
-                    { data: 3 }
+                    { data: 'name' },
+                    { data: 'date' },
+                    { data: 'description' },
+                    { data: 'stock_from' },
+                    { data: 'status' }
                 ],
                 order: [1, 'asc']
             });

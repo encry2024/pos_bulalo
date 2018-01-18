@@ -8,6 +8,7 @@ use App\Models\Commissary\Produce\Produce;
 use App\Models\Commissary\Product\Product;
 use App\Models\Commissary\Inventory\Inventory;
 use App\Models\Commissary\History\History;
+use App\Models\Notification\Notification;
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
 use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
 
@@ -108,6 +109,7 @@ class ProduceController extends Controller
                         $req_qty   = new Mass($ingredient->pivot->quantity, $ingredient->pivot->unit_type);
                         $qty_left  = $stock_qty->subtract($req_qty);
                         $i = $qty_left->toUnit($ingredient->unit_type);
+                        $actual_quantity = $req_qty->toUnit($ingredient->unit_type);
                     }
                     elseif($ingredient->physical_quantity == 'Volume')
                     {
@@ -124,7 +126,7 @@ class ProduceController extends Controller
                     $total      = 0;
                     $price      = $ingredient->stocks->last()->price;
                     $last_stock = $ingredient->stocks->last()->quantity;
-                    $total      = ($price / $last_stock) * $i;
+                    $total      = $price * $actual_quantity;
                     $cost       = $cost + $total;
                 }
                 $ingredient->save();
@@ -141,6 +143,7 @@ class ProduceController extends Controller
             $history->status        = 'Add';
             $history->save();
 
+            $this->notification();            
             return redirect()->route('admin.commissary.produce.index')->withFlashSuccess('Record Saved!');
         }
         else
@@ -165,5 +168,37 @@ class ProduceController extends Controller
         }
         $produce->delete();
     	return redirect()->route('admin.commissary.produce.index')->withFlashDanger('Produce Product Deleted Successfully!');
+    }
+
+    public function notification()
+    {
+        $inventories = Inventory::whereRaw('stock < reorder_level')->get();
+
+        foreach ($inventories as $inventory) {
+            $name = '';
+            $desc = $inventory->name.' has '.$inventory->stock.' stocks left.';
+
+            if($inventory->supplier == 'Other')
+            {
+                $name = $inventory->other_inventory->name;
+            }
+            else
+            {
+                $name = $inventory->drygood_inventory->name;
+            }
+
+            Notification::updateOrCreate(
+                [
+                    'name' => $name,
+                    'date' => date('Y-m-d'), 
+                    'description' => $desc,
+                    'stock_from' => 'COMMISSARY',
+                    'status' => 'new'
+                ],
+                [
+                    'inventory_id' => $inventory->id
+                ]
+            ); 
+        }
     }
 }

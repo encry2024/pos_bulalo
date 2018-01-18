@@ -8,5 +8,5 @@ use App\Models\Notification\Traits\Relationship\NotificationRelationship;
 class Notification extends Model
 {
 	use NotificationRelationship;
-    protected $fillable = ['id', 'date', 'description', 'inventory_id', 'status'];
+    protected $fillable = ['id', 'name', 'date', 'description', 'stock_from', 'inventory_id', 'status'];
 }

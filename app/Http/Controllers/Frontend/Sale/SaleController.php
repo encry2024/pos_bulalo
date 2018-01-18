@@ -311,12 +311,35 @@ class SaleController extends Controller
         $inventories = Inventory::whereRaw('stock < reorder_level')->get();
 
         foreach ($inventories as $inventory) {
+            $name = '';
             $desc = $inventory->name.' has '.$inventory->stock.' stocks left.';
+
+            if($inventory->supplier == 'Commissary Product')
+            {
+                $name = $inventory->commissary_product->name;
+            }
+            elseif($inventory->supplier == 'Commissary Raw Material')
+            {
+                if($inventory->commissary_inventory->supplier == 'Other')
+                    $name = $inventory->commissary_inventory->other_inventory->name;
+                else
+                    $name = $inventory->commissary_inventory->drygood_inventory->name;
+            }
+            elseif($inventory->supplier == 'DryGoods Material')
+            {
+                $name = $inventory->dry_good_inventory->name;
+            }
+            else
+            {
+                $name = $inventory->other->name;
+            }
 
             Notification::updateOrCreate(
                 [
+                    'name' => $name,
                     'date' => date('Y-m-d'), 
                     'description' => $desc,
+                    'stock_from' => 'POS',
                     'status' => 'new'
                 ],
                 [
@@ -324,7 +347,5 @@ class SaleController extends Controller
                 ]
             ); 
         }
-
-        // return $inventories;
     }
 }

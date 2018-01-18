@@ -164,7 +164,7 @@ class ProductController extends Controller
                     if($stock_use < 0 || $stock_use == 0)
                         $stock_use = $item->quantity;                        
 
-                    $total = ($price / $last_stock) * $stock_use;
+                    $total = $price * $stock_use;
                 }
                 else
                     $total = 0;

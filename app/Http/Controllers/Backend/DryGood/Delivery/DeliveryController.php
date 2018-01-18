@@ -8,6 +8,7 @@ use App\Models\DryGood\Inventory\Inventory;
 use App\Models\DryGood\Product\Product;
 use App\Models\DryGood\Delivery\Delivery;
 use App\Models\Branch\Branch;
+use App\Models\Notification\Notification;
 
 
 class DeliveryController extends Controller
@@ -32,12 +33,13 @@ class DeliveryController extends Controller
 			$delivery->quantity  = $request->quantity;
 			$delivery->date 	 = $request->date;
 			$delivery->deliver_to= $request->deliver_to;
-			$delivery->price 	 = count($inventory->stocks) ? ($inventory->stocks->last()->price / $inventory->stocks->last()->quantity) : 0;
+			$delivery->price 	 = count($inventory->stocks) ? $inventory->stocks->last()->price : 0;
 			$delivery->save();
 
 			$inventory->stock = $inventory->stock - $request->quantity;
 			$inventory->save();
 
+			$this->notification();
 			return redirect()->route('admin.dry_good.delivery.index')->withFlashSuccess('Item has been recorded!');
 		}
 		return redirect()->back()->withFlashDanger('Check item stock!');
@@ -51,5 +53,27 @@ class DeliveryController extends Controller
 
 
 		return redirect()->route('admin.dry_good.delivery.index')->withFlashDanger('Stock has Been Deleted Successfully!');
+	}
+
+    public function notification()
+	{
+    	$inventories = Inventory::whereRaw('stock < reorder_level')->get();
+        foreach ($inventories as $inventory) 
+        {
+            $desc = $inventory->name.' has '.$inventory->stock.' stocks left.';
+
+            Notification::updateOrCreate(
+                [
+                    'name' => $inventory->name,
+                    'date' => date('Y-m-d'), 
+                    'description' => $desc,
+                    'stock_from' => 'DRY GOODS',
+                    'status' => 'new'
+                ],
+                [
+                    'inventory_id' => $inventory->id
+                ]
+            ); 
+    	}
 	}
 }

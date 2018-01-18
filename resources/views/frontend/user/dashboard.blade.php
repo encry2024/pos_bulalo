@@ -21,14 +21,11 @@
 
 @section('content')
     <div class="row">
-
         <div class="col-xs-12">
-
             <div class="row">
                 <div class="col-md-4 col-md-push-8">
                     <div class="row">
                         <div class="panel panel-default">
-                            
                             <div class="panel-heading">
                                 <h5>Order List</h5>
                             </div><!--panel-heading-->
@@ -49,13 +46,11 @@
                                                     <th style="width:30%;text-align:left"><span class="text">PRICE</span></th>
                                                 </thead>
                                                 <tbody>
-
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
-                                
 
                                 <div class="col-md-12">
                                     <h4 class="col-md-8">TOTAL</h4>
@@ -67,9 +62,7 @@
                                     <button class="btn btn-danger" id="btn-remove"><i class="fa fa-trash-o"></i> REMOVE</button>
                                     <button class="btn btn-success" id="btn-save"><i class="fa fa-save"></i> SAVE</button>
                                 </div>
-
                             </div><!--panel-body-->
-
                         </div><!--panel-->
 
                         <div class="panel panel-default">
@@ -93,7 +86,6 @@
                                 <div class="panel-body">
                                     @if(count($products))
                                     @foreach($products as $product)
-
                                         <a class="product-box" id="{{ $product->id }}" data-code="{{ $product->code }}" onclick="product_click(this)">
                                             <div class="product-title">{{ $product->name }}</div>
 
@@ -101,7 +93,6 @@
                                                 <img src="{{ url('img/product').'/'.$product->image }}">
                                             </div>
                                         </a>
-                                        
                                     @endforeach
                                     @else
                                     <p>No Product.</p>
@@ -112,10 +103,7 @@
                     </div><!--row-->
                 </div>
             </div><!--row-->
-
-
         </div><!-- col-md-10 -->
-
     </div><!-- row -->
 
     <!-- Modal -->
@@ -134,7 +122,6 @@
                             <th>STOCKS</th>
                         </thead>
                         <tbody>
-                            
                         </tbody>
                     </table>
 
@@ -149,7 +136,6 @@
                             <input type="number" class="form-control" id="qty" value="1">
                         </div>
                     </div>
-                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" id="btn_addOrder">Add Order</button>
@@ -182,7 +168,6 @@
                             <div class="form-group col-lg-6" id="panel_table">
                                 <label for="table_no">Table</label>
                                 <select class="form-control" id="table">
-                                    
                                 </select>
                             </div>                         
                             <div class="form-group col-lg-6" id="panel_discount_type" hidden>
@@ -1315,6 +1300,7 @@
 
         $('#btn_cancel_order').on('click', function() {
             var selected_transaction = $('#table_order_transact').text();
+            var bool = false;            
 
             if(selected_transaction.length > 0){
                 $.ajax({
