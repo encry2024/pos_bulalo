@@ -15,7 +15,8 @@ class CreateTableTablecount extends Migration
     {
         Schema::create('tables', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('count');
+            $table->integer('number');
+            $table->decimal('price', 10, 2);
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
         });

@@ -89,6 +89,13 @@ class HistoryTypeTableSeeder extends Seeder
 
         DB::table('settings')->insert($settings);
 
-        DB::table('tables')->insert([['count' => 5]]);
+        DB::table('tables')->insert([
+            [
+                'number'     => 1,
+                'price'      => 10,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]
+        ]);
     }
 }

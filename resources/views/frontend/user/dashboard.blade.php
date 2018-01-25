@@ -736,7 +736,7 @@
             var charge      = parseFloat($('#service_charge').val());
             var amount_due  = parseFloat($('#total_amount_due').val());
             var order_type  = $('#order_type').val();
-            var table_no    = order_type == 'Take Out' ? 0 : $('#table').val();
+            var table_no    = order_type == 'Take Out' ? 0 : $('#table option:selected').text();
 
             if((cash >= amount_due) && (order_type == 'Take Out'))
             {
@@ -1167,6 +1167,14 @@
                             html  = '<tr data-id="' + product.id + '" data-size="' + product.size + '" onclick="toggleActive(this)" data-fixed="1">';
                             html  = html + '<td>' + code_sz + '</td><td>' + qty + '</td><td>' + product.price + '</td></tr>';
                         }
+
+                        if(data.table != null)
+                        {
+                            html += '<tr><td>Rent Table</td><td>-</td>';
+                            html += '<td>' + data.table.price + '</td>';
+                            html += '</tr>';
+                            total += parseFloat(data.table.price);
+                        }
                         
                         $('#charge_table tbody').append(html);
                         $('#charge_total').text(total.toFixed(2));
@@ -1255,10 +1263,12 @@
                 type: 'GET',
                 url: '{{ url("sale/order") }}/' + val,
                 success: function(data) {
-                    var rows = '';
                     data = JSON.parse(data);
+                    console.log(data);
+                    var rows = '';
                     var _order  =  data.order;
                     var _order_list = _order.order_list;
+                    var _order_total = 0;
 
                     $('#table_order_transact').text(_order.transaction_no);
                     $('#table_order_total').text(_order.payable);
@@ -1271,9 +1281,19 @@
                         rows += '<td>' + _order_list[0].quantity + '/' + _order_list[0].product_size.size + '</td>';
                         rows += '<td>' + _order_list[0].product_size.price + '</td>';
                         rows += '</tr>';
+                        _order_total = _order_total + (_order_list[0].quantity * _order_list[0].product_size.price);
                     }
 
+                    if(data.order.table != null)
+                    {
+                        rows += '<tr><td>Rent Table</td><td>-</td>';
+                        rows += '<td>' + data.order.table.price + '</td>';
+                        rows += '</tr>';
+                        _order_total += parseFloat(data.order.table.price);
+                    }
+                    
                     $('#table_order_list tbody').append(rows);
+                    $('#table_order_total').text(_order_total.toFixed(2));
                 }
             });
         }
@@ -1324,12 +1344,13 @@
                 type: 'GET',
                 url: '{{ url("sale/available_table") }}',
                 success: function(data) {
+                    data = JSON.parse(data);
                     var options = '';
                     $('#table').find('option').remove();
 
-                    for(var i = 0; i < data.length; i++)
+                    for(var i = 0; i < Object.keys(data).length; i++)
                     {
-                        options += '<option>' + data[i] + '</option>';
+                        options += '<option value="' + data[i].price + '">' + + data[i].number + '</option>';
                     }
 
                     $('#table').append(options);
@@ -1369,6 +1390,16 @@
 
                 list += '<td>' + price + '</td>';
                 list += '</tr>';
+            }
+
+            if(data.order.table != null)
+            {
+                if(data.order.table.price > 0)
+                {
+                    list += '<tr><td></td><td>Rent Table</td>';
+                    list += '<td>' + data.order.table.price + '</td>';
+                    list += '</tr>';
+                }
             }
 
 

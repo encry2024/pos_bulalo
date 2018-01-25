@@ -161,7 +161,7 @@ class SaleController extends Controller
     }
 
     public function charge_save(Request $request) {
-        $order = Order::with('order_list', 'order_list.product', 'order_list.product_size')
+        $order = Order::with('order_list', 'order_list.product', 'order_list.product_size','table')
                 ->where('transaction_no', $request->transaction_no)
                 ->first();
 
@@ -231,25 +231,14 @@ class SaleController extends Controller
 
     public function available_table(){
         $available = [];
-        $total_table = Table::first()->count;
-
         $pendings = Order::select('table_no')
                 ->where('status', 'Unpaid')
                 ->where('type', 'Dine-in')
                 ->whereBetween('created_at', [Date('Y-m-d 00:00:00'), Date('Y-m-d 23:59:59')])
                 ->get();
 
-        for($i = 0; $i < $total_table; $i++)
-        {
-            $available[$i] = $i + 1;
-        }
-
-        foreach ($pendings as $pending) 
-        {
-            $index = array_search($pending->table_no, $available);
-            array_splice($available, $index, 1);
-        }
-        return $available;
+        $tables = Table::whereNotIn('number', $pendings)->get();
+        return json_encode($tables);
     }
 
     public function unpaid(){
@@ -264,7 +253,7 @@ class SaleController extends Controller
 
     public function get_order($table) {
         $order = Order::with(
-                    'order_list', 'order_list.product', 'order_list.product_size'
+                    'order_list', 'order_list.product', 'order_list.product_size', 'table'
                 )->where('status', 'Unpaid')
                 ->where('type', 'Dine-in')
                 ->whereBetween('created_at', [Date('Y-m-d 00:00:00'), Date('Y-m-d 23:59:59')])
@@ -275,7 +264,7 @@ class SaleController extends Controller
     }
 
     public function get_order_list($transaction_no) {
-        $order = Order::with('order_list', 'order_list.product', 'order_list.product_size')
+        $order = Order::with('order_list', 'order_list.product', 'order_list.product_size', 'table')
                 ->where('transaction_no', $transaction_no)
                 ->first();
 
