@@ -33,7 +33,7 @@ class ReportControllers extends Controller
 
     public function getItem($reports, $category, $ingredient)
     {
-        $days = (object)['mon' => 0, 'tue' => 0, 'wed' => 0, 'thu' => 0, 'total' => 0];
+        $days = (object)['mon' => 0, 'tue' => 0, 'wed' => 0, 'thu' => 0, 'fri' => 0, 'sat' => 0, 'sun' => 0, 'total' => 0];
 
         if(count($reports[$category]))
         {
@@ -48,11 +48,14 @@ class ReportControllers extends Controller
                     $days->tue += $item->days[$i]['tue'];
                     $days->wed += $item->days[$i]['wed'];
                     $days->thu += $item->days[$i]['thu'];
+                    $days->fri += $item->days[$i]['fri'];
+                    $days->sat += $item->days[$i]['sat'];
+                    $days->sun += $item->days[$i]['sun'];
                 }
             }
         }
         
-        $days->total = $days->mon + $days->tue + $days->wed + $days->thu;
+        $days->total = $days->mon + $days->tue + $days->wed + $days->thu + $days->fri + $days->sat + $days->sun;
 
         return $days;                                
     }
@@ -64,6 +67,7 @@ class ReportControllers extends Controller
         foreach (Category::all() as $category) 
         {
             $inventories = Inventory::where('category_id', $category->id)
+                            ->where('supplier', 'DryGoods Material')
                             ->withTrashed()
                             ->get();
 
@@ -73,7 +77,7 @@ class ReportControllers extends Controller
             foreach ($inventories as $inventory) 
             {
                 $objects[$index] = (object)[
-                                        'name' => $inventory->name,
+                                        'name' => $inventory->dry_good_inventory->name,
                                         'days' => $this->filterReport($inventory->id, $from, $to)
                                     ];
                 $index++;
@@ -90,14 +94,14 @@ class ReportControllers extends Controller
 
     public function filterReport($inventory_id, $from, $to){
         $sundays    = $this->getSundays($from, $to);
-        $weekdays   = ['mon', 'tue', 'wed', 'thu'];
+        $weekdays   = ['mon', 'tue', 'wed', 'thu','fri','sat','sun'];
         $objects    = [];
         $sunday_days= [];
         $index      = 0;
 
         foreach($sundays as $sunday)
         {
-            for($i = 6; $i > 2; $i--)
+            for($i = 6; $i >= 0; $i--)
             {
                 $days[$i] = date('Y-m-d', strtotime($sunday.' -'.$i.' day'));
             }
@@ -109,8 +113,9 @@ class ReportControllers extends Controller
             $days[1] = $temp[5];
             $days[2] = $temp[4];
             $days[3] = $temp[3];
-            $days    = array_splice($days, 0, 4);
-
+            $days[4] = $temp[2];
+            $days[5] = $temp[1];
+            $days[6] = $temp[0];
 
             for($i = 0; $i < count($days); $i++)
             {

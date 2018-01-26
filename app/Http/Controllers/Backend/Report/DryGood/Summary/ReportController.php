@@ -23,14 +23,15 @@ class ReportController extends Controller
     	$to 	  = date('Y-m-d', strtotime('sunday'));
     	$from 	  = date('Y-m-d', strtotime($to.' -6 day'));
     	$reports  = $this->fetch_inventories($from, $to);
-    	return view('backend.report.commissary.summary.index', compact('reports', 'from', 'to'));
+
+    	return view('backend.report.dry_good.summary.index', compact('reports', 'from', 'to'));
     }
 
     public function store(Request $request){
         $to      = date('Y-m-d', strtotime($request->to));
         $from    = date('Y-m-d', strtotime($request->from));
         $reports = $this->fetch_inventories($from, $to);
-        return view('backend.report.commissary.summary.index', compact('reports', 'from', 'to'));
+        return view('backend.report.dry_good.summary.index', compact('reports', 'from', 'to'));
     }
 
     public function fetch_inventories($from, $to){
@@ -279,205 +280,6 @@ class ReportController extends Controller
     	// return ($inventory->stock + (count($inventory->stocks) ? $inventory->stocks->sum('quantity') : 0));
         return $inventory->stock;
     }
-
-
-
-
-
-    /**************************************************************************/
-    /*                      COMMISSARY PRODUCT                                */
-    /**************************************************************************/
-
-     public function product_beginning($product_id, $from, $to){
-        $cost     = 0;
-        $quantity = 0;
-        $made     = 0;
-
-        $product  = Product::with(
-                            [
-                                'produced' => function($q) use($from, $to) 
-                                            {
-                                                $q->whereBetween('date', [$from, $to])->withTrashed();
-                                            }
-                            ])
-                            ->where('id', $product_id)->first();
-
-        foreach($product->produced as $produce)
-        {
-            $made = $made + $produce->quantity;            
-        }
-
-        $quantity = ($product->produce + $made);
-
-        $obj = (object)[
-                        'quantity' => $quantity, 
-                        'cost'     => $product->cost
-                       ];
-
-        return $obj;
-    }
-
-    public function product_delivery($product_id, $from, $to){
-        $stocks = 0;
-        $cost   = 0;
-
-        $deliveries = Delivery::where('item_id', $product_id)
-                    ->whereBetween('date', [$from, $to])
-                    ->where('type', 'PRODUCT')
-                    ->withTrashed()
-                    ->get();
-
-        if(count($deliveries))
-        {
-            $product = Product::where('id', $deliveries->first()->item_id)->withTrashed()->first();
-        }
-
-        foreach($deliveries as $delivery)
-        {
-            $stocks = $stocks + $delivery->quantity;
-        }
-
-        if(!empty($product))
-        {
-            $cost = $product->cost;
-        }
-        
-
-        $objs = (object)[
-                            'quantity' => $stocks,
-                            'cost'     => $cost
-                        ];
-
-        return $objs;
-    }
-
-    public function product_sales($product_id, $from, $to){
-        $cost     = 0;
-        $total_qty= 0;
-
-        $cproduct = Product::where('id', $product_id)
-                    ->withTrashed()
-                    ->first();
-
-        $pos = POS::where('inventory_id', $product_id)
-                    ->where('supplier', 'Commissary Product')
-                    ->withTrashed()
-                    ->first();
-
-        if(count($pos))
-        {
-            $orders = Order::with(
-                            [
-                                'order_list.product_size',
-                                'order_list.product.product_size.ingredients' => 
-                                    function($q) use ($pos) 
-                                    {
-                                        $q->where('inventory_product_size.inventory_id', $pos->id)
-                                        ->withTrashed();
-                                    }
-                            ])
-                        ->whereHas('order_list.product.product_size.ingredients', 
-                                    function($q) use($pos) 
-                                    {
-                                        $q->where('inventory_product_size.inventory_id', $pos->id)
-                                        ->withTrashed();
-                                    })
-                        ->whereBetween(DB::raw('date(created_at)'), [$from, $to])
-                        ->where('status', 'Paid')
-                        ->get();
-
-            foreach ($orders as $order) 
-            {
-                $qty   = 0;
-                $lists = $order->order_list;
-
-                foreach ($lists as $list) 
-                {
-                    $size         = $list->product_size->size;
-                    $product      = $list->product;
-                    $product_size = $product->product_size->where('size', $size)->first();
-                    $ingredients  = $product_size->ingredients;
-
-                    foreach ($ingredients as $ingredient) 
-                    {
-                        $qty       = (int)$list->quantity;
-                        $qty_use   = $ingredient->pivot->quantity;
-                        $price     = $cproduct->cost;
-                        $cost      = $price;
-                        $total_qty = $total_qty + ($qty * $qty_use);
-
-                        if($ingredient->physical_quantity == 'Mass')
-                        {
-                            if($ingredient->unit_type != $ingredient->pivot->unit_type)
-                            {
-                                $stock_qty = new Mass(1, $ingredient->unit_type);
-
-                                $req_qty   = new Mass($qty_use, $ingredient->pivot->unit_type);
-
-                                $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
-
-                                $cost      = (1 - $qty_left) * $price;
-                            }
-                            else
-                            {
-                                // $cost = $qty_use * $price;
-                            }
-                        }
-                        else
-                        {
-                            if($ingredient->unit_type != $ingredient->pivot->unit_type)
-                            {
-                                $stock_qty = new Volume(1, $ingredient->unit_type);
-
-                                $req_qty   = new Volume($qty_use, $ingredient->pivot->unit_type);
-
-                                $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
-
-                                // $cost      = (1 - $qty_left) * $price;
-                            }
-                            else
-                            {
-                                $cost = $qty_use * $price;
-                            }
-
-                        }
-                    }
-                }            
-            }
-        }
-
-        return (object)['cost' => $cost, 'quantity' => $total_qty];
-    }
-
-     public function product_dispose($product_id, $from, $to){
-        $quantity = 0;
-        $cost     = 0;
-        $disposes = Dispose::where('inventory_id', $product_id)
-                        ->whereBetween('date', [$from, $to])
-                        ->where('type', 'Product')
-                        ->withTrashed()
-                        ->get();
-
-        foreach ($disposes as $dispose) 
-        {
-            $quantity = $quantity + $dispose->quantity;
-        }
-
-        if(count($disposes))
-        {
-            $cost = $disposes->last()->cost;
-        }
-        
-
-        $obj = (object)[
-                            'quantity' => $quantity,
-                            'cost'     => $cost
-                       ];
-
-        return $obj;
-    }
-
-
 
 
     public function getSundays($from, $to){

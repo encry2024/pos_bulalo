@@ -1,20 +1,23 @@
-@extends ('backend.layouts.app')
+<?php $__env->startSection('title', 'Commissary Summary Report'); ?>
 
-@section ('title', 'Commissary Summary Report')
+<?php $__env->startSection('after-styles'); ?>
+    <?php echo e(Html::style("https://cdn.datatables.net/v/bs/dt-1.10.15/datatables.min.css")); ?>
 
-@section('after-styles')
-    {{ Html::style("https://cdn.datatables.net/v/bs/dt-1.10.15/datatables.min.css") }}
-    {{ Html::style('https://cdn.datatables.net/buttons/1.4.0/css/buttons.dataTables.min.css') }}
-    {{ Html::style('https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css') }}
-    {{ Html::style('https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.4.5/jquery-ui-timepicker-addon.min.css') }}
-    {{ Html::style('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.standalone.min.css') }}
-@endsection
+    <?php echo e(Html::style('https://cdn.datatables.net/buttons/1.4.0/css/buttons.dataTables.min.css')); ?>
 
-@section('page-header')
+    <?php echo e(Html::style('https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css')); ?>
+
+    <?php echo e(Html::style('https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.4.5/jquery-ui-timepicker-addon.min.css')); ?>
+
+    <?php echo e(Html::style('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.standalone.min.css')); ?>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('page-header'); ?>
     <h1>Commissary Summary Report</h1>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="box box-success" style="overflow-x: scroll">
         <div class="box-header with-border">
             <h3 class="box-title">Report List</h3>
@@ -28,17 +31,18 @@
 
         <div class="box-body">
             <div class="col-lg-12">
-                {{ Form::open(['route' => 'admin.report.commissary.summary.store', 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post']) }}
+                <?php echo e(Form::open(['route' => 'admin.report.commissary.summary.store', 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post'])); ?>
+
 
                     <div class="row">
                         <div class="form-group col-lg-2">
                             <label>From</label>
-                            <input class="form-control" type="text" name="from" id="from" readonly required value="{{ $from }}">                            
+                            <input class="form-control" type="text" name="from" id="from" readonly required value="<?php echo e($from); ?>">                            
                         </div>
 
                         <div class="form-group col-lg-2">
                             <label>To</label>
-                            <input class="form-control" type="text" name="to" id="to" readonly required value="{{ $to }}">                            
+                            <input class="form-control" type="text" name="to" id="to" readonly required value="<?php echo e($to); ?>">                            
                         </div>
 
                         <div class="form-group col-lg-2">
@@ -59,7 +63,7 @@
                         </div>
                     </div>
 
-                {{ Form::close() }}  
+                <?php echo e(Form::close()); ?>  
             </div>
 
            <table class="table table-responsive table-bordered" id="daily_log_table">
@@ -84,33 +88,33 @@
                         <td>ACTUAL INVENTORY (DIC)</td>
                         <td>VARIANCE</td>
                     </tr>
-                    @if(count($reports))
-                        @foreach(array_except($reports,['food']) as $report)
+                    <?php if(count($reports)): ?>
+                        <?php $__currentLoopData = array_except($reports,['food']); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $report): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td colspan="10" style="color:red;background:#ffe4e4">{{ $report->category }}</td>
+                                <td colspan="10" style="color:red;background:#ffe4e4"><?php echo e($report->category); ?></td>
                             </tr>
 
-                            @if(count($report->summaries))
-                                @foreach($report->summaries as $summary)
+                            <?php if(count($report->summaries)): ?>
+                                <?php $__currentLoopData = $report->summaries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $summary): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
-                                    <td>{{ $summary->name }}</td>
-                                    <td>{{ $summary->unit }}</td>
-                                    <td>{{ $summary->beginning->quantity }}</td>
-                                    <td>{{ $summary->delivery->quantity }}</td>
-                                    <td>{{ $summary->sale->quantity }}</td>
-                                    <td>{{ $summary->dispose->quantity }}</td>
-                                    <td>{{ $summary->goods->quantity }}</td>
-                                    <td>{{ $summary->ending }}</td>
-                                    <td>{{ $summary->actual }}</td>
+                                    <td><?php echo e($summary->name); ?></td>
+                                    <td><?php echo e($summary->unit); ?></td>
+                                    <td><?php echo e($summary->beginning->quantity); ?></td>
+                                    <td><?php echo e($summary->delivery->quantity); ?></td>
+                                    <td><?php echo e($summary->sale->quantity); ?></td>
+                                    <td><?php echo e($summary->dispose->quantity); ?></td>
+                                    <td><?php echo e($summary->goods->quantity); ?></td>
+                                    <td><?php echo e($summary->ending); ?></td>
+                                    <td><?php echo e($summary->actual); ?></td>
                                     <td></td>
                                 </tr>
-                                @endforeach
-                            @else
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <?php else: ?>
                                 <tr>
                                     <td colspan="10">No record in list.</td>
                                 </tr>
-                            @endif
-                        @endforeach
+                            <?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         <tr>
                             <td colspan="18">&nbsp;</td>
                         </tr>
@@ -152,16 +156,16 @@
                             <td colspan="4"></td>
                         </tr>
 
-                        @if(count($reports['food']->summaries))
-                            @foreach($reports['food']->summaries as $summary)
+                        <?php if(count($reports['food']->summaries)): ?>
+                            <?php $__currentLoopData = $reports['food']->summaries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $summary): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <?php $total = 0; ?> 
                             <tr>
-                                <td>{{ $summary->name }}</td>
-                                <td>{{ $summary->unit }}</td>
+                                <td><?php echo e($summary->name); ?></td>
+                                <td><?php echo e($summary->unit); ?></td>
 
                                 <!-- beginning -->
-                                <td>{{ $qty  = $summary->beginning->quantity }}</td>
-                                <td>{{ $cost = number_format($summary->beginning->cost, 2) }}</td>
+                                <td><?php echo e($qty  = $summary->beginning->quantity); ?></td>
+                                <td><?php echo e($cost = number_format($summary->beginning->cost, 2)); ?></td>
                                 <td style="background-color:yellow">
                                     <?php 
                                         $sub   = number_format($cost * $qty, 2);
@@ -171,8 +175,8 @@
                                 </td>
 
                                 <!-- delivery -->
-                                <td>{{ $qty  = $summary->delivery->quantity }}</td>
-                                <td>{{ $cost = number_format($summary->delivery->cost, 2) }}</td>
+                                <td><?php echo e($qty  = $summary->delivery->quantity); ?></td>
+                                <td><?php echo e($cost = number_format($summary->delivery->cost, 2)); ?></td>
                                 <td style="background-color:yellow">
                                     <?php 
                                         $sub   = number_format($cost * $qty, 2);
@@ -182,8 +186,8 @@
                                 </td>
 
                                 <!-- sales -->
-                                <td>{{ $qty  = $summary->sale->quantity }}</td>
-                                <td>{{ $cost = number_format($summary->sale->cost, 2) }}</td>
+                                <td><?php echo e($qty  = $summary->sale->quantity); ?></td>
+                                <td><?php echo e($cost = number_format($summary->sale->cost, 2)); ?></td>
                                 <td style="background-color:yellow">
                                     <?php 
                                         $sub   = number_format($cost * $qty, 2);
@@ -194,16 +198,16 @@
 
                                 <td></td>
 
-                                <td>{{ $summary->goods->quantity.'/'.$summary->goods->cost }}</td>
-                                <td>{{ $summary->dispose->quantity.'/'.$summary->dispose->cost }}</td>
-                                <td>{{ number_format($total, 2) }}</td>
-                                <td>{{ $summary->ending }}</td>
-                                <td>{{ $summary->actual }}</td>
+                                <td><?php echo e($summary->goods->quantity.'/'.$summary->goods->cost); ?></td>
+                                <td><?php echo e($summary->dispose->quantity.'/'.$summary->dispose->cost); ?></td>
+                                <td><?php echo e(number_format($total, 2)); ?></td>
+                                <td><?php echo e($summary->ending); ?></td>
+                                <td><?php echo e($summary->actual); ?></td>
                                 <td></td>
                             </tr>
-                            @endforeach
-                        @endif
-                    @endif
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php endif; ?>
+                    <?php endif; ?>
 
                     <tr>
                         <td style="color:red;background: #ffe4e4" colspan="18">Products</td>
@@ -226,15 +230,19 @@
     </div><!--box-->
 
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('after-scripts')
-    {{ Html::script('js/tableExport.js')}}
-    {{ Html::script('js/jquery.base64.js')}}
-    {{ Html::script('https://code.jquery.com/ui/1.11.3/jquery-ui.min.js') }}
-    {{ Html::script('js/timepicker.js') }} 
+<?php $__env->startSection('after-scripts'); ?>
+    <?php echo e(Html::script('js/tableExport.js')); ?>
+
+    <?php echo e(Html::script('js/jquery.base64.js')); ?>
+
+    <?php echo e(Html::script('https://code.jquery.com/ui/1.11.3/jquery-ui.min.js')); ?>
+
+    <?php echo e(Html::script('js/timepicker.js')); ?> 
     <script> 
         $('.date').datepicker({ 'dateFormat' : 'yy-mm-dd' }); 
         $('.time').timepicker({ 'timeFormat': 'HH:mm:ss' }); 
     </script> 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('backend.layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

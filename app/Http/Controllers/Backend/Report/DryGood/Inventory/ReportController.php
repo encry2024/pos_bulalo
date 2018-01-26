@@ -115,22 +115,26 @@ class ReportController extends Controller
 			$days[3] = $temp[3];
 			$days    = array_splice($days, 0, 4);
 
-
 			for($i = 0; $i < count($days); $i++) 
 			{
 				$day 	 = $days[$i];
-				$ing_use = 0;
-				$qty_use = 0;
+				$price   = 0;
+				$quantity= 0;
 
 				$stock   = Stock::where('inventory_id', $inventory_id)
 						 ->where(DB::raw('date(created_at)'), $day)
 						 ->withTrashed()
 						 ->first();
 
-				$price   = count($stock) ? $stock->price : 0;
+				if(count($stock))
+				{
+					$price   = count($stock) ? $stock->price : 0;
+					$quantity = $stock->quantity;
+				}
+				
 				
 				$objects[$weekdays[$i]] = (object)[
-						'stocks' => $stock->quantity
+						'stocks' => $quantity
 					];
 			}
 			$sunday_days[$index] = $objects;

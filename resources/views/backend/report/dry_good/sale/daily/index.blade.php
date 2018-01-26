@@ -80,21 +80,27 @@
                         <td>TUE</td>
                         <td>WED</td>
                         <td>THU</td>
+                        <td>FRI</td>
+                        <td>SAT</td>
+                        <td>SUN</td>
                         <td>TOTAL</td>
                         <td>TOTAL SALES OF MON</td>
                         <td>TOTAL SALES OF TUE</td>
                         <td>TOTAL SALES OF WED</td>
                         <td>TOTAL SALES OF THU</td>
+                        <td>TOTAL SALES OF FRI</td>
+                        <td>TOTAL SALES OF SAT</td>
+                        <td>TOTAL SALES OF SUN</td>
                         <td>GRAND TOTAL</td>
                     </tr>
 
                     @if(count($reports))
                         @foreach($reports as $report)
                         <tr>
-                            <td colspan="11" style="color:red">{{ $report->category }}</td>
+                            <td colspan="17" style="color:red">{{ $report->category }}</td>
                         </tr>
                             <?php 
-                                $controller = app('App\Http\Controllers\Backend\Report\Commissary\Sale\ReportControllers');
+                                $controller = app('App\Http\Controllers\Backend\Report\DryGood\Sale\ReportControllers');
 
                                 foreach($report->items as $item)
                                 {
@@ -102,8 +108,10 @@
                                     $tue    = 0;
                                     $wed    = 0;
                                     $thu    = 0;
+                                    $fri    = 0;
+                                    $sat    = 0;
+                                    $sun    = 0;
                                     $total  = 0;
-
 
                                     echo '<tr>';
                                     echo '<td>'.$item->name.'</td>';
@@ -116,12 +124,18 @@
                                         $tue += $days->tue;
                                         $wed += $days->wed;
                                         $thu += $days->thu;
+                                        $fri += $days->fri;
+                                        $sat += $days->sat;
+                                        $sun += $days->sun;
                                         $total += $days->total;
 
                                         echo '<td>'.number_format($days->mon, 3).'</td>';
                                         echo '<td>'.number_format($days->tue, 3).'</td>';
                                         echo '<td>'.number_format($days->wed, 3).'</td>';
                                         echo '<td>'.number_format($days->thu, 3).'</td>';
+                                        echo '<td>'.number_format($days->fri, 3).'</td>';
+                                        echo '<td>'.number_format($days->sat, 3).'</td>';
+                                        echo '<td>'.number_format($days->sun, 3).'</td>';
                                         echo '<td>'.number_format($days->total, 3).'</td>';
                                     }
 
@@ -129,22 +143,18 @@
                                     echo '<td>'.number_format($tue, 3).'</td>';
                                     echo '<td>'.number_format($wed, 3).'</td>';
                                     echo '<td>'.number_format($thu, 3).'</td>';
+                                    echo '<td>'.number_format($fri, 3).'</td>';
+                                    echo '<td>'.number_format($sat, 3).'</td>';
+                                    echo '<td>'.number_format($sun, 3).'</td>';
                                     echo '<td>'.number_format($total, 3).'</td>';
                                     echo '</tr>';
 
-                                }
-                                
-                                
-
-                                
-
-                                
-                                
+                                } 
                             ?>
                         @endforeach
                     @endif
                     <tr>
-                        <td colspan="11">&nbsp;</td>
+                        <td colspan="17">&nbsp;</td>
                     </tr>
                     <tr>
                         <td colspan="4"></td>
