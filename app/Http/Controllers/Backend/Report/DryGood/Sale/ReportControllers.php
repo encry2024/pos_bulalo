@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend\Report\Commissary\Sale;
+namespace App\Http\Controllers\Backend\Report\DryGood\Sale;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -8,7 +8,6 @@ use App\Models\Order\Order;
 use App\Models\OrderList\OrderList;
 use App\Models\ProductSize\ProductSize;
 use App\Models\Category\Category;
-use App\Models\Commissary\Product\Product as CommissaryProduct;
 use App\Models\Inventory\Inventory;
 use DB;
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
@@ -21,7 +20,7 @@ class ReportControllers extends Controller
         $from    = date('Y-m-d', strtotime($to.' -6 day'));
         $reports = $this->get_inventory($from, $to);
 
-    	return view('backend.report.commissary.sale.daily.index', compact('reports', 'from', 'to'));
+    	return view('backend.report.dry_good.sale.daily.index', compact('reports', 'from', 'to'));
     }
 
     public function store(Request $request){
@@ -29,7 +28,7 @@ class ReportControllers extends Controller
         $to      = date('Y-m-d', strtotime($request->to));
         $reports = $this->get_inventory($from, $to);   
 
-        return view('backend.report.commissary.sale.daily.index', compact('reports' ,'from', 'to'));
+        return view('backend.report.dry_good.sale.daily.index', compact('reports' ,'from', 'to'));
     }
 
     public function getItem($reports, $category, $ingredient)
@@ -65,7 +64,6 @@ class ReportControllers extends Controller
         foreach (Category::all() as $category) 
         {
             $inventories = Inventory::where('category_id', $category->id)
-                            ->where('supplier', 'Commissary Raw Material')
                             ->withTrashed()
                             ->get();
 
@@ -74,13 +72,10 @@ class ReportControllers extends Controller
 
             foreach ($inventories as $inventory) 
             {
-                $commissary = $inventory->commissary_inventory;
-
                 $objects[$index] = (object)[
-                                        'name' => $commissary->supplier == 'Other' ? $commissary->other_inventory->name : $commissary->drygood_inventory->name,
+                                        'name' => $inventory->name,
                                         'days' => $this->filterReport($inventory->id, $from, $to)
                                     ];
-
                 $index++;
             }            
 

@@ -15,7 +15,7 @@ class CreateStocksTable extends Migration
     {
         Schema::create('stocks', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('quantity')->unsigned();
+            $table->decimal('quantity', 10, 2)->unsigned();
             $table->decimal('price', 10, 2);
             $table->date('received');
             $table->date('expiration');

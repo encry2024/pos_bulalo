@@ -42,6 +42,8 @@ class DeliveryTableController extends Controller
 				return $deliveries->action_buttons;
 			})
 			->addColumn('quantity', function($deliveries) {
+				if($deliveries->type == 'PRODUCT')
+					return $deliveries->quantity;
 				return $deliveries->quantity.' '.$deliveries->inventory->unit_type;
 			})
 			->make(true);

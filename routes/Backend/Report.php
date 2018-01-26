@@ -32,54 +32,69 @@ Route::group(['namespace' => 'Report', 'prefix' => 'report', 'as' => 'report.'],
 
 
 	Route::group(['prefix' => 'commissary', 'as' => 'commissary.', 'namespace' => 'Commissary'], function(){
-		
+		Route::group([
+			'prefix' => 'daily', 
+			'as' => 'daily.'], function() {
+				Route::group(['prefix' => 'inventory', 'as' => 'inventory.', 'namespace' => 'Inventory'], function() {
+					Route::resource('/', 'ReportController');
+				});
+
+				Route::group(['prefix' => 'delivery', 'as' => 'delivery.', 'namespace' => 'Delivery'], function() {
+					Route::resource('/', 'ReportController');
+				});
+
+				Route::group(['prefix' => 'sale', 'as' => 'sale.', 'namespace' => 'Sale'], function(){
+					Route::resource('/', 'ReportControllers');
+				});
+		});
+
+		Route::group(['prefix' => 'disposal', 'as' => 'disposal.', 'namespace' => 'Disposal'], function(){
+			Route::resource('/', 'ReportController');
+		});
+
+		Route::group(['prefix' => 'goods_return', 'as' => 'goods_return.', 'namespace' => 'GoodsReturn'], function(){
+			Route::resource('/', 'ReportController');
+		});
+
+		Route::group(['prefix' => 'summary', 'as' => 'summary.', 'namespace' => 'Summary'], function(){
+			Route::resource('/', 'ReportController');
+		});
+	});
+	/* commissary report */
+	
+
+	/* dry good report */
+	Route::group(['prefix' => 'dry_good', 'as' => 'dry_good.', 'namespace' => 'DryGood'], function(){
 		Route::group([
 			'prefix' => 'daily', 
 			'as' => 'daily.'], function() {
 
 				Route::group(['prefix' => 'inventory', 'as' => 'inventory.', 'namespace' => 'Inventory'], function() {
-
 					Route::resource('/', 'ReportController');
-
 				});
 
 				Route::group(['prefix' => 'delivery', 'as' => 'delivery.', 'namespace' => 'Delivery'], function() {
-
 					Route::resource('/', 'ReportController');
-
 				});
 
 				Route::group(['prefix' => 'sale', 'as' => 'sale.', 'namespace' => 'Sale'], function(){
-
 					Route::resource('/', 'ReportControllers');
-
 				});
 		});
 
-
 		Route::group(['prefix' => 'disposal', 'as' => 'disposal.', 'namespace' => 'Disposal'], function(){
-
 			Route::resource('/', 'ReportController');
-
 		});
 
 		Route::group(['prefix' => 'goods_return', 'as' => 'goods_return.', 'namespace' => 'GoodsReturn'], function(){
-
 			Route::resource('/', 'ReportController');
-
 		});
-
 
 		Route::group(['prefix' => 'summary', 'as' => 'summary.', 'namespace' => 'Summary'], function(){
-
 			Route::resource('/', 'ReportController');
-
 		});
-
-
 	});
-	
-	
+
 });
 
 

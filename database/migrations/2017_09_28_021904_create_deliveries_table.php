@@ -16,7 +16,7 @@ class CreateDeliveriesTable extends Migration
         Schema::create('commissary_deliveries', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('item_id')->unsigned();
-            $table->integer('quantity');
+            $table->decimal('quantity', 10, 2);
             $table->decimal('price', 10, 2);
             $table->string('type');
             $table->string('status')->default('NOT RECEIVED');
@@ -28,7 +28,7 @@ class CreateDeliveriesTable extends Migration
         Schema::create('drygood_deliveries', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('item_id')->unsigned();
-            $table->integer('quantity');
+            $table->decimal('quantity', 10, 2);
             $table->decimal('price', 10, 2);
             $table->string('status')->default('NOT RECEIVED');
             $table->string('deliver_to');

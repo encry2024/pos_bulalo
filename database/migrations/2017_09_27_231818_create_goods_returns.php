@@ -17,7 +17,7 @@ class CreateGoodsReturns extends Migration
             $table->increments('id');
             $table->integer('inventory_id')->unsigned();
             $table->date('date');
-            $table->integer('quantity');
+            $table->decimal('quantity', 10, 2);
             $table->decimal('cost', 10, 2);
             $table->decimal('total_cost', 10, 2);
             $table->string('reason');
@@ -30,7 +30,7 @@ class CreateGoodsReturns extends Migration
             $table->increments('id');
             $table->integer('inventory_id')->unsigned();
             $table->date('date');
-            $table->integer('quantity');
+            $table->decimal('quantity', 10, 2);
             $table->decimal('cost', 10, 2);
             $table->decimal('total_cost', 10, 2);
             $table->string('reason');

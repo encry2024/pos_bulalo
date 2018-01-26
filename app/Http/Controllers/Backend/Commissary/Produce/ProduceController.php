@@ -56,53 +56,41 @@ class ProduceController extends Controller
             if($i >= 0)
                 $canProduce++;
         }
-
         // can produce should match the number of ingredients
         // can product mus
         //
         if(count($ingredients) == $canProduce)
         {
-            $produce = Produce::updateOrCreate(
-                        [
-                            'product_id' => $request->product_id,
-                            'created_at' => date('Y-m-d h:i:s')
-                        ],
-                        [
-                            'date'      => $request->date,
-                            'quantity'  => $request->quantity
-                        ]
-                    );   
-
             foreach ($ingredients as $ingredient) 
             {
                 $qty_left = 0;
                 $i        = 0;
 
+                /* get stock left */
                 if($ingredient->physical_quantity == 'Mass')
                 {
-                    $stock_qty = new Mass($request->quantity, $ingredient->unit_type);
+                    $stock_qty = new Mass($ingredient->stock, $ingredient->unit_type);
                     $req_qty   = new Mass(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
-                    $qty_left  = $stock_qty->subtract($req_qty);
-                    $i = $qty_left->toUnit($ingredient->unit_type);
+                    $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
+                    $i = $stock_qty->toUnit($ingredient->unit_type) - $qty_left;
                 }
                 elseif($ingredient->physical_quantity == 'Volume')
                 {
-                    $stock_qty = new Volume($request->quantity, $ingredient->unit_type);
+                    $stock_qty = new Volume($ingredient->stock_qty, $ingredient->unit_type);
                     $req_qty   = new Volume(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
-                    $qty_left  = $stock_qty->subtract($req_qty);
-                    $i = $qty_left->toUnit($ingredient->unit_type);
+                    $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
+                    $i = $stock_qty->toUnit($ingredient->unit_type) - $qty_left;
                 }
                 else
                 {
-                    $i = $inventory->stock - $request->quantity;
+                    $qty_left = $inventory->stock - $request->quantity;
+                    $i = $request->quantity;
                 }
+                $ingredient->stock = $qty_left;
 
-                $ingredient->stock = $i;
-
+                /* get cost */
                 if(count($ingredient->stocks))
-                {
-                    $divisor = 1;
-                    
+                {                    
                     if($ingredient->physical_quantity == 'Mass')
                     {
                         $stock_qty = new Mass(1, $ingredient->unit_type);
@@ -131,6 +119,17 @@ class ProduceController extends Controller
                 }
                 $ingredient->save();
             }
+            
+            $produce = Produce::updateOrCreate(
+                        [
+                            'product_id' => $request->product_id,
+                            'created_at' => date('Y-m-d h:i:s')
+                        ],
+                        [
+                            'date'      => $request->date,
+                            'quantity'  => $request->quantity
+                        ]
+                    );
             
             $product          = $produce->product;
             $product->produce = $product->produce + $request->quantity;

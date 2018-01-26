@@ -47,7 +47,7 @@ class CreateTableCommissary extends Migration
             $table->increments('id');
             $table->integer('inventory_id')->unsigned();
             $table->integer('product_id')->unsigned();
-            $table->integer('quantity');
+            $table->decimal('quantity', 10, 2);
             $table->string('unit_type');
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
@@ -57,7 +57,7 @@ class CreateTableCommissary extends Migration
 
         Schema::create('commissary_stocks', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('quantity')->unsigned();
+            $table->decimal('quantity', 10, 2)->unsigned();
             $table->decimal('price', 10, 2);
             $table->date('received');
             $table->date('expiration');

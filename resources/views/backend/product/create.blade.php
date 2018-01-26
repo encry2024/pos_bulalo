@@ -45,7 +45,9 @@
                     {{ Form::label('category', 'Product Category', ['class' => 'col-lg-2 control-label']) }}
 
                     <div class="col-lg-4">
-                        {{ Form::select('category', [
+                        {{ Form::select(
+                            'category', 
+                            [
                                 'SOUP'              => 'SOUP', 
                                 'GRILL'             => 'GRILL', 
                                 'FRY'               => 'FRY', 
@@ -55,7 +57,14 @@
                                 'VEGETABLES'        => 'VEGETABLES', 
                                 'PULUTAN'           => 'PULUTAN', 
                                 'DRINK'             => 'DRINK'
-                            ] ,old('category'), ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required']) }}
+                            ],
+                            old('category'), 
+                            [
+                                'class' => 'form-control', 
+                                'maxlength' => '191', 
+                                'required' => 'required',
+                                'id' => 'category_id'
+                            ]) }}
                     </div><!--col-lg-10-->
 
                     {{ Form::label('image', 'Product Image', ['class' => 'col-lg-2 control-label']) }}
@@ -276,7 +285,7 @@
                     html += '</div>';
 
                     html += '{{ Form::label("ingredient_quantity", "Unit", ["class" => "col-lg-1 control-label", "id" => "unit_type"]) }}';
-                    html += '<div class="form-group col-lg-2" style="margin-left:0">';
+                    html += '<div class="form-group col-lg-2" style="margin-left:0" id="panel_ingredient_quantity">';
                     html += '{{ Form::number("ingredient_quantity", 0, ["class" => "form-control"]) }}';
                     html += '</div>';
 
@@ -316,6 +325,8 @@
 
                 $('#panel_sizes').append(html);
 
+                hide_ingredient_quantity($('#category_id').val());
+
                 var products = $('body').find('.panel_product');
                 var index    = $(products).length - 1;
 
@@ -326,11 +337,12 @@
         });
 
         function add_ingredient(e){
+            var sel_category= $('#category_id').val();
             var div         = $(e).closest('.panel_product');
             var select      = $(div).find('select');
             var id          = $(select).val();
             var obj         = findIngredients(id)[0];
-            var qty         = $(div).find('input#ingredient_quantity').val();
+            var qty         = sel_category == 'DRINK' ? 1 : $(div).find('input#ingredient_quantity').val();
             var unit        = $(div).find('input#ingredient_unit').val();
             var physical    = $(div).find('select#physical_quantity').val();
 
@@ -439,6 +451,24 @@
             var size = $(product).find('table').attr('data-id');
 
             get_physical_quantity(id, size);
+        }
+
+        $('#category_id').on('change', function() {
+            hide_ingredient_quantity(this.value);
+        });
+
+        function hide_ingredient_quantity(val)
+        {
+            if(val == 'DRINK')
+            {
+                $('label[for="ingredient_quantity"]').hide()
+                $('#panel_ingredient_quantity').hide();
+            }
+            else
+            {
+                $('label[for="ingredient_quantity"]').show()
+                $('#panel_ingredient_quantity').show();
+            }
         }
     </script>
 @endsection

@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Backend\Report\Commissary\Inventory;
+namespace App\Http\Controllers\Backend\Report\DryGood\Inventory;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Category\Category;
-use App\Models\Commissary\Stock\Stock;
-use App\Models\Commissary\Inventory\Inventory;
-use App\Models\Commissary\Product\Product;
+use App\Models\DryGood\Stock\Stock;
+use App\Models\DryGood\Inventory\Inventory;
 use DB;
 
 class ReportController extends Controller
@@ -33,9 +32,7 @@ class ReportController extends Controller
 				$report   = $this->filterReport($inventory->id, $from, $to);
 
 				$arr[$index2] = (object)[
-										'name' => $inventory->supplier == 'Other' ? 
-													$inventory->other_inventory->name : 
-													$inventory->drygood_inventory->name,
+										'name' => $inventory->name,
 										'stock'=> $inventory->stock,
 										'unit' => $inventory->unit_type,
 										'cost' => $inventory->stocks->last()->price,
@@ -48,7 +45,7 @@ class ReportController extends Controller
 			$index++;
 		}
 		
-		return view('backend.report.commissary.inventory.index', compact('reports', 'from', 'to'));
+		return view('backend.report.dry_good.inventory.index', compact('reports', 'from', 'to'));
 	}
 
 	public function store(Request $request){
@@ -74,12 +71,10 @@ class ReportController extends Controller
 				$report   = $this->filterReport($inventory->id, $from, $to);
 
 				$arr[$index2] = (object)[
-										'name' => $inventory->supplier == 'Other' ? 
-													$inventory->other_inventory->name : 
-													$inventory->drygood_inventory->name,
+										'name' => $inventory->name,
 										'stock'=> $inventory->stock,
 										'unit' => $inventory->unit_type,
-										'cost' => count($inventory->stocks) ? ($inventory->stocks->last()->price /$inventory->stocks->last()->quantity) : 0,
+										'cost' => $inventory->stocks->last()->price,
 										'days' => $report
 									];
 				$index2++;
@@ -89,7 +84,7 @@ class ReportController extends Controller
 			$index++;
 		}
 		// return $reports;
-		return view('backend.report.commissary.inventory.index', compact('reports', 'from', 'to'));
+		return view('backend.report.dry_good.inventory.index', compact('reports', 'from', 'to'));
 	}
 
 	public function filterReport($inventory_id, $from, $to){
@@ -133,45 +128,10 @@ class ReportController extends Controller
 						 ->first();
 
 				$price   = count($stock) ? $stock->price : 0;
-
-				$products   = Product::with([
-							'produced' => function($q) use($day) {
-								$q->where('date', $day)->withTrashed();
-							}, 
-							'ingredients' => function($q) use($inventory_id) {
-								$q->where('commissary_inventory_product.inventory_id', $inventory_id)->withTrashed();
-							}])
-							->whereHas('ingredients', function($q) use($inventory_id) {
-								$q->where('commissary_inventory_product.inventory_id', $inventory_id)->withTrashed();
-							})
-							->whereHas('produced', function($q) use($day) {
-								$q->where('date', $day)->withTrashed();
-							})->get();
-
-				if(count($products))
-				{
-					foreach($products as $product)
-					{
-
-						if(count($product->produced))
-						{
-							foreach($product->produced as $produced)
-							{
-								$ing_use = $ing_use + $produced->quantity;
-							}	
-						}
-
-						if(count($product->ingredients))
-							$qty_use = $qty_use + $product->ingredients->first()->pivot->quantity;
-
-					}
-					
-				}
-				$objects[$weekdays[$i]] = (object)[
-						'stocks' => ($ing_use * $qty_use)
-					];
-
 				
+				$objects[$weekdays[$i]] = (object)[
+						'stocks' => $stock->quantity
+					];
 			}
 			$sunday_days[$index] = $objects;
 			$index++;

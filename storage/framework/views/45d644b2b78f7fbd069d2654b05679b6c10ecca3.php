@@ -1,51 +1,58 @@
-@extends ('backend.layouts.app')
+<?php $__env->startSection('title', 'POS Product Management | Add Product'); ?>
 
-@section ('title', 'POS Product Management | Add Product')
+<?php $__env->startSection('after-styles'); ?>
+    <?php echo e(Html::style('https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css')); ?>
 
-@section('after-styles')
-    {{ Html::style('https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css') }}
-    {{ Html::style('https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.4.5/jquery-ui-timepicker-addon.min.css') }}
-    {{ Html::style('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.standalone.min.css') }}
-@endsection
+    <?php echo e(Html::style('https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.4.5/jquery-ui-timepicker-addon.min.css')); ?>
 
-@section('page-header')
+    <?php echo e(Html::style('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.standalone.min.css')); ?>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('page-header'); ?>
     <h1>
         POS Product Management <small>Add Product</small>
     </h1>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
-    {{ Form::open(['route' => ['admin.product.update', $product], 'class' => 'form-horizontal', 'Product' => 'form', 'method' => 'patch', 'enctype' => 'multipart/form-data']) }}
+<?php $__env->startSection('content'); ?>
+    <?php echo e(Form::open(['route' => ['admin.product.update', $product], 'class' => 'form-horizontal', 'Product' => 'form', 'method' => 'patch', 'enctype' => 'multipart/form-data'])); ?>
+
 
         <div class="box box-success">
             <div class="box-header with-border">
                 <h3 class="box-title">Add Product</h3>
 
                 <div class="box-tools pull-right">
-                    @include('backend.product.includes.partials.product-header-buttons')
+                    <?php echo $__env->make('backend.product.includes.partials.product-header-buttons', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
                 </div><!--box-tools pull-right-->
             </div><!-- /.box-header -->
 
             <div class="box-body">
                 <div class="form-group">
-                    {{ Form::label('name', 'Product Name', ['class' => 'col-lg-2 control-label']) }}
+                    <?php echo e(Form::label('name', 'Product Name', ['class' => 'col-lg-2 control-label'])); ?>
+
 
                     <div class="col-lg-4">
-                        {{ Form::text('name', $product->name, ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required', 'autofocus' => 'autofocus', 'placeholder' => 'Product Name']) }}
+                        <?php echo e(Form::text('name', $product->name, ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required', 'autofocus' => 'autofocus', 'placeholder' => 'Product Name'])); ?>
+
                     </div><!--col-lg-10-->
 
-                    {{ Form::label('code', 'Product Code', ['class' => 'col-lg-2 control-label']) }}
+                    <?php echo e(Form::label('code', 'Product Code', ['class' => 'col-lg-2 control-label'])); ?>
+
 
                     <div class="col-lg-4">
-                        {{ Form::text('code', $product->code, ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required']) }}
+                        <?php echo e(Form::text('code', $product->code, ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required'])); ?>
+
                     </div><!--col-lg-10-->
                 </div><!--form control-->
 
                 <div class="form-group">
-                    {{ Form::label('category', 'Product Category', ['class' => 'col-lg-2 control-label']) }}
+                    <?php echo e(Form::label('category', 'Product Category', ['class' => 'col-lg-2 control-label'])); ?>
+
 
                     <div class="col-lg-4">
-                        {{ Form::select(
+                        <?php echo e(Form::select(
                             'category', 
                             [
                                 'SOUP'              => 'SOUP', 
@@ -64,21 +71,25 @@
                                 'maxlength' => '191', 
                                 'required' => 'required',
                                 'id' => 'category_id'
-                            ]) }}
+                            ])); ?>
+
                     </div><!--col-lg-10-->
 
-                    {{ Form::label('image', 'Product Image', ['class' => 'col-lg-2 control-label']) }}
+                    <?php echo e(Form::label('image', 'Product Image', ['class' => 'col-lg-2 control-label'])); ?>
+
 
                     <div class="col-lg-4">
-                        {{ Form::file('image', null, ['class' => 'form-control', 'required' => 'required']) }}
+                        <?php echo e(Form::file('image', null, ['class' => 'form-control', 'required' => 'required'])); ?>
+
                     </div>
                 </div>
 
                 <div class="form-group">
-                    {{ Form::label('product_size', 'Product Size', ['class' => 'col-lg-2 control-label']) }}
+                    <?php echo e(Form::label('product_size', 'Product Size', ['class' => 'col-lg-2 control-label'])); ?>
+
 
                     <div class="col-lg-4">
-                        {{ Form::select('product_size', 
+                        <?php echo e(Form::select('product_size', 
                             [
                                 'Short Order'   => 'Short Order',
                                 'Small'         => 'Small',
@@ -91,10 +102,11 @@
                             [
                                 'class' => 'form-control select2', 
                                 'required' => 'required'
-                            ]) 
-                        }}
+                            ])); ?>
 
-                        {{ Form::hidden('product_ingredients', '', ['id' => 'product_ingredients']) }}
+
+                        <?php echo e(Form::hidden('product_ingredients', '', ['id' => 'product_ingredients'])); ?>
+
                     </div>
 
                     <div class="col-lg-2">
@@ -104,14 +116,15 @@
 
                 <div id="panel_sizes">
                     
-                    @if(count($product->product_size))
-                        @foreach($product->product_size as $item)
+                    <?php if(count($product->product_size)): ?>
+                        <?php $__currentLoopData = $product->product_size; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="panel_product">
                             <hr>
                             <div class="form-group">
                                 <h4 class="col-lg-10 col-lg-offset-1">
                                     <small>Product Size:</small>
-                                    {{ $item->size }}
+                                    <?php echo e($item->size); ?>
+
                                 </h4>
 
                                 <div class="col-lg-1">
@@ -121,58 +134,62 @@
                                 </div>
 
                                 <div class="col-lg-12">
-                                    {{ Form::label("price", "Price", ["class" => "col-lg-2 control-label"]) }}
+                                    <?php echo e(Form::label("price", "Price", ["class" => "col-lg-2 control-label"])); ?>
+
 
                                     <div class="form-group col-lg-2" style="margin-left:0">
-                                        {{ Form::text("price", $item->price, ["class" => "form-control"]) }}
+                                        <?php echo e(Form::text("price", $item->price, ["class" => "form-control"])); ?>
+
                                     </div>
 
-                                    {{ Form::label("ingredient_list", "Ingredient", ["class" => "col-lg-1 control-label"]) }}
+                                    <?php echo e(Form::label("ingredient_list", "Ingredient", ["class" => "col-lg-1 control-label"])); ?>
+
 
                                     <div class="col-lg-2">
-                                        {{ 
-                                            Form::select("ingredient_list", 
+                                        <?php echo e(Form::select("ingredient_list", 
                                             $selections, old("ingredient_list"), 
                                             [
                                                 "class" => "form-control select2", 
                                                 "onchange" => "fetchUnitType(this)"
-                                            ]) 
-                                        }}
+                                            ])); ?>
+
                                     </div>
                                 </div>
 
                                 <div class="col-lg-12">
 
-                                    {{ Form::label("physical_quantity", "Unit Type", ["class" => "col-lg-2 control-label"]) }}
+                                    <?php echo e(Form::label("physical_quantity", "Unit Type", ["class" => "col-lg-2 control-label"])); ?>
+
                                     <div class="form-group col-lg-2" style="margin-left:0">
-                                        {{ Form::select("physical_quantity", [], old("physical_quantity"), ["class" => "form-control select2"]) }}
+                                        <?php echo e(Form::select("physical_quantity", [], old("physical_quantity"), ["class" => "form-control select2"])); ?>
+
                                     </div>
 
-                                    {{ 
-                                        Form::label("ingredient_quantity", 
+                                    <?php echo e(Form::label("ingredient_quantity", 
                                         "Unit", 
                                         [
                                             "class" => "col-lg-1 control-label", 
                                             "id" => "unit_type",
                                             "hidden" => $product->category == 'DRINK' ? 'hidden': ''
-                                        ]) 
-                                    }}
+                                        ])); ?>
 
-                                    <div class="col-lg-2" id="panel_ingredient_quantity" {{ $product->category == 'DRINK' ? 'hidden': '' }}>
-                                        {{ Form::number("ingredient_quantity", 1, ["class" => "form-control"]) }}
+
+                                    <div class="col-lg-2" id="panel_ingredient_quantity" <?php echo e($product->category == 'DRINK' ? 'hidden': ''); ?>>
+                                        <?php echo e(Form::number("ingredient_quantity", 1, ["class" => "form-control"])); ?>
+
                                     </div>
 
-                                    {{ 
-                                        Form::label("ingredient_unit", 
+                                    <?php echo e(Form::label("ingredient_unit", 
                                         "Quantity/Unit", 
                                         [
                                             "class" => "col-lg-1 control-label", 
                                             "id" => "ingredient_unit"
-                                        ]) 
-                                    }}
+                                        ])); ?>
+
 
                                     <div class="col-lg-2">
-                                        {{ Form::number("ingredient_unit", 1, ["class" => "form-control"]) }}
+                                        <?php echo e(Form::number("ingredient_unit", 1, ["class" => "form-control"])); ?>
+
                                     </div>
                                 </div>
 
@@ -186,7 +203,7 @@
 
                             <div class="form-group">
                                 <div class="col-lg-7 col-lg-offset-1">
-                                    <table class="table table-bordered" id="table_product" data-id="{{ $item->size }}">
+                                    <table class="table table-bordered" id="table_product" data-id="<?php echo e($item->size); ?>">
                                         <thead>
                                             <th>ID</th>
                                             <th>INGREDIENT</th>
@@ -195,10 +212,10 @@
                                             <th style="width:20%">&nbsp;</th>
                                         </thead>
                                         <tbody>
-                                        @if(count($item->ingredients))
-                                            @foreach($item->ingredients as $ingredient)
-                                            <tr id="{{ $ingredient->id }}">
-                                                <td>{{ $ingredient->id }}</td>
+                                        <?php if(count($item->ingredients)): ?>
+                                            <?php $__currentLoopData = $item->ingredients; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ingredient): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <tr id="<?php echo e($ingredient->id); ?>">
+                                                <td><?php echo e($ingredient->id); ?></td>
                                                 <td><?php 
                                                     if($ingredient->supplier == 'Other'){
                                                         echo $ingredient->other->name;
@@ -211,19 +228,19 @@
                                                     }
 
                                                 ?></td>
-                                                <td>{{ $ingredient->pivot->quantity }}</td>
-                                                <td>{{ $ingredient->pivot->unit_type }}</td>
+                                                <td><?php echo e($ingredient->pivot->quantity); ?></td>
+                                                <td><?php echo e($ingredient->pivot->unit_type); ?></td>
                                                 <td><a href="#" class="btn btn-xs btn-danger" onclick="removeRow(this)">Remove</td>
                                             </tr>
-                                            @endforeach
-                                        @endif
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
-                        @endforeach
-                    @endif
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endif; ?>
                 </div>
 
             </div>
@@ -232,27 +249,33 @@
         <div class="box box-info">
             <div class="box-body">
                 <div class="pull-left">
-                    {{ link_to_route('admin.product.index', trans('buttons.general.cancel'), [], ['class' => 'btn btn-danger btn-xs']) }}
+                    <?php echo e(link_to_route('admin.product.index', trans('buttons.general.cancel'), [], ['class' => 'btn btn-danger btn-xs'])); ?>
+
                 </div><!--pull-left-->
 
                 <div class="pull-right">
-                    {{ Form::submit(trans('buttons.general.crud.update'), ['class' => 'btn btn-success btn-xs']) }}
+                    <?php echo e(Form::submit(trans('buttons.general.crud.update'), ['class' => 'btn btn-success btn-xs'])); ?>
+
                 </div><!--pull-right-->
 
                 <div class="clearfix"></div>
             </div><!-- /.box-body -->
         </div><!--box-->
 
-    {{ Form::close() }}
-@endsection
+    <?php echo e(Form::close()); ?>
 
-@section('after-scripts')
-    {{ Html::script('https://code.jquery.com/ui/1.11.3/jquery-ui.min.js') }}
-    {{ Html::script('js/timepicker.js') }}
-    {{ Html::script('js/backend/access/users/script.js') }}
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('after-scripts'); ?>
+    <?php echo e(Html::script('https://code.jquery.com/ui/1.11.3/jquery-ui.min.js')); ?>
+
+    <?php echo e(Html::script('js/timepicker.js')); ?>
+
+    <?php echo e(Html::script('js/backend/access/users/script.js')); ?>
+
     <script type="text/javascript">
         var index       = 0;
-        var ingredients = {!! json_encode($ingredients) !!};
+        var ingredients = <?php echo json_encode($ingredients); ?>;
         var obj = [
                     <?php 
 
@@ -265,7 +288,7 @@
                   ];
 
         $(document).ready(function(){
-            get_physical_quantity(ingredients[0]['id'], '{{ $product->product_size->first()->size }}');
+            get_physical_quantity(ingredients[0]['id'], '<?php echo e($product->product_size->first()->size); ?>');
         });
 
         $('form').on('submit', function(e){
@@ -340,32 +363,32 @@
 
                     //form price field
                     html += '<div class="col-lg-12">';
-                    html += '{{ Form::label("price", "Price", ["class" => "col-lg-2 control-label"]) }}';
+                    html += '<?php echo e(Form::label("price", "Price", ["class" => "col-lg-2 control-label"])); ?>';
                     html += '<div class="form-group col-lg-2" style="margin-left:0">';
-                    html += '{{ Form::text("price", 0, ["class" => "form-control"]) }}';
+                    html += '<?php echo e(Form::text("price", 0, ["class" => "form-control"])); ?>';
                     html += '</div>';
 
-                    html += '{{ Form::label("ingredient_list", "Ingredient", ["class" => "col-lg-1 control-label"]) }}';
+                    html += '<?php echo e(Form::label("ingredient_list", "Ingredient", ["class" => "col-lg-1 control-label"])); ?>';
                     html += '<div class="form-group col-lg-2" style="margin-left:0">';
-                    html += '{{ Form::select("ingredient_list", $selections, old("ingredient_list"), ["class" => "form-control select2", "onchange" => "fetchUnitType(this)"]) }}'; 
+                    html += '<?php echo e(Form::select("ingredient_list", $selections, old("ingredient_list"), ["class" => "form-control select2", "onchange" => "fetchUnitType(this)"])); ?>'; 
                     html += '</div>';
                     html += '</div>';
 
                     //form quantity field
                     html += '<div class="col-lg-12">';
-                    html += '{{ Form::label("physical_quantity", "Unit Type", ["class" => "col-lg-2 control-label"]) }}';
+                    html += '<?php echo e(Form::label("physical_quantity", "Unit Type", ["class" => "col-lg-2 control-label"])); ?>';
                     html += '<div class="form-group col-lg-2" style="margin-left:0">';
-                    html += '{{ Form::select("physical_quantity", [], old("physical_quantity"), ["class" => "form-control select2"]) }}'; 
+                    html += '<?php echo e(Form::select("physical_quantity", [], old("physical_quantity"), ["class" => "form-control select2"])); ?>'; 
                     html += '</div>';
 
-                    html += '{{ Form::label("ingredient_quantity", "Unit", ["class" => "col-lg-1 control-label", "id" => "unit_type"]) }}';
+                    html += '<?php echo e(Form::label("ingredient_quantity", "Unit", ["class" => "col-lg-1 control-label", "id" => "unit_type"])); ?>';
                     html += '<div class="form-group col-lg-2" style="margin-left:0" id="panel_ingredient_quantity">';
-                    html += '{{ Form::number("ingredient_quantity", 0, ["class" => "form-control"]) }}';
+                    html += '<?php echo e(Form::number("ingredient_quantity", 0, ["class" => "form-control"])); ?>';
                     html += '</div>';
 
-                    html += '{{ Form::label("ingredient_unit", "Quantity/Unit", ["class" => "col-lg-1 control-label", "id" => "unit_type"]) }}';
+                    html += '<?php echo e(Form::label("ingredient_unit", "Quantity/Unit", ["class" => "col-lg-1 control-label", "id" => "unit_type"])); ?>';
                     html += '<div class="form-group col-lg-2" style="margin-left:0">';
-                    html += '{{ Form::number("ingredient_unit", 0, ["class" => "form-control"]) }}';
+                    html += '<?php echo e(Form::number("ingredient_unit", 0, ["class" => "form-control"])); ?>';
                     html += '</div>';
 
                     html += '</div>';
@@ -549,7 +572,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: "{!! URL::to('admin/pos/product/unit_type') !!}/" + id,
+                url: "<?php echo URL::to('admin/pos/product/unit_type'); ?>/" + id,
                 success: function(data){
                     var table   = $('table[data-id="' + size + '"]');
                     var product = $(table).closest('.panel_product');
@@ -588,4 +611,6 @@
             }
         }
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('backend.layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

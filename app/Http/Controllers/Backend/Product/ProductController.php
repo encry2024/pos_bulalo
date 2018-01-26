@@ -168,7 +168,7 @@ class ProductController extends Controller
                 }
                 else
                     $total = 0;
-
+                
                 $cost = $cost + $total;
             }
 

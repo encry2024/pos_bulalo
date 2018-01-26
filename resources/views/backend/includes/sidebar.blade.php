@@ -272,6 +272,59 @@
             </li>
             @endauth
 
+            @roles([1,4])
+            <li class="{{ active_class(Active::checkUriPattern('/admin/report/dry_good/*', 'menu-open')) }} treeview">
+                <a href="#">
+                    <i class="fa fa-bar-chart"></i>
+                    <span>Report DryGood</span>
+                </a>
+                <ul class="treeview-menu {{ active_class(Active::checkUriPattern('admin/report/dry_good/*'), 'menu-open') }}" style="display: none; {{ active_class(Active::checkUriPattern('admin/report/dry_good/*'), 'display: block;') }}">
+
+                    <li class="{{ active_class(Active::checkUriPattern('admin/report/dry_good/daily/inventory')) }}">
+                        <a href="{{ route('admin.report.dry_good.daily.inventory.index') }}">
+                            <i class="fa fa-circle-o"></i>
+                            <span>Daily Inventory Report</span>
+                        </a>
+                    </li>
+
+                    <li class="{{ active_class(Active::checkUriPattern('admin/report/dry_good/daily/delivery')) }}">
+                        <a href="{{ route('admin.report.dry_good.daily.delivery.index') }}">
+                            <i class="fa fa-circle-o"></i>
+                            <span>Daily Delivery Report</span>
+                        </a>
+                    </li>
+
+                    <li class="{{ active_class(Active::checkUriPattern('admin/report/dry_good/daily/sale')) }}">
+                        <a href="{{ route('admin.report.dry_good.daily.sale.index') }}">
+                            <i class="fa fa-circle-o"></i>
+                            <span>Daily Sales Report</span>
+                        </a>
+                    </li>
+
+                    <li class="{{ active_class(Active::checkUriPattern('admin/report/dry_good/disposal')) }}">
+                        <a href="{{ route('admin.report.dry_good.disposal.index') }}">
+                            <i class="fa fa-circle-o"></i>
+                            <span>Disposal Report</span>
+                        </a>
+                    </li>
+
+                    <li class="{{ active_class(Active::checkUriPattern('admin/report/dry_good/goods_return')) }}">
+                        <a href="{{ route('admin.report.dry_good.goods_return.index') }}">
+                            <i class="fa fa-circle-o"></i>
+                            <span>Goods Return Report</span>
+                        </a>
+                    </li>
+
+                    <li class="{{ active_class(Active::checkUriPattern('admin/report/dry_good/summary')) }}">
+                        <a href="{{ route('admin.report.dry_good.summary.index') }}">
+                            <i class="fa fa-circle-o"></i>
+                            <span>Summary Report</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            @endauth
+
 
             @role(1)
             <li class="header">{{ trans('menus.backend.sidebar.system') }}</li>

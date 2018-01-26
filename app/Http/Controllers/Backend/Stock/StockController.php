@@ -333,14 +333,12 @@ class StockController extends Controller
 					    $qty_left = 1;
 					}
 
-
 					if($price != 0 && $last_stock != 0)
 					{
 						if($qty_left < 0 || $qty_left == 0)
 							$qty_left = $ingredient->pivot->quantity;
 
-	                    $total = ($price / $last_stock) * $qty_left;
-
+	                    $total = $price * $qty_left;
 					}
 	                else
 	                    $total = 0;
