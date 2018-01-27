@@ -93,6 +93,19 @@ class DeliveryController extends Controller
 	}
 
 	public function destroy(Delivery $delivery){
+		if($delivery->type == "PRODUCT")
+		{
+			$product = Product::findOrFail($delivery->item_id);
+			$product->produce = $product->produce + $delivery->quantity;
+			$product->save();
+		}
+		else
+		{
+			$inventory = Inventory::findOrFail($delivery->item_id);
+			$inventory->stock = $inventory->stock + $delivery->quantity;
+			$inventory->save();
+		}
+
     	$delivery->delete();
 
     	return redirect()->route('admin.commissary.delivery.index')->withFlashDanger('Delivery record deleted Successfully!');
