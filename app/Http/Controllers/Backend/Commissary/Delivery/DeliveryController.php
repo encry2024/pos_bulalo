@@ -54,7 +54,7 @@ class DeliveryController extends Controller
 				$delivery->item_id   = $request->item_id;
 				$delivery->quantity  = $request->quantity;
 				$delivery->date 	 = $request->date;
-				$delivery->price 	 = $product->cost / $request->quantity;
+				$delivery->price 	 = $product->cost;
 				$delivery->type      = $request->item_type;
 				$delivery->save();
 
