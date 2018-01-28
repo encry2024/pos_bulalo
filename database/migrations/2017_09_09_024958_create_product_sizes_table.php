@@ -28,7 +28,7 @@ class CreateProductSizesTable extends Migration
             $table->increments('id');
             $table->integer('inventory_id')->unsigned();
             $table->integer('product_size_id')->unsigned();
-            $table->integer('quantity')->unsigned();
+            $table->decimal('quantity', 10, 2)->unsigned();
             $table->string('unit_type');
             $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
             $table->foreign('product_size_id')->references('id')->on('product_sizes')->onDelete('cascade');

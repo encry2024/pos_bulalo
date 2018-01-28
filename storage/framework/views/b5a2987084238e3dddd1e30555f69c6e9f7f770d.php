@@ -201,7 +201,7 @@
                     <i class="fa fa-bar-chart"></i>
                     <span>Report POS</span>
                 </a>
-                <ul class="treeview-menu <?php echo e(active_class(Active::checkUriPattern('admin/report/pos/sale/*'), 'menu-open')); ?>" style="display: none; <?php echo e(active_class(Active::checkUriPattern('admin/report/pos/sale/*'), 'display: block;')); ?>">
+                <ul class="treeview-menu <?php echo e(active_class(Active::checkUriPattern('admin/report/pos/*'), 'menu-open')); ?>" style="display: none; <?php echo e(active_class(Active::checkUriPattern('admin/report/pos/*'), 'display: block;')); ?>">
                     <li class="<?php echo e(active_class(Active::checkUriPattern('admin/report/pos/sale/*'))); ?>">
                         <a href="<?php echo e(route('admin.report.pos.monthly.index')); ?>">
                             <i class="fa fa-circle-o"></i>
@@ -212,6 +212,18 @@
                         <a href="<?php echo e(route('admin.report.pos.sale.index')); ?>">
                             <i class="fa fa-circle-o"></i>
                             <span>Sale</span>
+                        </a>
+                    </li>
+                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/report/pos/inventory/*'))); ?>">
+                        <a href="<?php echo e(route('admin.report.pos.inventory.index')); ?>">
+                            <i class="fa fa-circle-o"></i>
+                            <span>Inventory</span>
+                        </a>
+                    </li>
+                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/report/pos/item_use/*'))); ?>">
+                        <a href="<?php echo e(route('admin.report.pos.item_use.index')); ?>">
+                            <i class="fa fa-circle-o"></i>
+                            <span>Item Use</span>
                         </a>
                     </li>
                 </ul>

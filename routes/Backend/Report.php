@@ -4,28 +4,25 @@ Route::group(['namespace' => 'Report', 'prefix' => 'report', 'as' => 'report.'],
 
 	Route::group(['prefix' => 'pos', 'as' => 'pos.', 'namespace' => 'POS'], function(){
 
-		Route::group([
-			'prefix' 	=> 'daily', 
-			'as' 		=> 'daily.'], function() {
-
+		Route::group(['prefix' 	=> 'daily', 'as' => 'daily.'], function() {
 				Route::resource('/', 'DailyController');
-
 		});
 
-		Route::group([
-			'prefix' 	=> 'monthly', 
-			'as' 		=> 'monthly.'], function() {
-
+		Route::group(['prefix' 	=> 'monthly', 'as' => 'monthly.'], function() {
 				Route::resource('/', 'MonthlyController');
-
 		});
 
 		Route::group([], function() {
-
 			Route::get('sale/get', 'ReportTableController')->name('sale.get');
-
 			Route::resource('sale', 'ReportController');
+		});
 
+		Route::group(['namespace' => 'Inventory', 'prefix' => 'inventory', 'as' => 'inventory.'], function() {
+			Route::resource('/', 'ReportController');
+		});
+
+		Route::group(['namespace' => 'ItemUse', 'prefix' => 'item_use', 'as' => 'item_use.'], function() {
+			Route::resource('/', 'ReportController');
 		});
 
 	});

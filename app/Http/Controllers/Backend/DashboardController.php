@@ -13,6 +13,7 @@ use App\Models\Access\User\User;
 use App\Models\Response\ResponseMessage;
 use App\Models\Commissary\Product\Product as CommissaryProduct;
 use App\Models\Commissary\Inventory\Inventory as CommissaryInventory;
+use App\Models\Commissary\Delivery\Delivery;
 use App\Models\Inventory\Inventory;
 use DB;
 
@@ -116,7 +117,6 @@ class DashboardController extends Controller
             $commissaries[$i] = $products[$i] + $inventories[$i];
         }
 
-
         return view('backend.dashboard', compact('months', 'monthNames', 'topProducts', 'requests', 'commissaries'));
     }
 
@@ -151,8 +151,6 @@ class DashboardController extends Controller
     public function fetchCommissaryProduct(){
         $months     = [];
         $monthNames = [];
-        $commissary = CommissaryProduct::select('id')->withTrashed()->get();
-        $inventory  = Inventory::select('id')->whereIn('inventory_id', $commissary)->where('supplier', 'Commissary Product')->withTrashed()->get();
 
         for($i = 1; $i <= 12; $i++)
         {
@@ -161,39 +159,22 @@ class DashboardController extends Controller
             $str = date('M', strtotime($date));
             $monthNames[$i -1 ] = $str;
         }
-    
  
-        for($i = 1; $i <= 12; $i++)
+       for($i = 1; $i <= 12; $i++)
         {
             $total      = null;
 
             $from = date('Y-'.$i.'-01');
             $to   = date('Y-'.$i.'-31');
-
-            $orders = Order::with('order_list.product_size')
-                    ->whereBetween(DB::raw('date(created_at)'), [$from, $to])
-                    ->where('status', 'Paid')
-                    ->get();
-
-            if(count($orders))
+            $delivered  = Delivery::where('type', 'PRODUCT')->whereBetween('date', [$from, $to])->get();
+            
+            foreach($delivered as $delivery)
             {
-                foreach ($orders as $order) 
-                {
-                    $qty   = 0;
-                    $lists = $order->order_list;
-
-                    foreach ($lists as $list) 
-                    {
-                        $size         = $list->product_size->size;
-                        $product      = $list->product;
-                        $product_size = $product->product_size->where('size', $size)->first();
-                        $total        = $total + ($list->quantity * $product_size->cost);
-                    } 
-                }
+                $total += $delivery->quantity * $delivery->price;
             }
 
             $months[$i] = number_format($total, 2);
-        }
+        } 
 
         return $months;
     }
@@ -201,8 +182,6 @@ class DashboardController extends Controller
     public function fetchCommissaryInventory(){
         $months     = [];
         $monthNames = [];
-        $commissary = Inventory::select('id')->withTrashed()->get();
-        $inventory  = Inventory::select('id')->whereIn('inventory_id', $commissary)->where('supplier', 'Commissary Raw Material')->withTrashed()->get();
 
         for($i = 1; $i <= 12; $i++)
         {
@@ -220,50 +199,11 @@ class DashboardController extends Controller
             $from = date('Y-'.$i.'-01');
             $to   = date('Y-'.$i.'-31');
 
-            $orders = Order::with(
-                        [
-                            'order_list.product_size',
-                            'order_list.product.product_size.ingredients' => function($q) use ($inventory) {
-                                $q->whereIn('inventory_product_size.inventory_id', $inventory)->withTrashed();
-                            }
-                        ])
-                    ->whereHas('order_list.product.product_size.ingredients', function($q) use($inventory) {
-                        $q->whereIn('inventory_product_size.inventory_id', $inventory)->withTrashed();
-                    })
-                    ->whereBetween(DB::raw('date(created_at)'), [$from, $to])
-                    ->where('status', 'Paid')
-                    ->get();
+            $delivered  = Delivery::where('type', 'RAW MATERIAL')->whereBetween('date', [$from, $to])->get();
 
-            if(count($orders))
+            foreach($delivered as $delivery)
             {
-                foreach ($orders as $order) 
-                {
-                    $qty   = 0;
-                    $lists = $order->order_list;
-
-                    foreach ($lists as $list) 
-                    {
-                        $size         = $list->product_size->size;
-                        $product      = $list->product;
-                        $product_size = $product->product_size->where('size', $size)->first();
-
-                        if(count($product_size))
-                        {
-                           $ingredients  = $product_size->ingredients;
-
-                            foreach ($ingredients as $ingredient) {
-                                $price = 0;
-
-                                if(count($ingredient->stocks))
-                                    $price = ($ingredient->stocks->last()->price / $ingredient->stocks->last()->quantity);
-
-                                $qty       = (int)$list->quantity;
-                                $qty_use   = $ingredient->pivot->quantity;
-                                $total     = $total + (($qty * $qty_use) * $price);
-                            } 
-                        }
-                    } 
-                }
+                $total += $delivery->quantity * $delivery->price;
             }
 
             $months[$i] = number_format($total, 2);

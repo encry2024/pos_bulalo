@@ -125,7 +125,6 @@ class ProductController extends Controller
                     $price      = $ingredient->stocks->last()->price;
                     $last_stock = $ingredient->stocks->last()->quantity;
                 }
-
                 if($ingredient->physical_quantity == 'Mass')
                 {
                     if($ingredient->unit_type == $item->unit_type)
@@ -134,7 +133,7 @@ class ProductController extends Controller
                     }
                     else
                     {
-                        $stock_qty = new Mass(1, $ingredient->unit_type);
+                        $stock_qty = new Mass($ingredient->stock, $ingredient->unit_type);
                         $req_qty   = new Mass($item->quantity, $item->unit_type);
                         $qty_left  = $stock_qty->subtract($req_qty);
                         $stock_use = $stock_qty->subtract($qty_left)->toUnit($ingredient->unit_type);
@@ -148,7 +147,7 @@ class ProductController extends Controller
                     }
                     else
                     {
-                        $stock_qty = new Volume(1, $ingredient->unit_type);
+                        $stock_qty = new Volume($ingredient->stock, $ingredient->unit_type);
                         $req_qty   = new Volume($item->quantity, $item->unit_type);
                         $qty_left  = $stock_qty->subtract($req_qty);
                         $stock_use = $stock_qty->subtract($qty_left)->toUnit($ingredient->unit_type);
@@ -171,7 +170,7 @@ class ProductController extends Controller
                 
                 $cost = $cost + $total;
             }
-
+            
             $prod_size              = new ProductSize();
             $prod_size->size        = $prod->size;
             $prod_size->price       = $prod->price;
