@@ -9,8 +9,8 @@
         <title><?php echo $__env->yieldContent('title', app_name()); ?></title>
 
         <!-- Meta -->
-        <meta name="description" content="<?php echo $__env->yieldContent('meta_description', 'Laravel 5 Boilerplate'); ?>">
-        <meta name="author" content="<?php echo $__env->yieldContent('meta_author', 'Anthony Rappa'); ?>">
+        <meta name="description" content="<?php echo $__env->yieldContent('meta_description', 'Mandas Bulalo'); ?>">
+        <meta name="author" content="<?php echo $__env->yieldContent('meta_author', 'Hoo Lee Fuk'); ?>">
         <?php echo $__env->yieldContent('meta'); ?>
 
         <!-- Styles -->

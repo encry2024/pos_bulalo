@@ -32,6 +32,8 @@ Route::group(['middleware' => 'auth'], function () {
          */
         Route::get('account', 'AccountController@index')->name('account');
 
+        Route::get('admin_password/{key}', 'AccountController@verifyAdmin')->name('admin_password');
+
         /*
          * User Profile Specific
          */

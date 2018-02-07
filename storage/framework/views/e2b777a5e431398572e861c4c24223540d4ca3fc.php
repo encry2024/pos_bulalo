@@ -4,7 +4,7 @@
         <div class="col-xs-12">
 
             <div class="panel panel-default">
-                <div class="panel-heading">TODAY SALES</div>
+                <div class="panel-heading">MONTHLY SALE FOR <?php echo e(strtoupper($date)); ?></div>
 
                 <div class="panel-body">
                     <div class="col-lg-6">
@@ -27,7 +27,6 @@
                             ?>
                         </h3>
                     </div>
-                    
 
                     <table class="table table-bordered" id="daily_log_table">
                         <thead>
@@ -45,7 +44,7 @@
                                     <td><?php echo e($order->transaction_no); ?></td>
                                     <td><?php echo e($order->created_at->format('F d, Y')); ?></td>
                                     <td><?php echo e($order->created_at->format('h:i A')); ?></td>
-                                    <td><?php echo e($order->payable); ?></td>
+                                    <td><?php echo e(number_format($order->payable, 2)); ?></td>
                                     <td><?php echo e(number_format($order->discount, 2)); ?></td>
                                     <td><?php echo e(number_format($order->payable - $order->discount, 2)); ?></td>
                                 </tr>
@@ -66,6 +65,7 @@
 
     </div><!-- row -->
 <?php $__env->stopSection(); ?>
+
 
 <?php $__env->startSection('after-scripts'); ?>
     <?php echo e(Html::script('js/tableExport.js')); ?>

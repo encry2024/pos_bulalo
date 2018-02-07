@@ -25,7 +25,7 @@ class ManageRequest extends FormRequest
     {
         return [
             'inventory_id'  => 'required',
-            'quantity'      => 'required|integer',
+            'quantity'      => 'required|numeric',
             'price'         => 'required|numeric',
             'received'      => 'required|date_format:Y-m-d',
             'expiration'    => 'required|date_format:Y-m-d'

@@ -239,10 +239,11 @@ class StockController extends Controller
 		$stock->status			= $request->status.($request->status == 'EXPIRE' ? 'D' :'ED');
 		$stock->save();
 
-
 		$inventory = Inventory::find($request->inventory_id);
 		$inventory->stock = $inventory->stock - $stock->quantity;
 		$inventory->save();
+
+		$this->updateProductCost();
 
 		return redirect()->route('admin.stock.index')->withFlashSuccess('Stock Updated Successfully!');
 	}

@@ -121,7 +121,7 @@
                             <span>Goods Return</span>
                         </a>
                     </li>
-                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/invoice'))); ?>">
+                    <!-- <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/invoice'))); ?>">
                         <a href="<?php echo e(route('admin.commissary.invoice.index')); ?>">
                             <i class="fa fa-money"></i>
                             <span>Sales Invoice</span>
@@ -132,7 +132,7 @@
                             <i class="fa fa-circle-o"></i>
                             <span>Order Form</span>
                         </a>
-                    </li>
+                    </li> -->
 
                 </ul>
             </li>
@@ -177,7 +177,7 @@
                             <span>Goods Return</span>
                         </a>
                     </li>
-                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/dry_good/invoice'))); ?>">
+                    <!-- <li class="<?php echo e(active_class(Active::checkUriPattern('admin/dry_good/invoice'))); ?>">
                         <a href="<?php echo e(route('admin.dry_good.invoice.index')); ?>">
                             <i class="fa fa-money"></i>
                             <span>Sales Invoice</span>
@@ -188,7 +188,7 @@
                             <i class="fa fa-circle-o"></i>
                             <span>Order Form</span>
                         </a>
-                    </li>
+                    </li> -->
 
                 </ul>
             </li>

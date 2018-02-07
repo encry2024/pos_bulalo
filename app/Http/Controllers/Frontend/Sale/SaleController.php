@@ -24,7 +24,7 @@ class SaleController extends Controller
         $total  = 0;
         $orders = Order::where(Db::raw('date(created_at)'), date('Y-m-d'))
                   ->where('user_id', Auth::user()->id)
-                  ->where('status', '!=', 'Unpaid')
+                  ->where('status','Paid')
                   ->orderBy('created_at', 'desc')
                   ->get();
 
@@ -40,7 +40,7 @@ class SaleController extends Controller
         $date   = date('F Y');
         $orders = Order::whereBetween(Db::raw('date(created_at)'), [date('Y-m-01'), date('Y-m-31')])
                   ->where('user_id', Auth::user()->id)
-                  ->where('status', '!=', 'Unpaid')
+                  ->where('status', 'Paid')
                   ->orderBy('created_at', 'desc')
                   ->get();
 
@@ -80,10 +80,10 @@ class SaleController extends Controller
                 [
                     'cash'      => $request->cash,
                     'change'    => $request->change,
+                    'charge'    => $request->charge,
                     'payable'   => $request->payable,
                     'discount'  => $request->discount,
                     'vat'       => $request->vat,
-                    'charge'    => $request->charge,
                     'total'     => $request->amount_due,
                     'type'      => $request->order_type,
                     'status'    => ($request->order_type == 'Take Out' ? 'Paid':'Unpaid'),
@@ -170,7 +170,6 @@ class SaleController extends Controller
         $order->discount    = $request->discount;
         $order->change      = $request->change;
         $order->vat         = $request->vat;
-        $order->charge      = $request->charge;
         $order->total       = $request->amount_due;
         $order->status      = 'Paid';
         $order->save();
@@ -271,9 +270,11 @@ class SaleController extends Controller
         return $order;
     }
 
-    public function cancel_order($transaction_no) {
-        $order = Order::with('order_list', 'order_list.product_size')
-            ->where('transaction_no', $transaction_no)
+    public function cancel_order(Request $request) {
+        $order = Order::with(['order_list' => function($q) use($request) {
+            $q->whereIn('id', $request->list);
+        },'order_list.product_size'])
+            ->where('transaction_no', $request->transaction_no)
             ->first();
 
         foreach($order->order_list as $list)
@@ -285,13 +286,17 @@ class SaleController extends Controller
                 $ingredient->stock = $ingredient->stock + $stock;
                 $ingredient->save();
 
-                $list->status = 'Cancelled';
-                $list->save();
+                $list->delete();
             }
         }
+        
+        $order = Order::where('transaction_no', $request->transaction_no)->first();
 
-        $order->status = 'Cancelled';
-        $order->save();
+        if(count($order->order_list) == 0)
+        {
+            $order->status = 'Cancelled';
+            $order->save();
+        }
 
         return json_encode(['status' => $order->status]);
     }

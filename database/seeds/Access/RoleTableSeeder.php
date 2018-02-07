@@ -32,7 +32,7 @@ class RoleTableSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'name'       => 'POS Administration',
+                'name'       => 'POS Administrator',
                 'all'        => false,
                 'sort'       => 2,
                 'created_at' => Carbon::now(),

@@ -3,7 +3,7 @@
 @section('after-styles')
 
 {{ Html::style('css/dashboard.css') }}
-
+{{ Html::style('css/sweetalert2.css') }}
 <style type="text/css">
     ul.list-group{
         list-style: none;
@@ -191,10 +191,10 @@
                                 <label for="vat">12% VAT</label>
                                 <input type="input" class="form-control" id="vat" value='0.00' readonly>
                             </div>
-                            <div class="form-group col-lg-6" id="panel_service_charge" hidden>
+                            <!-- <div class="form-group col-lg-6" id="panel_service_charge" hidden>
                                 <label for="vat">5% Service Charge</label>
                                 <input type="input" class="form-control" id="service_charge" value='0.00' readonly>
-                            </div>
+                            </div> -->
                             <div class="form-group col-lg-6" id="panel_change" hidden>
                                 <label for="change">Change</label>
                                 <input type="input" class="form-control" id="change" value='0.00' readonly>
@@ -334,10 +334,10 @@
                                 <label for="vat">12% VAT</label>
                                 <input type="input" class="form-control" id="vat" value='0.00' readonly>
                             </div>
-                            <div class="form-group col-lg-6">
+                            <!-- <div class="form-group col-lg-6">
                                 <label for="vat">5% Service Charge</label>
                                 <input type="input" class="form-control" id="service_charge" value='0.00' readonly>
-                            </div>
+                            </div> -->
                             <div class="form-group col-lg-6">
                                 <label for="discount">Discount</label>
                                 <input type="input" class="form-control" id="discount" value='0.00' readonly>
@@ -407,12 +407,13 @@
                                 </div>
                                 <hr>
                                 <p>Sub Total <span class="pull-right" id="print_total">0.00</span></p>
-                                <p>Service Charge <span class="pull-right" id="print_charge">0.00</span></p>
+                                <!-- <p>Service Charge <span class="pull-right" id="print_charge">0.00</span></p> -->
                                 <p>VAT <span class="pull-right" id="print_vat">0.00</span></p>
                                 <p>Cash <span class="pull-right" id="print_cash">0.00</span></p>
                                 <p>Change <span class="pull-right" id="print_change">0.00</span></p>
                                 <p>Discount <span class="pull-right" id="print_discount">0.00</span></p>
                                 <p>Amoun Due <span class="pull-right" id="print_amount_due">0.00</span></p>
+                                <p>&nbsp;</p>
                             </div>
                         </div>
                     </div>
@@ -427,6 +428,8 @@
 @endsection
 
 @section('after-scripts')
+    {{ Html::script('js/sweetalert2.all.min.js')}}
+
     <script type="text/javascript">
         var order           = [];
         var order_list      = [];
@@ -733,7 +736,7 @@
             var payable     = parseFloat($('#payable').val());
             var discount    = parseFloat($('#discount').val());
             var vat         = parseFloat($('#vat').val());
-            var charge      = parseFloat($('#service_charge').val());
+            var charge      = 0;
             var amount_due  = parseFloat($('#total_amount_due').val());
             var order_type  = $('#order_type').val();
             var table_no    = order_type == 'Take Out' ? 0 : $('#table option:selected').text();
@@ -851,7 +854,7 @@
             $('#panel_discount').hide();
             $('#panel_discount_type').hide();
             $('#panel_vat').hide();
-            $('#panel_service_charge').hide();
+            // $('#panel_service_charge').hide();
             $('#panel_total_amount').hide();
             $('#panel_table').show();
             $('#btn_submit').css('visibility', 'visible');
@@ -862,7 +865,7 @@
             $('#change').val('0.00');
             $('#vat').val('0.00');
             $('#discount').val('0.00');
-            $('#service_charge').val('0.00');
+            // $('#service_charge').val('0.00');
             $('#total_amount_due').val('0.00');
             // $('#official_receipt').hide();
             // $('#payment').show();
@@ -992,7 +995,7 @@
                 $('#panel_change').hide();
                 $('#panel_discount').hide();
                 $('#panel_vat').hide();
-                $('#panel_service_charge').hide();
+                // $('#panel_service_charge').hide();
                 $('#panel_total_amount').hide();
                 $('#panel_table').show();
                 $('#btn_submit').text('Submit');
@@ -1006,7 +1009,7 @@
                 $('#panel_change').show();
                 $('#panel_discount').show();
                 $('#panel_vat').show();
-                $('#panel_service_charge').show();
+                // $('#panel_service_charge').show();
                 $('#panel_total_amount').show();
                 $('#panel_table').hide();
                 $('#btn_submit').text('Charge');
@@ -1197,7 +1200,7 @@
             var discount    = parseFloat($(modal).find('#discount').val());
             var vat         = parseFloat($(modal).find('#vat').val());
             var amount_due  = parseFloat($(modal).find('#total_amount_due').val());
-            var charge      = parseFloat($(modal).find('#service_charge').val());
+            // var charge      = parseFloat($(modal).find('#service_charge').val());
             var transact    = $(modal).find('.modal-title').text();
 
             if(cash >= (payable - discount))
@@ -1264,7 +1267,6 @@
                 url: '{{ url("sale/order") }}/' + val,
                 success: function(data) {
                     data = JSON.parse(data);
-                    console.log(data);
                     var rows = '';
                     var _order  =  data.order;
                     var _order_list = _order.order_list;
@@ -1276,12 +1278,12 @@
 
                     for(var i = 0; i < _order_list.length; i++)
                     {
-                        rows += '<tr>';
-                        rows += '<td>' + _order_list[0].product.name + '</td>';
-                        rows += '<td>' + _order_list[0].quantity + '/' + _order_list[0].product_size.size + '</td>';
-                        rows += '<td>' + _order_list[0].product_size.price + '</td>';
+                        rows += '<tr onclick="toggleActive(this)" id="' + _order_list[i].id + '">';
+                        rows += '<td>' + _order_list[i].product.name + '</td>';
+                        rows += '<td>' + _order_list[i].quantity + '/' + _order_list[i].product_size.size + '</td>';
+                        rows += '<td>' + _order_list[i].product_size.price + '</td>';
                         rows += '</tr>';
-                        _order_total = _order_total + (_order_list[0].quantity * _order_list[0].product_size.price);
+                        _order_total = _order_total + (_order_list[i].quantity * _order_list[i].product_size.price);
                     }
 
                     if(data.order.table != null)
@@ -1320,22 +1322,65 @@
 
         $('#btn_cancel_order').on('click', function() {
             var selected_transaction = $('#table_order_transact').text();
-            var bool = false;            
+            var rows = $('#table_order_list tbody').find('tr.selected');
+            var row_count = rows.length;
 
-            if(selected_transaction.length > 0){
-                $.ajax({
-                    url: '{{ url("sale/cancel_order") }}/' + selected_transaction,
-                    type: 'GET',
-                    success: function(data){
-                        data = JSON.parse(data);
-                        if(data.status == 'Cancelled')
+            if(row_count > 0)
+            {
+                swal({
+                    title: 'Administrator Password',
+                    input: 'password',
+                    showCancelButton: true,
+                    confirmButtonText: 'Remove Order',
+                    showLoaderOnConfirm: false,
+                    preConfirm: (password) => 
+                    {
+                        return new Promise((resolve) => 
                         {
-                            $('#tablesModal').modal('hide');
-                            swal('', 'Order has been cancelled', 'success');
-                        }
+                            $.ajax(
+                                {
+                                    type: 'get',
+                                    url: '{{ url("admin_password") }}/' + password,
+                                    success: function(data) 
+                                    {
+                                        if(data > 0)
+                                            resolve();
+                                        else
+                                            swal('Invalid Password', '', 'warning');
+                                    }
+                                }
+                            );
+                            //end ajax
+                        })
+                    },
+                    allowOutsideClick: () => !swal.isLoading()
+                }).then((result) => 
+                {
+                    if (result.value) 
+                    {
+                        var _c_order = [];
+
+                        for(var i = 0; i < rows.length; i++)
+                        { 
+                            _c_order[i] = $(rows[i]).attr('id');
+                        } 
+
+                        $.ajax({
+                            type: 'POST',
+                            url : '{{ url("sale/cancel_order") }}',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                transaction_no: selected_transaction,
+                                list: _c_order
+                            }, success: function(data) {
+                                swal('Item has been removed', '', 'success');
+                            }
+                        });
+                        $('#btn-tables').click();
                     }
-                });
+                })
             }
+            //end of statement
         });
 
         function get_available_table()
@@ -1409,7 +1454,7 @@
             $('#print_change').text(parseFloat(data.order.change).toFixed(2));
             $('#print_discount').text(parseFloat(data.order.discount).toFixed(2));
             $('#print_vat').text(parseFloat(data.order.vat).toFixed(2));
-            $('#print_charge').text(parseFloat(data.order.charge).toFixed(2));
+            // $('#print_charge').text(parseFloat(data.order.charge).toFixed(2));
             $('#print_amount_due').text(parseFloat(data.order.total).toFixed(2));
             $('#print_type').text(data.order.type);
             $('#print_table').text(data.order.type == 'Take Out' ? 'N/A' : data.order.table_no);
@@ -1436,7 +1481,7 @@
 
                 vat         = less_discount / 1.12; //net of vat
                 less_vat    = less_discount - vat;  //less vat
-                charge      = vat * 0.05;           //service charge
+                // charge      = vat * 0.05;           //service charge
                 amount_due  = bill + charge;        //total amount due
             }
             else if(discount_type == 'PWD')
@@ -1446,20 +1491,20 @@
 
                 vat         = less_discount / 1.12; //net of vat
                 less_vat    = less_discount - vat;  //less vat
-                charge      = vat * 0.05;           //service charge
+                // charge      = vat * 0.05;           //service charge
                 amount_due  = bill + charge;        //total amount due
             }
             else
             {
                 vat         = bill / 1.12;
                 less_vat    = bill - vat;
-                charge      = vat * 0.05;
+                // charge      = vat * 0.05;
                 amount_due  = bill + charge;
             }
 
             $('#vat').val(less_vat.toFixed(2));
             $('#discount').val(discounted.toFixed(2));
-            $('#service_charge').val(charge.toFixed(2));
+            // $('#service_charge').val(charge.toFixed(2));
             $('#payable').val(bill.toFixed(2));
             $('#total_amount_due').val(amount_due.toFixed(2));
         }
@@ -1480,7 +1525,7 @@
 
                 vat         = less_discount / 1.12; //net of vat
                 less_vat    = less_discount - vat;  //less vat
-                charge      = vat * 0.05;           //service charge
+                // charge      = vat * 0.05;           //service charge
                 amount_due  = bill + charge;        //total amount due
             }
             else if(discount_type == 'PWD')
@@ -1490,20 +1535,20 @@
 
                 vat         = less_discount / 1.12; //net of vat
                 less_vat    = less_discount - vat;  //less vat
-                charge      = vat * 0.05;           //service charge
+                // charge      = vat * 0.05;           //service charge
                 amount_due  = bill + charge;        //total amount due
             }
             else
             {
                 vat         = bill / 1.12;
                 less_vat    = bill - vat;
-                charge      = vat * 0.05;
+                // charge      = vat * 0.05;
                 amount_due  = bill + charge;
             }
             var modal = $('#chargeSaveModal');
             $(modal).find('#vat').val(less_vat.toFixed(2));
             $(modal).find('#discount').val(discounted.toFixed(2));
-            $(modal).find('#service_charge').val(charge.toFixed(2));
+            // $(modal).find('#service_charge').val(charge.toFixed(2));
             $(modal).find('#payable').val(bill.toFixed(2));
             $(modal).find('#total_amount_due').val(amount_due.toFixed(2));
         }
