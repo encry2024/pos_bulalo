@@ -1380,6 +1380,10 @@
                     }
                 })
             }
+            else
+            {
+                swal('Select item to cancel order', '', 'warning');
+            }
             //end of statement
         });
 
