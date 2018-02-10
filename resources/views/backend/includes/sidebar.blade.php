@@ -242,23 +242,23 @@
                     <li class="{{ active_class(Active::checkUriPattern('admin/report/commissary/daily/inventory')) }}">
                         <a href="{{ route('admin.report.commissary.daily.inventory.index') }}">
                             <i class="fa fa-circle-o"></i>
-                            <span>Daily Inventory Report</span>
+                            <span>Inventory Report</span>
                         </a>
                     </li>
 
                     <li class="{{ active_class(Active::checkUriPattern('admin/report/commissary/daily/delivery')) }}">
                         <a href="{{ route('admin.report.commissary.daily.delivery.index') }}">
                             <i class="fa fa-circle-o"></i>
-                            <span>Daily Delivery Report</span>
+                            <span>Delivery Report</span>
                         </a>
                     </li>
 
-                    <li class="{{ active_class(Active::checkUriPattern('admin/report/commissary/daily/sale')) }}">
+                    <!-- <li class="{{ active_class(Active::checkUriPattern('admin/report/commissary/daily/sale')) }}">
                         <a href="{{ route('admin.report.commissary.daily.sale.index') }}">
                             <i class="fa fa-circle-o"></i>
-                            <span>Daily Sales Report</span>
+                            <span>Sales Report</span>
                         </a>
-                    </li>
+                    </li> -->
 
                     <li class="{{ active_class(Active::checkUriPattern('admin/report/commissary/disposal')) }}">
                         <a href="{{ route('admin.report.commissary.disposal.index') }}">
@@ -274,12 +274,12 @@
                         </a>
                     </li>
 
-                    <li class="{{ active_class(Active::checkUriPattern('admin/report/commissary/summary')) }}">
+                    <!-- <li class="{{ active_class(Active::checkUriPattern('admin/report/commissary/summary')) }}">
                         <a href="{{ route('admin.report.commissary.summary.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Summary Report</span>
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </li>
             @endauth
@@ -295,23 +295,23 @@
                     <li class="{{ active_class(Active::checkUriPattern('admin/report/dry_good/daily/inventory')) }}">
                         <a href="{{ route('admin.report.dry_good.daily.inventory.index') }}">
                             <i class="fa fa-circle-o"></i>
-                            <span>Daily Inventory Report</span>
+                            <span>Inventory Report</span>
                         </a>
                     </li>
 
                     <li class="{{ active_class(Active::checkUriPattern('admin/report/dry_good/daily/delivery')) }}">
                         <a href="{{ route('admin.report.dry_good.daily.delivery.index') }}">
                             <i class="fa fa-circle-o"></i>
-                            <span>Daily Delivery Report</span>
+                            <span>Delivery Report</span>
                         </a>
                     </li>
 
-                    <li class="{{ active_class(Active::checkUriPattern('admin/report/dry_good/daily/sale')) }}">
+                    <!-- <li class="{{ active_class(Active::checkUriPattern('admin/report/dry_good/daily/sale')) }}">
                         <a href="{{ route('admin.report.dry_good.daily.sale.index') }}">
                             <i class="fa fa-circle-o"></i>
-                            <span>Daily Sales Report</span>
+                            <span>Sales Report</span>
                         </a>
-                    </li>
+                    </li> -->
 
                     <li class="{{ active_class(Active::checkUriPattern('admin/report/dry_good/disposal')) }}">
                         <a href="{{ route('admin.report.dry_good.disposal.index') }}">
@@ -327,12 +327,12 @@
                         </a>
                     </li>
 
-                    <li class="{{ active_class(Active::checkUriPattern('admin/report/dry_good/summary')) }}">
+                    <!-- <li class="{{ active_class(Active::checkUriPattern('admin/report/dry_good/summary')) }}">
                         <a href="{{ route('admin.report.dry_good.summary.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Summary Report</span>
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </li>
             @endauth
