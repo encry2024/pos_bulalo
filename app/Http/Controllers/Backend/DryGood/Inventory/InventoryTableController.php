@@ -17,7 +17,6 @@ class InventoryTableController extends Controller
 		$this->inventories = $inventories;
 	}
 
-
 	public function __invoke(Request $request){
 		return Datatables::of($this->inventories->getForDataTable())
 			->escapeColumns('id', 'sort')

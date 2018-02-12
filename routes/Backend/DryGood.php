@@ -2,12 +2,12 @@
 
 Route::group(['prefix' => 'dry_good', 'namespace' => 'DryGood', 'as' => 'dry_good.'], function(){
 
-	Route::group(['namespace' => 'Inventory'], function(){
+	Route::group(['namespace' => 'Inventory'], function() {
         Route::post('inventory/get_item', 'InventoryController@getItem')->name('inventory.get_item');
 
-		Route::post('inventory/get', 'InventoryTableController')->name('inventory.get');
+		Route::get('inventory/get', 'InventoryTableController')->name('inventory.get');
 
-		Route::resource('inventory', 'InventoryController');
+		Route::resource('inventory', 'InventoryController', ['except' => ['show']]);
 
 	});
 

@@ -48,7 +48,8 @@ class DeliveryController extends Controller
 		return redirect()->back()->withFlashDanger('Check item stock!');
 	}
 
-	public function destroy(Delivery $delivery){
+	public function destroy(Delivery $delivery)
+    {
 		$inventory = $delivery->inventory;
 		$inventory->stock = $inventory->stock + $delivery->quantity;
 		$inventory->save();
