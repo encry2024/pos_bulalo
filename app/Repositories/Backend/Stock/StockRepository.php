@@ -5,17 +5,18 @@ namespace App\Repositories\Backend\Stock;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Stock\Stock;
+use App\Models\Commissary\Stock\Stock;
 
 class StockRepository extends BaseRepository
 {
 	const MODEL = Stock::class;
 
-	public function getForDataTable(){
+	public function getForDataTable()
+    {
 		return $this->query()
-				->with(['inventory' => function($q) {
-					$q->withTrashed();
-				}])
-				->select('id', 'quantity', 'price', 'received', 'expiration', 'status', 'inventory_id');
+			->with(['inventory' => function($q) {
+				$q->withTrashed();
+			}])
+			->select('id', 'quantity', 'price', 'received', 'expiration', 'status', 'inventory_id');
 	}
 }

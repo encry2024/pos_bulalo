@@ -14,23 +14,24 @@ use Illuminate\Http\Request;
  */
 class StockTableController extends Controller
 {
-    
     protected $stocks;
 
-    public function __construct(StockRepository $stocks){
+    public function __construct(StockRepository $stocks)
+    {
         $this->stocks = $stocks;
     }
 
-    public function __invoke(Request $request){
+    public function __invoke(Request $request)
+    {
         return Datatables::of($this->stocks->getForDataTable())
-	        ->escapeColumns(['id', 'sort'])
-            ->editColumn('name', function($stock) {
-                return $stock->inventory->supplier == 'Other' ? $stock->inventory->other_inventory->name : $stock->inventory->drygood_inventory->name;
-            })
-        	->addColumn('actions', function($stock) {
-        		return $stock->action_buttons;
-        	})
-            ->make(true);
+        ->escapeColumns(['id', 'sort'])
+        ->editColumn('name', function($stock) {
+            return $stock->inventory->supplier == 'Other' ? $stock->inventory->other_inventory->name : $stock->inventory->drygood_inventory->name;
+        })
+    	->addColumn('actions', function($stock) {
+    		return $stock->action_buttons;
+    	})
+        ->make(true);
     }
 
 }

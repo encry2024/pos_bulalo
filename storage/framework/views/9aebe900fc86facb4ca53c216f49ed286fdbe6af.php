@@ -70,7 +70,6 @@
             </li>
             <?php endif; ?>
 
-
             <?php if (access()->hasRoles([1,3])): ?>
             <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/*'))); ?> treeview">
                 <a href="#">
@@ -79,49 +78,49 @@
                 </a>
 
                 <ul class="treeview-menu <?php echo e(active_class(Active::checkUriPattern('admin/commissary/*'), 'menu-open')); ?>" style="display: none; <?php echo e(active_class(Active::checkUriPattern('admin/commissary/*'), 'display: block;')); ?>">
-                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/inventory/*'))); ?>">
+                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/inventory*'))); ?>">
                         <a href="<?php echo e(route('admin.commissary.inventory.index')); ?>">
                             <i class="fa fa-circle-o"></i>
                             <span>Inventory</span>
                         </a>
                     </li>
 
-                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/stock/*'))); ?>">
+                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/stock*'))); ?>">
                         <a href="<?php echo e(route('admin.commissary.stock.index')); ?>">
                             <i class="fa fa-circle-o"></i>
                             <span>Stock In</span>
                         </a>
                     </li>
 
-                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/product/*'))); ?>">
+                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/product*'))); ?>">
                         <a href="<?php echo e(route('admin.commissary.product.index')); ?>">
                             <i class="fa fa-circle-o"></i>
                             <span>Product</span>
                         </a>
                     </li>
 
-                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/produce/*'))); ?>">
+                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/produce*'))); ?>">
                         <a href="<?php echo e(route('admin.commissary.produce.index')); ?>">
                             <i class="fa fa-circle-o"></i>
                             <span>Produce Product</span>
                         </a>
                     </li>
 
-                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/delivery/*'))); ?>">
+                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/delivery*'))); ?>">
                         <a href="<?php echo e(route('admin.commissary.delivery.index')); ?>">
                             <i class="fa fa-circle-o"></i>
                             <span>Deliver item</span>
                         </a>
                     </li>
 
-                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/dispose/*'))); ?>">
+                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/dispose*'))); ?>">
                         <a href="<?php echo e(route('admin.commissary.dispose.index')); ?>">
                             <i class="fa fa-circle-o"></i>
                             <span>Dispose Item</span>
                         </a>
                     </li>
 
-                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/goods_return/*'))); ?>">
+                    <li class="<?php echo e(active_class(Active::checkUriPattern('admin/commissary/goods_return*'))); ?>">
                         <a href="<?php echo e(route('admin.commissary.goods_return.index')); ?>">
                             <i class="fa fa-circle-o"></i>
                             <span>Goods Return</span>

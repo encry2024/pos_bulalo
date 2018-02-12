@@ -52,7 +52,7 @@
                 dom: 'Blfrtip',
                 processing: false,
                 serverSide: true,
-                ajax: '{!! route('admin.commissary.stock.get') !!}',
+                ajax: '{!! route("admin.commissary.stock.get") !!}',
                 columns: [
                     { data: 'name' },
                     { data: 'quantity' },

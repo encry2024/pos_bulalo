@@ -41,16 +41,13 @@ class StockController extends Controller
 			if(count($delivery) == 0)
 			{
 				return redirect()->back()->withFlashDanger('Check DryGoods delivered quantity!');
-			}
-			else
-			{
+			} else {
 				$delivery->status = 'RECEIVED';
 				$delivery->save();
 
 				$drygood = $delivery->inventory;
 
-				if($inventory->physical_quantity == 'Mass')
-		        {
+				if($inventory->physical_quantity == 'Mass') {
 		            $stock_qty = new Mass($inventory->stock, $inventory->unit_type);
 
 		            $req_qty   = new Mass($delivery->quantity, $drygood->unit_type);
@@ -58,9 +55,7 @@ class StockController extends Controller
 		            $qty_left  = $stock_qty->add($req_qty);
 
 		            $stock = $qty_left->toUnit($inventory->unit_type);
-		        }
-		        elseif($inventory->physical_quantity == 'Volume')
-		        {
+		        } elseif($inventory->physical_quantity == 'Volume') {
 		            $stock_qty = new Volume($inventory->stock, $inventory->unit_type);
 
 		            $req_qty   = new Volume($delivery->quantity, $drygood->unit_type);
@@ -68,9 +63,7 @@ class StockController extends Controller
 		            $qty_left  = $stock_qty->add($req_qty);
 
 		            $stock = $qty_left->toUnit($inventory->unit_type);
-		        }
-		        else
-		        {
+		        } else {
 		        	$stock = $inventory->stock + $request->quantity;
 		        }
 			}

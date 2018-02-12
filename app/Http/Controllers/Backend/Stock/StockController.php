@@ -22,8 +22,8 @@ use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
 
 class StockController extends Controller
 {
-    
-	public function index(){
+	public function index()
+	{
 		return view('backend.stock.index');
 	}
 
@@ -248,7 +248,8 @@ class StockController extends Controller
 		return redirect()->route('admin.stock.index')->withFlashSuccess('Stock Updated Successfully!');
 	}
 
-	public function destroy(Stock $stock){
+	public function destroy(Stock $stock)
+	{
 		$inventory = $stock->inventory;
 		
 		if($inventory->supplier == 'Commissary Raw Material')
@@ -256,9 +257,7 @@ class StockController extends Controller
 			$delivery = Delivery::where('item_id', $inventory->commissary_product->id)->first();
 			$delivery->status = 'NOT RECEIVED';
 			$delivery->save();
-		}
-		elseif($inventory->supplier == 'Commissary Product')
-		{
+		} elseif($inventory->supplier == 'Commissary Product') {
 			$delivery = Delivery::where('item_id', $inventory->commissary_inventory->id)->first();
 			$delivery->status = 'NOT RECEIVED';
 			$delivery->save();

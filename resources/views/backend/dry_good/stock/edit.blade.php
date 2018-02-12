@@ -42,7 +42,10 @@
                     {{ Form::label('quantity', 'Quantity', ['class' => 'col-lg-2 control-label']) }}
 
                     <div class="col-lg-4">
-                        {{ Form::text('quantity', old('quantity'), ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required']) }}
+                        <div class="input-group">
+                            <span class="input-group-addon">{{ $stock->inventory->unit_type }}</span>
+                            {{ Form::number('quantity', old('quantity'), ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required']) }}
+                        </div>
                     </div>
 
                     {{ Form::label('received', 'Received Date', ['class' => 'col-lg-2 control-label']) }}

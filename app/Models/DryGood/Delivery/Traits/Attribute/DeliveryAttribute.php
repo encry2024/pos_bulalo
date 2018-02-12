@@ -22,7 +22,8 @@ trait DeliveryAttribute
                  class="btn btn-xs btn-danger"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="'.trans('buttons.general.crud.delete').'"></i></a> ';
 	}
 
-	public function getActionButtonsAttribute(){
+	public function getActionButtonsAttribute()
+    {
 		return $this->delete_button;
 	}
 }

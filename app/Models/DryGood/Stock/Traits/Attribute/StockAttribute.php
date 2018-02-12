@@ -5,11 +5,13 @@ namespace App\Models\DryGood\Stock\Traits\Attribute;
 trait StockAttribute
 {
 
-	public function getEditButtonAttribute(){
+	public function getEditButtonAttribute()
+    {
 		return '<a href="'.route('admin.dry_good.stock.edit', $this).'" class="btn btn-xs btn-primary"><i class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="'.trans('buttons.general.crud.edit').'"></i></a> ';
 	}
 
-	public function getDeleteButtonAttribute(){
+	public function getDeleteButtonAttribute()
+    {
 		return '<a href="'.route('admin.dry_good.stock.destroy', $this).'"
                  data-method="delete"
                  data-trans-button-cancel="'.trans('buttons.general.cancel').'"

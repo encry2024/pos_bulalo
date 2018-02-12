@@ -1,8 +1,8 @@
 <?php
 
-Route::group(['prefix' => 'commissary', 'namespace' => 'Commissary', 'as' => 'commissary.'], function(){
+Route::group(['prefix' => 'commissary', 'namespace' => 'Commissary', 'as' => 'commissary.'], function() {
 
-	Route::group(['namespace' => 'Inventory'], function(){
+	Route::group(['namespace' => 'Inventory'], function() {
 
 		Route::get('inventory/get', 'InventoryTableController')->name('inventory.get');
 
@@ -12,7 +12,7 @@ Route::group(['prefix' => 'commissary', 'namespace' => 'Commissary', 'as' => 'co
 
 	});
 
-	Route::group(['namespace' => 'Product'], function(){
+	Route::group(['namespace' => 'Product'], function() {
 
 		Route::get('product/get', 'ProductTableController')->name('product.get');
 
@@ -22,13 +22,12 @@ Route::group(['prefix' => 'commissary', 'namespace' => 'Commissary', 'as' => 'co
 
 	});
 
-	Route::group(['namespace' => 'Stock'], function(){
+	Route::group(['namespace' => 'Stock'], function() {
         Route::post('stock/get_item', 'StockController@getItem')->name('stock.get_item');
 
 		Route::get('stock/get', 'StockTableController')->name('stock.get');
 
 		Route::resource('stock', 'StockController');
-
 	});
 
 
@@ -40,7 +39,7 @@ Route::group(['prefix' => 'commissary', 'namespace' => 'Commissary', 'as' => 'co
 
 	});
 
-	Route::group(['namespace' => 'Dispose'], function(){
+	Route::group(['namespace' => 'Dispose'], function() {
 
 		Route::get('dispose/get', 'DisposeTableController')->name('dispose.get');
 
@@ -49,7 +48,7 @@ Route::group(['prefix' => 'commissary', 'namespace' => 'Commissary', 'as' => 'co
 	});
 
 
-	Route::group(['namespace' => 'GoodsReturn'], function(){
+	Route::group(['namespace' => 'GoodsReturn'], function() {
 
 		Route::get('goods_return/get', 'GoodsReturnTableController')->name('goods_return.get');
 
@@ -57,7 +56,7 @@ Route::group(['prefix' => 'commissary', 'namespace' => 'Commissary', 'as' => 'co
 
 	});
 
-	Route::group(['namespace' => 'Delivery'], function(){
+	Route::group(['namespace' => 'Delivery'], function() {
 
 		Route::get('delivery/get', 'DeliveryTableController')->name('delivery.get');
 
@@ -66,13 +65,13 @@ Route::group(['prefix' => 'commissary', 'namespace' => 'Commissary', 'as' => 'co
 	});
 
 
-	Route::group(['namespace' => 'Invoice'], function(){
+	Route::group(['namespace' => 'Invoice'], function() {
 
 		Route::resource('invoice', 'InvoiceController');
 
 	});
 
-	Route::group(['namespace' => 'OrderForm'], function(){
+	Route::group(['namespace' => 'OrderForm'], function() {
 
 		Route::resource('order_form', 'OrderFormController');
 
