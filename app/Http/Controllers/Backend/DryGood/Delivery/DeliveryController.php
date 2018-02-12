@@ -25,7 +25,8 @@ class DeliveryController extends Controller
 		return view('backend.dry_good.delivery.create', compact('inventories'));
 	}
 
-	public function store(Request $request){
+	public function store(Request $request)
+    {
 		$inventory = Inventory::findOrFail($request->item_id);
 
 		if($inventory->stock >= $request->quantity)

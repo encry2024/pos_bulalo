@@ -30,7 +30,7 @@ class DeliveryTableController extends Controller
 
 				return number_format($total, 2);
 			})
-			->editColumn('actions', function($deliveries) {
+			->addColumn('actions', function($deliveries) {
 				return $deliveries->action_buttons;
 			})
 			->make(true);

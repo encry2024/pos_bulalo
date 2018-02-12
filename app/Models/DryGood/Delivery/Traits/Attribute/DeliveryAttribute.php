@@ -7,11 +7,13 @@ use App\Models\DryGood\Stock\Stock;
 trait DeliveryAttribute
 {
 
-	public function getEditButtonAttribute(){
+	public function getEditButtonAttribute()
+    {
 		return '<a href="'.route('admin.dry_good.delivery.edit', $this->id).'" class="btn btn-xs btn-primary"><i class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="'.trans('buttons.general.crud.edit').'"></i></a> ';
 	}
 
-	public function getDeleteButtonAttribute(){
+	public function getDeleteButtonAttribute()
+    {
 		return '<a href="'.route('admin.dry_good.delivery.destroy', $this).'"
                  data-method="delete"
                  data-trans-button-cancel="'.trans('buttons.general.cancel').'"
