@@ -12,7 +12,7 @@
         <meta name="description" content="@yield('meta_description', 'Default Description')">
         <meta name="author" content="@yield('meta_author', 'Anthony Rappa')">
 
-        <link rel="stylesheet" href="{{ asset('public/font-awesome.4.7.0/css/font-awesome.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('public/font-awesome-4.7.0/css/font-awesome.min.css') }}">
         @yield('meta')
 
         <!-- Styles -->

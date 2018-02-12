@@ -29,7 +29,7 @@ class DeliveryController extends Controller
 		$inventory = Inventory::findOrFail($request->item_id);
 
         if(empty($request->item_id)) {
-            return redirect()->route('admin.dry_good.delivery.index')->withFlashDanger('Please select an Item.');
+            return 'test';
         } else {
     		if($inventory->stock >= $request->quantity)
     		{
