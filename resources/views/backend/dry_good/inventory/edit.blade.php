@@ -37,7 +37,7 @@
                 </div><!--form control-->
 
                 <div class="form-group">
-                    {{ Form::label('reorder_level', 'Reorder Level', ['class' => 'col-lg-2 control-label']) }}
+                    {{ Form::label('reorder_level', 'Critical Level', ['class' => 'col-lg-2 control-label']) }}
 
                     <div class="col-lg-4">
                         {{ Form::text('reorder_level', null, ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required']) }}

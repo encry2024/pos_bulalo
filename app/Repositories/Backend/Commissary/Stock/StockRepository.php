@@ -11,11 +11,15 @@ class StockRepository extends BaseRepository
 {
 	const MODEL = Stock::class;
 
-	public function getForDataTable(){
-		return $this->query()
-				->with(['inventory' => function($q) {
-					$q->withTrashed();
-				}])
-				->select('id', 'quantity', 'price', 'received', 'expiration', 'status', 'inventory_id');
+	public function getForDataTable()
+    {
+        return $this->query()
+            ->leftJoin('drygood_inventories', function($join) {
+                $join->on('commissary_stocks.inventory_id', '=', 'drygood_inventories.id');
+            })
+            ->leftJoin('commissary_other_inventories', function($join) {
+                $join->on('commissary_stocks.inventory_id', '=', 'commissary_other_inventories.id');
+            })
+            ->get();
 	}
 }

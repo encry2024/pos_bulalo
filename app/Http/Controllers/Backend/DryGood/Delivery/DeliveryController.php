@@ -13,13 +13,15 @@ use App\Models\Notification\Notification;
 
 class DeliveryController extends Controller
 {
-	public function index(){
+	public function index()
+    {
 		return view('backend.dry_good.delivery.index');
 	}
 
-	public function create(){
-		$inventories = Inventory::orderBy('name')->get()->pluck('name', 'id');
-		// return $unions;
+	public function create()
+    {
+		$inventories = Inventory::orderBy('name')->get();
+
 		return view('backend.dry_good.delivery.create', compact('inventories'));
 	}
 
@@ -51,7 +53,6 @@ class DeliveryController extends Controller
 		$inventory->save();
 		$delivery->delete();
 
-
 		return redirect()->route('admin.dry_good.delivery.index')->withFlashDanger('Stock has Been Deleted Successfully!');
 	}
 
@@ -76,4 +77,9 @@ class DeliveryController extends Controller
             ); 
     	}
 	}
+
+    public function getItem(Request $request)
+    {
+        return \GuzzleHttp\json_encode(Inventory::find($request->inventory_id));
+    }
 }

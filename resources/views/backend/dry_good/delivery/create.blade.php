@@ -32,8 +32,15 @@
                     {{ Form::label('item_id', 'Item Name', ['class' => 'col-lg-2 control-label']) }}
 
                     <div class="col-lg-3" id="item_panel">
-                        {{ Form::select('item_id', $inventories ,old('item_id'), ['class' => 'form-control', 'required' => 'required', 'autofocus' => 'autofocus']) }}
-                    </div>
+                        <select name="item_id" id="item_id" class="form-control">
+                            <option disabled selected>-- Select Item From Inventory --</option>
+                            @foreach($inventories as $inventory)
+                                @if($inventory->stock != 0)
+                                    <option value="{{ $inventory->id }}">{{ $inventory->name }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div><!--col-lg-3-->
 
                     {{ Form::label('date', 'Date', ['class' => 'col-lg-2 control-label']) }}
                     <div class="col-lg-3">
@@ -46,7 +53,10 @@
                     {{ Form::label('quantity', 'Quantity', ['class' => 'col-lg-2 control-label']) }}
 
                     <div class="col-lg-3">
-                        {{ Form::text('quantity', old('quantity'), ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required']) }}
+                        <div class="input-group">
+                            <span class="input-group-addon" id="physical_type"></span>
+                            <input name="quantity" type="number" class="form-control" maxlength="191" required="required" id="item-quantity" min="0">
+                        </div>
                     </div>
 
                     {{ Form::label('deliver_to', 'Deliver To', ['class' => 'col-lg-2 control-label']) }}
@@ -56,6 +66,37 @@
                     </div>
                 </div>
                 
+            </div><!-- /.box-body -->
+        </div><!--box-->
+
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">Empty Stocks</h3>
+            </div><!-- /.box-header -->
+
+            <div class="box-body">
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>Item ID</th>
+                            <th>Name</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                        @foreach($inventories as $inventory)
+                            @if($inventory->stock == 0)
+                                <tr>
+                                    <td>{{ $inventory->id }}</td>
+                                    <td>{{ $inventory->name }}</td>
+                                    <td><a href="{{ route('admin.dry_good.stock.create') }}" class="btn btn-xs btn-success">Re-stock</a></td>
+                                </tr>
+                            @endif
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
             </div><!-- /.box-body -->
         </div><!--box-->
 
@@ -83,5 +124,39 @@
     <script type="text/javascript">
         $('.date').datepicker({ 'dateFormat' : 'yy-mm-dd' });
         $('.time').timepicker({ 'timeFormat': 'HH:mm:ss' });
+        var max_stock = 0;
+
+        $("#item_id").change(function() {
+            item_id = $(this).val();
+
+            $.ajax({
+                type: "post",
+                url: "{{ route('admin.dry_good.delivery.get_item') }}",
+                data: {
+                    _token:         '{{ csrf_token() }}',
+                    inventory_id:    item_id,
+                },
+                dataType: 'JSON',
+                success: function(data) {
+                    document.getElementById("physical_type").innerHTML = data.unit_type;
+                    $("#item-quantity").attr('max', data.stock);
+                    max_stock = data.stock;
+                }
+            });
+        });
+
+        $("#item-quantity").on('keypress', function(e) {
+            // console.log(max_stock);
+            var currentValue = String.fromCharCode(e.which);
+            var value = $(this).val() + currentValue;
+            var finalValue = parseFloat(parseFloat(value).toFixed(2));
+            var formattedStock = parseFloat(parseFloat(max_stock).toFixed(2));
+
+            if(finalValue >= formattedStock) {
+                e.preventDefault();
+                document.getElementById('item-quantity').value = parseFloat(max_stock).toFixed(2);
+
+            }
+        });
     </script>
 @endsection

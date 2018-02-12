@@ -22,15 +22,15 @@ class DeliveryTableController extends Controller
 	public function __invoke(Request $request){
 		return Datatables::of($this->deliveries->getForDataTable())
 			->escapeColumns('id', 'sort')
-			->addColumn('item', function($deliveries) {
+			->editColumn('inventory.name', function($deliveries) {
 				return $deliveries->inventory->name;
 			})
-			->addColumn('total', function($deliveries) {
+			->editColumn('total', function($deliveries) {
 				$total = $deliveries->quantity * $deliveries->price;
 
 				return number_format($total, 2);
 			})
-			->addColumn('actions', function($deliveries) {
+			->editColumn('actions', function($deliveries) {
 				return $deliveries->action_buttons;
 			})
 			->make(true);

@@ -12,8 +12,6 @@ Route::group(['prefix' => 'commissary', 'namespace' => 'Commissary', 'as' => 'co
 
 	});
 
-
-
 	Route::group(['namespace' => 'Product'], function(){
 
 		Route::get('product/get', 'ProductTableController')->name('product.get');
@@ -24,9 +22,8 @@ Route::group(['prefix' => 'commissary', 'namespace' => 'Commissary', 'as' => 'co
 
 	});
 
-
-
 	Route::group(['namespace' => 'Stock'], function(){
+        Route::post('stock/get_item', 'StockController@getItem')->name('stock.get_item');
 
 		Route::get('stock/get', 'StockTableController')->name('stock.get');
 
@@ -42,7 +39,6 @@ Route::group(['prefix' => 'commissary', 'namespace' => 'Commissary', 'as' => 'co
 		Route::resource('produce', 'ProduceController');
 
 	});
-
 
 	Route::group(['namespace' => 'Dispose'], function(){
 

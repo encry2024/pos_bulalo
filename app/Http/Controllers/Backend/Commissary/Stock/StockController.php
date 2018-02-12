@@ -12,36 +12,20 @@ use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
 
 class StockController extends Controller
 {
-    public function index(){
+    public function index()
+    {
     	return view('backend.commissary.stock.index');
     }
 
-    public function create(){
-    	$ingredients = Inventory::all();
-        $inventories = [];
-
-        for($i = 0; $i < count($ingredients); $i++)
-        {
-            $name = '';
-
-            if($ingredients[$i]->supplier == 'Other')
-            {
-                $name = $ingredients[$i]->other_inventory->name;
-
-                $inventories[$ingredients[$i]->id] = $name;
-            }
-            else
-            {
-                $name = $ingredients[$i]->drygood_inventory->name;
-
-                $inventories[$ingredients[$i]->id] = $name;
-            }
-        }
+    public function create()
+    {
+    	$inventories = Inventory::all();
 
     	return view('backend.commissary.stock.create', compact('inventories'));
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
 		$inventory = Inventory::find($request->inventory_id);
 		$stock     = 0;
 
@@ -155,9 +139,15 @@ class StockController extends Controller
 		return redirect()->route('admin.commissary.stock.index')->withFlashSuccess('Stock Updated Successfully!');
 	}
 
-	public function destroy(Stock $stock){
+	public function destroy(Stock $stock)
+    {
 		$stock->delete();
 
 		return redirect()->route('admin.commissary.stock.index')->withFlashDanger('Stock has Been Deleted Successfully!');
 	}
+
+    public function getItem(Request $request)
+    {
+        return \GuzzleHttp\json_encode(Inventory::find($request->inventory_id));
+    }
 }

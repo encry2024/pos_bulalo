@@ -11,13 +11,15 @@ use App\Models\Category\Category;
 
 class ProductController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $histories = History::take(15)->orderBy('created_at', 'desc')->get();
 
     	return view('backend.commissary.product.index', compact('histories'));
     }
 
-    public function show(Product $product){
+    public function show(Product $product)
+    {
         $product = Product::with(['ingredients' => function($q) {
                     $q->withTrashed();
                 }])
@@ -27,12 +29,24 @@ class ProductController extends Controller
         return view('backend.commissary.product.show', compact('product'));
     }
 
-    public function create(){
+    public function create()
+    {
         $selections  = [];
     	$ingredients = Inventory::with('other_inventory', 'drygood_inventory')->get();
         $categories  = Category::pluck('name', 'id');
 
-    	for($i = 0; $i < count($ingredients); $i++)
+        foreach($ingredients as $ingredient) {
+            if($ingredient->supplier == 'Other') {
+                $name = $ingredient->other_inventory->name;
+                $selections[$ingredient->id] = $name;
+            } else {
+                $name = $ingredient->drygood_inventory->name;
+                $selections[$ingredient->id] = $name;
+            }
+        }
+
+
+    	/*for($i = 0; $i < count($ingredients); $i++)
         {
             $name = '';
 
@@ -49,18 +63,19 @@ class ProductController extends Controller
                 $selections[$ingredients[$i]->id] = $name;
             }
         }
-        
+    	*/
+
     	return view('backend.commissary.product.create', compact('ingredients', 'selections', 'categories'));
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
     	$ingredients = json_decode($request->ingredients);
 
     	$product = new Product();
     	$product->name = $request->name;
     	$product->category_id = $request->category;
     	$product->save();
-
 
     	foreach ($ingredients as $item) {
     		$ingredient = Inventory::findOrFail($item->id);

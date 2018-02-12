@@ -13,35 +13,31 @@ class InventoryTableController extends Controller
     
 	protected $inventories;
 
-	public function __construct(InventoryRepository $inventories){
+	public function __construct(InventoryRepository $inventories)
+    {
 		$this->inventories = $inventories;
 	}
 
-
-	public function __invoke(Request $request){
+	public function __invoke(Request $request)
+    {
 		return Datatables::of($this->inventories->getForDataTable())
 			->escapeColumns('id', 'sort')
-			->addColumn('category', function($inventory) {
-				return $inventory->category->name;
-			})
-			->addColumn('actions', function($inventory) {
-				return $inventory->action_buttons;
-			})
-			->addColumn('stocks', function($inventory) {
-				return $inventory->stock.' '.$inventory->unit_type;
-			})
-			->addColumn('item_name', function($inventory) {
-				$name = '';
-
-				if($inventory->supplier == 'Other'){
-					$name = $inventory->other_inventory->name;
-				} else {
-					$name = $inventory->drygood_inventory->name;
-				}
-
-				return $name;
-			})
-			->make();
+            ->editColumn('name', function($inventory) {
+                return $inventory->supplier == 'Other' ? $inventory->other_inventory->name : $inventory->drygood_inventory->name;
+            })
+            ->editColumn('comm_stock', function($inventory) {
+                return $inventory->comm_stock;
+            })
+            ->editColumn('comm_inv_reorder_level', function($inventory) {
+                return $inventory->comm_inv_reorder_level;
+            })
+            ->editColumn('category', function($inventory) {
+                return $inventory->category->name;
+            })
+            ->addColumn('actions', function($inventory) {
+                return $inventory->action_buttons;
+            })
+			->make(true);
 	}
 
 }

@@ -55,14 +55,14 @@
                 serverSide: true,
                 ajax: '{!! route('admin.dry_good.delivery.get') !!}',
                 columns: [
-                    { data: 'item' },
-                    { data: 'quantity' },
-                    { data: 'price' },
-                    { data: 'total' },
+                    { data: 'inventory.name' },
+                    { data: 'quantity' , searchable: false},
+                    { data: 'price' , searchable: false},
+                    { data: 'total' , searchable: false},
                     { data: 'date' },
                     { data: 'deliver_to' },
                     { data: 'status' },
-                    { data: 'actions' }
+                    { data: 'actions' , searchable: false}
                 ],
                 order: [5, 'asc']
             });

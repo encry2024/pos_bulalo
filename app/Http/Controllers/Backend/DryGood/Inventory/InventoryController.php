@@ -8,20 +8,24 @@ use App\Models\Category\Category;
 use App\Models\DryGood\Inventory\Inventory;
 
 use App\Http\Requests\Backend\Inventory\StoreInventoryRequest;
+use App\Http\Requests\Backend\DryGood\UpdateDryGoodRequest;
 
 class InventoryController extends Controller
 {
-    public function index(){
+    public function index()
+    {
     	return view('backend.dry_good.inventory.index');
     }
 
-    public function create(){
+    public function create()
+    {
     	$categories = Category::pluck('name', 'id');
 
     	return view('backend.dry_good.inventory.create', compact('categories'));
     }
 
-    public function store(StoreInventoryRequest $request){
+    public function store(StoreInventoryRequest $request)
+    {
     	Inventory::updateOrCreate(
     		['name' => $request->name],
     		[
@@ -35,13 +39,15 @@ class InventoryController extends Controller
     	return redirect()->route('admin.dry_good.inventory.index');
     }
 
-    public function edit(Inventory $inventory){
+    public function edit(Inventory $inventory)
+    {
     	$categories = Category::pluck('name', 'id');
 
     	return view('backend.dry_good.inventory.edit', compact('categories', 'inventory'));
     }
 
-    public function update(Inventory $Inventory, Request $request){
+    public function update(Inventory $Inventory, UpdateDryGoodRequest $request)
+    {
     	$Inventory->update([
     		'name' 			=> $request->name,
     		'reorder_level' => $request->reorder_level,
@@ -51,9 +57,15 @@ class InventoryController extends Controller
     	return redirect()->route('admin.dry_good.inventory.index')->withFlashSuccess('Inventory Updated Successfully!');
     }
 
-    public function destroy(Inventory $Inventory){
+    public function destroy(Inventory $Inventory)
+    {
     	$Inventory->delete();
 
     	return redirect()->route('admin.dry_good.inventory.index')->withFlashDanger('Inventory Deleted Successfully!');
+    }
+
+    public function getItem(Request $request)
+    {
+        return \GuzzleHttp\json_encode(Inventory::find($request->inventory_id));
     }
 }

@@ -48,15 +48,15 @@
         $(function() {
             $('#users-table').DataTable({
                 dom: 'Blfrtip',
-                processing: false,
+                processing: true,
                 serverSide: true,
                 ajax: '{!! route('admin.commissary.inventory.get') !!}',
                 columns: [
-                    { data: 14 },
-                    { data: 13 },
-                    { data: 3  },
-                    { data: 11 },
-                    { data: 12 } 
+                    { data: 'name'},
+                    { data: 'comm_stock',                   searchable: false },
+                    { data: 'comm_inv_reorder_level',       searchable: false },
+                    { data: 'category'},
+                    { data: 'actions',                      searchable: false }
                 ],
                 order: [1, 'asc']
             });

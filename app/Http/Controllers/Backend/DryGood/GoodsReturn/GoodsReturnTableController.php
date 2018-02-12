@@ -22,7 +22,7 @@ class GoodsReturnTableController extends Controller
 	public function __invoke(Request $request){
 		return Datatables::of($this->goods_returns->getForDataTable())
 			->escapeColumns('id', 'sort')
-			->addColumn('name', function($goods_returns) {
+			->editColumn('inventory.name', function($goods_returns) {
 				$com = Inventory::where('id', $goods_returns->inventory_id)->withTrashed()->first();	
 
 				return $com->name;

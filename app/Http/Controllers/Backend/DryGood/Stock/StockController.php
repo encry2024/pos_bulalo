@@ -13,8 +13,9 @@ class StockController extends Controller
     	return view('backend.dry_good.stock.index');
     }
 
-    public function create(){
-    	$inventories = Inventory::pluck('name', 'id');
+    public function create()
+    {
+    	$inventories = Inventory::all();
 
     	return view('backend.dry_good.stock.create', compact('inventories'));
     }
@@ -60,4 +61,9 @@ class StockController extends Controller
 
 		return redirect()->route('admin.dry_good.stock.index')->withFlashDanger('Stock has Been Deleted Successfully!');
 	}
+
+    public function getItem(Request $request)
+    {
+        return \GuzzleHttp\json_encode(Inventory::find($request->inventory_id));
+    }
 }

@@ -54,8 +54,8 @@
                 serverSide: true,
                 ajax: '{!! route('admin.dry_good.stock.get') !!}',
                 columns: [
-                    { data: 'inventories' },
-                    { data: 'quantity' },
+                    { data: 'drygood_inventories.name'},
+                    { data: 'quantity', searchable: false },
                     { data: 'price' },
                     { data: 'received' },
                     { data: 'expiration' },

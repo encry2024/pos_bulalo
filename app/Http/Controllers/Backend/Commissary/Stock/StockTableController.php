@@ -24,19 +24,8 @@ class StockTableController extends Controller
     public function __invoke(Request $request){
         return Datatables::of($this->stocks->getForDataTable())
 	        ->escapeColumns(['id', 'sort'])
-            ->addColumn('name', function($stock) {
-                $name = '';
-
-                if($stock->inventory->supplier == 'Other')
-                {
-                    $name = $stock->inventory->other_inventory->name;
-                }
-                else
-                {
-                    $name = $stock->inventory->drygood_inventory->name;
-                }
-
-                return $name;
+            ->editColumn('name', function($stock) {
+                return $stock->inventory->supplier == 'Other' ? $stock->inventory->other_inventory->name : $stock->inventory->drygood_inventory->name;
             })
         	->addColumn('actions', function($stock) {
         		return $stock->action_buttons;

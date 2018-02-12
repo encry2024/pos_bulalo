@@ -52,11 +52,11 @@
                 serverSide: true,
                 ajax: '{!! route('admin.dry_good.inventory.get') !!}',
                 columns: [
-                    { data: 1 },
-                    { data: 12 },
-                    { data: 3 },
-                    { data: 10 },
-                    { data: 11 }
+                    { data: 'name' },
+                    { data: 'stock' },
+                    { data: 'reorder_level' },
+                    { data: 'category.name' },
+                    { data: 'actions' }
                 ],
                 order: [1, 'asc']
             });

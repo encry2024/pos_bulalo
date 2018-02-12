@@ -50,10 +50,10 @@
                 </div>
 
                 <div class="form-group">
-                    {{ Form::label('physical_quantity', 'Physical Quantity', ['class' => 'col-lg-2 control-label']) }}
+                    {{ Form::label('physical_type', 'Physical Type', ['class' => 'col-lg-2 control-label']) }}
 
                     <div class="col-lg-4">
-                        <select class="form-control" name="physical_quantity" id="physical_quantity">
+                        <select class="form-control" name="physical_quantity" id="physical_type">
                             <option>Mass</option>
                             <option>Volume</option>
                             <option>Other</option>

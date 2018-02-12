@@ -51,10 +51,6 @@
                     <div class="col-lg-3">
                         {{ Form::select('list', $selections ,old('list'), ['class' => 'form-control', 'id' => 'list']) }}
                     </div><!--col-lg-10-->
-
-                    
-
-                    
                 </div>
 
                 <div class="form-group">
@@ -120,7 +116,7 @@
     <script type="text/javascript">
         var ingredients = {!! $ingredients !!};
 
-        function get_unit(val){
+        function get_unit(val) {
             var options = '';
 
             if(val == 'Mass')
@@ -152,7 +148,7 @@
             return options;
         }
 
-        function get_physical_quantity(id){
+        function get_physical_quantity(id) {
             $.ajax({
                 type: 'GET',
                 url: '{{ URL::to("admin/commissary/product/inventory") }}/' + id,
@@ -166,19 +162,19 @@
             });
         }
 
-        $('#list').on('change', function(){
+        $('#list').on('change', function() {
 
             get_physical_quantity($(this).val());
 
         });
 
-        $(document).ready(function(){
+        $(document).ready(function() {
             @if(count($ingredients))
             get_physical_quantity('{{ $ingredients->first()->id }}');
             @endif
         }); 
 
-        $('form').submit(function(e){
+        $('form').submit(function(e) {
             var ing  ='';
             var rows = $('tbody').find('tr');
             var obj  = [];
@@ -202,11 +198,11 @@
                 e.preventDefault();
         });
 
-        $('#unit_type').on('change', function(){
+        $('#unit_type').on('change', function() {
             $('#lbl_quantity').text($(this).find('option:selected').text());      
         });
 
-        function addIngredient(){
+        function addIngredient() {
             var selected    = $('#list').val();
             var ing         = findIngredients(selected);
             var name        = ing[0]['supplier'] == 'Other' ? ing[0]['other_inventory']['name'] : ing[0]['drygood_inventory']['name'];
@@ -219,11 +215,11 @@
                 $('table tbody').append(row);
         }
 
-        function exist(id){
+        function exist(id) {
             return $('tr#'+id).length;
         }
 
-        function findIngredients(id){
+        function findIngredients(id) {
             return $.grep(ingredients, function(n, i){
               return n.id == id;
             });

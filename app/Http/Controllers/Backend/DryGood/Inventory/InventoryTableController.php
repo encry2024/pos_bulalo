@@ -21,16 +21,22 @@ class InventoryTableController extends Controller
 	public function __invoke(Request $request){
 		return Datatables::of($this->inventories->getForDataTable())
 			->escapeColumns('id', 'sort')
-			->addColumn('category', function($inventory) {
-				return $inventory->category->name;
+			->editColumn('name', function($inventory) {
+				return $inventory->name;
 			})
-			->addColumn('actions', function($inventory) {
-				return $inventory->action_buttons;
-			})
-			->addColumn('stocks', function($inventory) {
+			->editColumn('stock', function($inventory) {
 				return $inventory->stock.' '.$inventory->unit_type;
 			})
-			->make();
+            ->editColumn('reorder_level', function($inventory) {
+                return $inventory->reorder_level;
+            })
+            ->editColumn('category.name', function($inventory) {
+                return $inventory->category->name;
+            })
+            ->addColumn('actions', function($inventory) {
+                return $inventory->action_buttons;
+            })
+			->make(true);
 	}
 
 }

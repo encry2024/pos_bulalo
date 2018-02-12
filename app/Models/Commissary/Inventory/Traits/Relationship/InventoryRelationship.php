@@ -15,23 +15,28 @@ use App\Models\DryGood\Inventory\Inventory as DryGood;
 trait InventoryRelationship
 {
 
-	public function category(){
+	public function category()
+    {
 		return $this->belongsTo(Category::class);
 	}
 
-	public function stocks(){
+	public function stocks()
+    {
 		return $this->hasMany(Stock::class);
 	}
 
-	public function products(){
+	public function products()
+    {
 		return $this->belongsToMany(Product::class, 'commissary_inventory_product', 'inventory_id', 'product_id');
 	}
 
-	public function other_inventory(){
+	public function other_inventory()
+    {
 		return $this->belongsTo(Other::class, 'inventory_id')->withTrashed();
 	}
 
-	public function drygood_inventory(){
+	public function drygood_inventory()
+    {
 		return $this->belongsTo(DryGood::class, 'inventory_id')->withTrashed();
 	}
 }

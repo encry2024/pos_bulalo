@@ -31,7 +31,16 @@
                     {{ Form::label('inventory_id', 'Ingredient Name', ['class' => 'col-lg-2 control-label']) }}
 
                     <div class="col-lg-10">
-                        {{ Form::select('inventory_id', $inventories ,null, ['class' => 'form-control', 'required' => 'required', 'autofocus' => 'autofocus']) }}
+                        <select name="inventory_id" id="inventory_id" class="form-control select-inventory">
+                            <option disabled selected>-- Select Item From Inventory --</option>
+                            @foreach($inventories as $inventory)
+                                @if($inventory->supplier == "Other")
+                                    <option value="{{ $inventory->id }}">{{ $inventory->other_inventory->name }}</option>
+                                @else
+                                    <option value="{{ $inventory->id }}">{{ $inventory->drygood_inventory->name }}</option>
+                                @endif
+                            @endforeach
+                        </select>
                     </div><!--col-lg-10-->
                 </div><!--form control-->
 
@@ -39,7 +48,10 @@
                     {{ Form::label('quantity', 'Quantity', ['class' => 'col-lg-2 control-label']) }}
 
                     <div class="col-lg-4">
-                        {{ Form::text('quantity', old('quantity'), ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required']) }}
+                        <div class="input-group">
+                            <span class="input-group-addon" id="physical_type"></span>
+                            <input name="quantity" type="number" class="form-control" maxlength="191" required="required" id="item-quantity" min="0" value="{{ old('stock') }}">
+                        </div>
                     </div>
 
                     {{ Form::label('received', 'Received Date', ['class' => 'col-lg-2 control-label']) }}
@@ -92,5 +104,38 @@
     <script type="text/javascript">
         $('.date').datepicker({ 'dateFormat' : 'yy-mm-dd' });
         $('.time').timepicker({ 'timeFormat': 'HH:mm:ss' });
+
+        $("#inventory_id").change(function() {
+            item_id = $(this).val();
+
+            $.ajax({
+                type: "post",
+                url: "{{ route('admin.commissary.stock.get_item') }}",
+                data: {
+                    _token:         '{{ csrf_token() }}',
+                    inventory_id:    item_id,
+                },
+                dataType: 'JSON',
+                success: function(data) {
+                    document.getElementById("physical_type").innerHTML = data.unit_type;
+                    /*$("#item-quantity").attr('max', data.stock);
+                    max_stock = data.stock;*/
+                }
+            });
+        });
+
+        /*$("#item-quantity").on('keypress', function(e) {
+            // console.log(max_stock);
+            var currentValue = String.fromCharCode(e.which);
+            var value = $(this).val() + currentValue;
+            var finalValue = parseFloat(parseFloat(value).toFixed(2));
+            var formattedStock = parseFloat(parseFloat(max_stock).toFixed(2));
+
+            if(finalValue >= formattedStock) {
+                e.preventDefault();
+                document.getElementById('item-quantity').value = parseFloat(max_stock).toFixed(2);
+
+            }
+        });*/
     </script>
 @endsection

@@ -20,7 +20,7 @@ class DisposeTableController extends Controller
 	public function __invoke(Request $request){
 		return Datatables::of($this->disposes->getForDataTable())
 			->escapeColumns('id', 'sort')
-			->addColumn('name', function($dispose) {
+			->editColumn('inventory.name', function($dispose) {
 				return $dispose->inventory->name;
 			})
 			->addColumn('actions', function($dispose) {

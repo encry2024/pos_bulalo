@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Inventory extends Model
 {
 	use InventoryAttribute, InventoryRelationship, SoftDeletes;
+
 	protected $table = 'commissary_inventories';
 
     protected $fillable = ['id', 'inventory_id', 'stock', 'reorder_level', 'unit_type', 'category_id', 'physical_quantity'];

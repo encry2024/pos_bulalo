@@ -28,13 +28,13 @@
         {{ Html::style('/css/daterangepicker.css') }}
 
         @yield('after-styles')
-
         <!-- Html5 Shim and Respond.js IE8 support of Html5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
         {{ Html::script('https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js') }}
         {{ Html::script('https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js') }}
         <![endif]-->
+
 
         <!-- Scripts -->
         <script>

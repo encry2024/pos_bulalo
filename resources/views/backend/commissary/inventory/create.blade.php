@@ -111,7 +111,7 @@
         <div class="box box-info">
             <div class="box-body">
                 <div class="pull-left">
-                    {{ link_to_route('admin.inventory.index', trans('buttons.general.cancel'), [], ['class' => 'btn btn-danger btn-xs']) }}
+                    {{ link_to_route('admin.commissary.inventory.index', trans('buttons.general.cancel'), [], ['class' => 'btn btn-danger btn-xs']) }}
                 </div><!--pull-left-->
 
                 <div class="pull-right">
@@ -158,13 +158,10 @@
             $('#inventory_panel').find('select').remove();
             $('#inventory_panel').find('input').remove();
 
-            if(val == 'Other')
-            {
-                $('#inventory_panel').append(others);
-            }
-            else if(val == 'DryGoods Material')
-            {
+            if(val == 'DryGoods Material') {
                 $('#inventory_panel').append(drygoods);
+            } else if(val == 'Other') {
+                $('#inventory_panel').append(others);
             }
         });
 

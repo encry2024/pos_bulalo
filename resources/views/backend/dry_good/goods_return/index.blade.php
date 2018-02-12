@@ -53,12 +53,12 @@
                 serverSide: true,
                 ajax: '{!! route('admin.dry_good.goods_return.get') !!}',
                 columns: [
-                    { data: 'name' },
+                    { data: 'inventory.name' },
                     { data: 'date' },
-                    { data: 'quantity' },
-                    { data: 'cost' },
-                    { data: 'total_cost' },
-                    { data: 'reason' },
+                    { data: 'quantity' , searchable: false},
+                    { data: 'cost' , searchable: false},
+                    { data: 'total_cost' , searchable: false},
+                    { data: 'reason' , searchable: false},
                     { data: 'witness' },
                     { data: 'actions' }
                 ],
