@@ -28,7 +28,7 @@ class DeliveryController extends Controller
     {
 		$inventory = Inventory::findOrFail($request->item_id);
 
-        if(empty($request->item_id)) {
+        if(!isset($request->item_id)) {
             return 'test';
         } else {
     		if($inventory->stock >= $request->quantity)
@@ -47,7 +47,6 @@ class DeliveryController extends Controller
     			$this->notification();
     			return redirect()->route('admin.dry_good.delivery.index')->withFlashSuccess('Item has been recorded!');
     		}
-    		return redirect()->back()->withFlashDanger('Check item stock!');
         }
 	}
 
