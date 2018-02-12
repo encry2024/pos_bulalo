@@ -9,7 +9,8 @@ use App\Models\DryGood\Inventory\Inventory;
 
 class StockController extends Controller
 {
-    public function index(){
+    public function index()
+    {
     	return view('backend.dry_good.stock.index');
     }
 
@@ -20,7 +21,11 @@ class StockController extends Controller
     	return view('backend.dry_good.stock.create', compact('inventories'));
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
+        if(empty($request->inventory_id)) {
+            return redirect()->back()->withFlashDanger('Please choose an Item.');
+        }
     	Stock::create($request->all());
 
 		$inventory = Inventory::find($request->inventory_id);
@@ -30,12 +35,13 @@ class StockController extends Controller
 		return redirect()->route('admin.dry_good.stock.index');
     }
 
-    public function edit(Stock $stock){
-
+    public function edit(Stock $stock)
+    {
 		return view('backend.dry_good.stock.edit', compact('stock'));
 	}
 
-	public function update(Stock $stock, Request $request){
+	public function update(Stock $stock, Request $request)
+    {
 		$stock->update([
 			'inventory_id'	=> $request->inventory_id,
 			'quantity'		=> $request->quantity,
@@ -56,7 +62,8 @@ class StockController extends Controller
 		return redirect()->route('admin.dry_good.stock.index')->withFlashSuccess('Stock Updated Successfully!');
 	}
 
-	public function destroy(Stock $stock){
+	public function destroy(Stock $stock)
+    {
 		$stock->delete();
 
 		return redirect()->route('admin.dry_good.stock.index')->withFlashDanger('Stock has Been Deleted Successfully!');

@@ -42,25 +42,25 @@
                 </a>
 
                 <ul class="treeview-menu {{ active_class(Active::checkUriPattern('admin/pos/*'), 'menu-open') }}" style="display: none; {{ active_class(Active::checkUriPattern('admin/pos/*'), 'display: block;') }}">
-                    <li class="{{ active_class(Active::checkUriPattern('admin/pos/inventory')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/pos/inventory*')) }}">
                         <a href="{{ route('admin.inventory.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Inventory Management</span>
                         </a>
                     </li>
-                    <li class="{{ active_class(Active::checkUriPattern('admin/pos/product')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/pos/product*')) }}">
                         <a href="{{ route('admin.product.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Product Management</span>
                         </a>
                     </li>
-                    <li class="{{ active_class(Active::checkUriPattern('admin/pos/stock')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/pos/stock*')) }}">
                         <a href="{{ route('admin.stock.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Stock In</span>
                         </a>
                     </li>
-                    <li class="{{ active_class(Active::checkUriPattern('admin/pos/cost')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/pos/cost*')) }}">
                         <a href="{{ route('admin.cost.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Cost</span>
@@ -79,49 +79,49 @@
                 </a>
 
                 <ul class="treeview-menu {{ active_class(Active::checkUriPattern('admin/commissary/*'), 'menu-open') }}" style="display: none; {{ active_class(Active::checkUriPattern('admin/commissary/*'), 'display: block;') }}">
-                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/inventory')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/inventory/*')) }}">
                         <a href="{{ route('admin.commissary.inventory.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Inventory</span>
                         </a>
                     </li>
 
-                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/stock*')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/stock/*')) }}">
                         <a href="{{ route('admin.commissary.stock.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Stock In</span>
                         </a>
                     </li>
 
-                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/product')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/product/*')) }}">
                         <a href="{{ route('admin.commissary.product.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Product</span>
                         </a>
                     </li>
 
-                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/produce')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/produce/*')) }}">
                         <a href="{{ route('admin.commissary.produce.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Produce Product</span>
                         </a>
                     </li>
 
-                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/delivery')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/delivery/*')) }}">
                         <a href="{{ route('admin.commissary.delivery.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Deliver item</span>
                         </a>
                     </li>
 
-                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/dispose')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/dispose/*')) }}">
                         <a href="{{ route('admin.commissary.dispose.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Dispose Item</span>
                         </a>
                     </li>
 
-                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/goods_return')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/commissary/goods_return/*')) }}">
                         <a href="{{ route('admin.commissary.goods_return.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Goods Return</span>
@@ -153,31 +153,31 @@
                 </a>
 
                 <ul class="treeview-menu {{ active_class(Active::checkUriPattern('admin/dry_good/*'), 'menu-open') }}" style="display: none; {{ active_class(Active::checkUriPattern('admin/dry_good/*'), 'display: block;') }}">
-                    <li class="{{ active_class(Active::checkUriPattern('admin/dry_good/inventory')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/dry_good/inventory*')) }}">
                         <a href="{{ route('admin.dry_good.inventory.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Inventory</span>
                         </a>
                     </li>
-                    <li class="{{ active_class(Active::checkUriPattern('admin/dry_good/stock')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/dry_good/stock*')) }}">
                         <a href="{{ route('admin.dry_good.stock.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Stock In</span>
                         </a>
                     </li>
-                    <li class="{{ active_class(Active::checkUriPattern('admin/dry_good/delivery')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/dry_good/delivery*')) }}">
                         <a href="{{ route('admin.dry_good.delivery.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Deliver item</span>
                         </a>
                     </li>
-                    <li class="{{ active_class(Active::checkUriPattern('admin/dry_good/dispose')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/dry_good/dispose*')) }}">
                         <a href="{{ route('admin.dry_good.dispose.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Dispose Item</span>
                         </a>
                     </li>
-                    <li class="{{ active_class(Active::checkUriPattern('admin/dry_good/goods_return')) }}">
+                    <li class="{{ active_class(Active::checkUriPattern('admin/dry_good/goods_return*')) }}">
                         <a href="{{ route('admin.dry_good.goods_return.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Goods Return</span>
