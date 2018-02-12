@@ -11,6 +11,8 @@
         <!-- Meta -->
         <meta name="description" content="<?php echo $__env->yieldContent('meta_description', 'Default Description'); ?>">
         <meta name="author" content="<?php echo $__env->yieldContent('meta_author', 'Anthony Rappa'); ?>">
+
+        <link rel="stylesheet" href="<?php echo e(asset('public/font-awesome.4.7.0/css/font-awesome.min.css')); ?>">
         <?php echo $__env->yieldContent('meta'); ?>
 
         <!-- Styles -->

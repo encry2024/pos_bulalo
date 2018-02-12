@@ -10,7 +10,6 @@ use App\Models\DryGood\Delivery\Delivery;
 use App\Models\Branch\Branch;
 use App\Models\Notification\Notification;
 
-
 class DeliveryController extends Controller
 {
 	public function index()
@@ -29,23 +28,27 @@ class DeliveryController extends Controller
     {
 		$inventory = Inventory::findOrFail($request->item_id);
 
-		if($inventory->stock >= $request->quantity)
-		{
-			$delivery 			 = new Delivery();
-			$delivery->item_id   = $request->item_id;
-			$delivery->quantity  = $request->quantity;
-			$delivery->date 	 = $request->date;
-			$delivery->deliver_to= $request->deliver_to;
-			$delivery->price 	 = count($inventory->stocks) ? $inventory->stocks->last()->price : 0;
-			$delivery->save();
+        if(empty($request->item_id)) {
+            return redirect()->route('admin.dry_good.delivery.index')->withFlashDanger('Please select an Item.');
+        } else {
+    		if($inventory->stock >= $request->quantity)
+    		{
+    			$delivery 			 = new Delivery();
+    			$delivery->item_id   = $request->item_id;
+    			$delivery->quantity  = $request->quantity;
+    			$delivery->date 	 = $request->date;
+    			$delivery->deliver_to= $request->deliver_to;
+    			$delivery->price 	 = count($inventory->stocks) ? $inventory->stocks->last()->price : 0;
+    			$delivery->save();
 
-			$inventory->stock = $inventory->stock - $request->quantity;
-			$inventory->save();
+    			$inventory->stock = $inventory->stock - $request->quantity;
+    			$inventory->save();
 
-			$this->notification();
-			return redirect()->route('admin.dry_good.delivery.index')->withFlashSuccess('Item has been recorded!');
-		}
-		return redirect()->back()->withFlashDanger('Check item stock!');
+    			$this->notification();
+    			return redirect()->route('admin.dry_good.delivery.index')->withFlashSuccess('Item has been recorded!');
+    		}
+    		return redirect()->back()->withFlashDanger('Check item stock!');
+        }
 	}
 
 	public function destroy(Delivery $delivery)

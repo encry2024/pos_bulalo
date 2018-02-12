@@ -80,7 +80,7 @@
         <div class="box box-info">
             <div class="box-body">
                 <div class="pull-left">
-                    {{ link_to_route('admin.inventory.index', trans('buttons.general.cancel'), [], ['class' => 'btn btn-danger btn-xs']) }}
+                    {{ link_to_route('admin.dry_good.inventory.index', trans('buttons.general.cancel'), [], ['class' => 'btn btn-danger btn-xs']) }}
                 </div><!--pull-left-->
 
                 <div class="pull-right">
