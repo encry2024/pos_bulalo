@@ -81,17 +81,6 @@ class DashboardController extends Controller
             }
         }
 
-
-        $tops  = array();
-        $index = 0;
-        foreach($topProducts as $key1 => $value1) {
-            foreach ($topProducts as $key2 => $value2) {
-                if($value1 < $value2){
-                    
-                }
-            }
-        }
-
 		// $temp = 0;
 
 		// for($i=0; $i < count($tops); $i++)
@@ -111,7 +100,7 @@ class DashboardController extends Controller
         $products     = $this->fetchCommissaryProduct();
         $inventories  = $this->fetchCommissaryInventory();
         $commissaries = [];
-        
+
         for($i=1; $i <= count($products); $i++)
         {
             $commissaries[$i] = $products[$i] + $inventories[$i];
@@ -173,7 +162,7 @@ class DashboardController extends Controller
                 $total += $delivery->quantity * $delivery->price;
             }
 
-            $months[$i] = number_format($total, 2);
+            $months[$i] = doubleval($total);
         } 
 
         return $months;
@@ -206,7 +195,7 @@ class DashboardController extends Controller
                 $total += $delivery->quantity * $delivery->price;
             }
 
-            $months[$i] = number_format($total, 2);
+            $months[$i] = doubleval($total);
         }
 
         return $months;
