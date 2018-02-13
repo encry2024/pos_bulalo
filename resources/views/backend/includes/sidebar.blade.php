@@ -48,18 +48,21 @@
                             <span>Inventory Management</span>
                         </a>
                     </li>
-                    <li class="{{ active_class(Active::checkUriPattern('admin/pos/product*')) }}">
-                        <a href="{{ route('admin.product.index') }}">
-                            <i class="fa fa-circle-o"></i>
-                            <span>Product Management</span>
-                        </a>
-                    </li>
+
                     <li class="{{ active_class(Active::checkUriPattern('admin/pos/stock*')) }}">
                         <a href="{{ route('admin.stock.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>Stock In</span>
                         </a>
                     </li>
+
+                    <li class="{{ active_class(Active::checkUriPattern('admin/pos/product*')) }}">
+                        <a href="{{ route('admin.product.index') }}">
+                            <i class="fa fa-circle-o"></i>
+                            <span>Product Management</span>
+                        </a>
+                    </li>
+
                     <li class="{{ active_class(Active::checkUriPattern('admin/pos/cost*')) }}">
                         <a href="{{ route('admin.cost.index') }}">
                             <i class="fa fa-circle-o"></i>

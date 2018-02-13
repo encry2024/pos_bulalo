@@ -5,7 +5,7 @@ namespace App\Repositories\Backend\Stock;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Commissary\Stock\Stock;
+use App\Models\Stock\Stock;
 
 class StockRepository extends BaseRepository
 {

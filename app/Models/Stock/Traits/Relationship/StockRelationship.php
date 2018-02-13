@@ -6,7 +6,8 @@ use App\Models\Inventory\Inventory;
 
 trait StockRelationship
 {
-	public function inventory(){
+	public function inventory()
+    {
 		return $this->belongsTo(Inventory::class)->withTrashed();
 	}
 }

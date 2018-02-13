@@ -27,7 +27,8 @@ class StockController extends Controller
 		return view('backend.stock.index');
 	}
 
-	public function create(){
+	public function create()
+    {
 		$inventories = Inventory::all();
         $ingredients = [];
         $selections  = [];
@@ -72,7 +73,8 @@ class StockController extends Controller
 		return view('backend.stock.create', compact('inventories'));
 	}
 
-	public function store(ManageRequest $request){
+	public function store(ManageRequest $request)
+    {
 		$stock 		= 0;
 		$inventory 	= Inventory::find($request->inventory_id);
 		
@@ -210,7 +212,8 @@ class StockController extends Controller
 		return redirect()->route('admin.stock.index')->withFlashSuccess('Stock Added Successfully!');
 	}
 
-	public function edit(Stock $stock){
+	public function edit(Stock $stock)
+    {
 		$inventory = $stock->inventory;
 		$name      = '';
 
@@ -230,7 +233,8 @@ class StockController extends Controller
 		return view('backend.stock.edit', compact('name', 'stock'));
 	}
 
-	public function update(Stock $stock, ManageRequest $request){
+	public function update(Stock $stock, ManageRequest $request)
+    {
 		$stock->inventory_id	= $request->inventory_id;
 		$stock->quantity		= $request->quantity;
 		$stock->price			= $request->price;
@@ -271,7 +275,8 @@ class StockController extends Controller
 		return redirect()->route('admin.stock.index')->withFlashDanger('Stock has Been Deleted Successfully!');
 	}
 
-	public function updateProductCost(){
+	public function updateProductCost()
+    {
 		$products = Product::with('product_size', 'product_size.ingredients')->orderBy('id', 'desc')->get();
 
 		foreach ($products as $product) 

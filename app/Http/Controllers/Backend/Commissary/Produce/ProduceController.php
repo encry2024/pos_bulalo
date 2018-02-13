@@ -11,144 +11,159 @@ use App\Models\Commissary\History\History;
 use App\Models\Notification\Notification;
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
 use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
+use DB;
 
 class ProduceController extends Controller
 {
-    public function index(){
+    public function index()
+    {
     	return view('backend.commissary.produce.index');
     }
 
-    public function create(){
+    public function create()
+    {
     	$products = Product::pluck('name', 'id');
 
     	return view('backend.commissary.produce.create', compact('products'));
     }
 
-    public function store(Request $request) {
-        $canProduce = 0;
-        $cost       = 0;
-        $product    = Product::findOrFail($request->product_id);
-        $ingredients= $product->ingredients;
+    /**
+     * @param Request $request
+     *
+     * @param Request $request Product ID
+     *
+     * @return mixed
+     */
+    public function store(Request $request)
+    {
+        $canProduce     = 0;
+        $cost           = 0;
+        $product        = Product::findOrFail($request->product_id);
+        $ingredients    = $product->ingredients;
 
-        /*foreach ($ingredients as $ingredient) {
-            $qty_left = 0;
-            $i        = 0;
+        #  Check Product ID
+        // dd($request->all());
+        # Fetch product's ingredients
+        foreach ($ingredients as $ingredient) {
+            $quantity       = 0;
+            $total_stocks   = 0;
 
-            if($ingredient->physical_quantity == 'Mass')
-            {
-                $stock_qty = new Mass($ingredient->stock, $ingredient->unit_type);
-                $req_qty  = new Mass(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
-                $qty_left  = $stock_qty->subtract($req_qty);
-                $i = $qty_left->toUnit($ingredient->unit_type);
-            }
-            elseif($ingredient->physical_quantity == 'Volume')
-            {
-                $stock_qty = new Volume($ingredient->stock, $ingredient->unit_type);
-                $req_qty   = new Volume(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
-                $qty_left  = $stock_qty->subtract($req_qty);
-                $i = $qty_left->toUnit($ingredient->unit_type);
-            }
-            else
-            {
-                $i = $ingredient->stock - $request->quantity;
+            /**
+             * Get the number of items that can be produced on the requested quantity
+             * and remaining stocks for the selected item.
+             */
+            if ($ingredient->physical_quantity == 'Mass') {
+                # Ingredients total stocks in commissary_inventories table. (A)
+                $stock_quantity     =   new Mass($ingredient->stock, $ingredient->unit_type);
+                // dd($stock_quantity);
+                # Required quantity of ingredients to produce the product
+                $required_quantity  =   new Mass(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
+                # Total quantity of (A) after the ingredients was used. (B)
+                $quantity_left      =   $stock_quantity->subtract($required_quantity);
+                // dd($quantity_left);
+                # Convert (B) to a string data.
+                $total_stocks       =   $quantity_left->toUnit($ingredient->unit_type);
+                // dd($total_stocks);
+            } elseif ($ingredient->physical_quantity == 'Volume') {
+                $stock_quantity     =   new Volume($ingredient->stock, $ingredient->unit_type);
+                $required_quantity  =   new Volume(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
+                $quantity_left      =   $stock_quantity->subtract($required_quantity);
+                $total_stocks       =   $quantity_left->toUnit($ingredient->unit_type);
+            } else {
+                $total_stocks       = $ingredient->stock - $request->quantity;
             }
 
-            if($i >= 0)
+            if ($total_stocks >= 0) {
                 $canProduce++;
-        }*/
-        // can produce should match the number of ingredients
-        // can product mus
-        //
-//        if(count($ingredients) == $canProduce)
-//        {
-//            foreach ($ingredients as $ingredient)
-//            {
-//                $qty_left = 0;
-//                $i        = 0;
-//
-//                /* get stock left */
-//                if($ingredient->physical_quantity == 'Mass')
-//                {
-//                    $stock_qty = new Mass($ingredient->stock, $ingredient->unit_type);
-//                    $req_qty   = new Mass(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
-//                    $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
-//                    $i = $stock_qty->toUnit($ingredient->unit_type) - $qty_left;
-//                }
-//                elseif($ingredient->physical_quantity == 'Volume')
-//                {
-//                    $stock_qty = new Volume($ingredient->stock_qty, $ingredient->unit_type);
-//                    $req_qty   = new Volume(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
-//                    $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
-//                    $i = $stock_qty->toUnit($ingredient->unit_type) - $qty_left;
-//                }
-//                else
-//                {
-//                    $qty_left = $inventory->stock - $request->quantity;
-//                    $i = $request->quantity;
-//                }
-//                $ingredient->stock = $qty_left;
-//
-//                /* get cost */
-//                if(count($ingredient->stocks))
-//                {
-//                    if($ingredient->physical_quantity == 'Mass')
-//                    {
-//                        $stock_qty = new Mass(1, $ingredient->unit_type);
-//                        $req_qty   = new Mass($ingredient->pivot->quantity, $ingredient->pivot->unit_type);
-//                        $qty_left  = $stock_qty->subtract($req_qty);
-//                        $i = $qty_left->toUnit($ingredient->unit_type);
-//                        $actual_quantity = $req_qty->toUnit($ingredient->unit_type);
-//                    }
-//                    elseif($ingredient->physical_quantity == 'Volume')
-//                    {
-//                        $stock_qty = new Volume(1, $ingredient->unit_type);
-//                        $req_qty   = new Volume($ingredient->pivot->quantity, $ingredient->pivot->unit_type);
-//                        $qty_left  = $stock_qty->subtract($req_qty);
-//                        $i = $qty_left->toUnit($ingredient->unit_type);
-//                    }
-//                    else
-//                    {
-//                        $i = $inventory->stock - $request->quantity;
-//                    }
-//
-//                    $total      = 0;
-//                    $price      = $ingredient->stocks->last()->price;
-//                    $last_stock = $ingredient->stocks->last()->quantity;
-//                    $total      = $price * $actual_quantity;
-//                    $cost       = $cost + $total;
-//                }
-//                $ingredient->save();
-//            }save
-            
-//            $produce = Produce::updateOrCreate(
-//                        [
-//                            'product_id' => $request->product_id,
-//                            'created_at' => date('Y-m-d h:i:s')
-//                        ],
-//                        [
-//                            'date'      => $request->date,
-//                            'quantity'  => $request->quantity
-//                        ]
-//                    );
-//
-//            $product          = $produce->product;
-//            $product->produce = $product->produce + $request->quantity;
-//            $product->cost    = $cost;
-//            $product->save();
-//
-//            $history                = new History();
-//            $history->product_id    = $product->id;
-//            $history->description   = $request->quantity.' '.$product->name.' has been produced';
-//            $history->status        = 'Add';
-//            $history->save();
-//
-//            $this->notification();
-//            return redirect()->route('admin.commissary.produce.index')->withFlashSuccess('Record Saved!');
-//        }
-//        else
-//        {
-//            return redirect()->back()->withFlashDanger('Check inventory for item stock!');
-//        }
+            }
+        }
+
+        if (count($ingredients) == $canProduce) {
+            foreach ($ingredients as $ingredient) {
+                $quantity_left  = 0;
+                $total_stocks   = 0;
+
+                # Stocks Left
+                if ($ingredient->physical_quantity == 'Mass') {
+                    # Ingredients total stocks in commissary_inventories table. (A)
+                    $stock_quantity     =   new Mass($ingredient->stock, $ingredient->unit_type);
+
+                    # Required quantity of ingredients to produce the product
+                    $required_quantity  =   new Mass(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
+
+                    # Total quantity of (A) after the ingredients was used. (B)
+                    $quantity_left      =   $stock_quantity->subtract($required_quantity);
+
+                    # Convert (B) to a string data.
+                    $total_stocks       =   $quantity_left->toUnit($ingredient->unit_type);
+                } elseif ($ingredient->physical_quantity == 'Volume') {
+                    $stock_quantity     =   new Volume($ingredient->stock, $ingredient->unit_type);
+                    $required_quantity  =   new Volume(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
+                    $quantity_left      =   $stock_quantity->subtract($required_quantity);
+                    $total_stocks       =   $quantity_left->toUnit($ingredient->unit_type);
+                } else {
+                    $quantity_left      = $ingredient->stock - $request->quantity;
+                    $total_stocks       = $quantity_left;
+                }
+
+                $ingredient->stock = $quantity_left;
+
+                if (count($ingredient->stock)) {
+                    if ($ingredient->physical_quantity == 'Mass') {
+                        $stock_quantity         = new Mass(1, $ingredient->unit_type);
+                        $required_quantity      = new Mass($ingredient->pivot->quantity, $ingredient->pivot->unit_type);
+                        $quantity_left          = $stock_quantity->subtract($required_quantity);
+                        $actual_quantity        = $required_quantity->toUnit($ingredient->unit_type);
+                        // dd($quantity_left);
+                    } elseif ($ingredient->physical_quantity == 'Volume') {
+                        $stock_quantity     =   new Volume(1, $ingredient->unit_type);
+                        $required_quantity  =   new Volume(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
+                        $quantity_left      =   $stock_quantity->subtract($required_quantity);
+                        $actual_quantity       =   $quantity_left->toUnit($ingredient->unit_type);
+                    } else {
+                        $total_stocks       = $ingredient->stock - $request->quantity;
+                    }
+
+                    $total      = 0;
+                    $price      = $ingredient->stocks->last()->price;
+                    $total      = $price * $actual_quantity;
+                    $cost       = $total + $cost;
+                }
+
+                $ingredient->save();
+            }
+
+            $produce = Produce::updateOrCreate(
+                [
+                    'product_id' => $request->product_id,
+                    'created_at' => date('Y-m-d h:i:s')
+                ],
+                [
+                    'date'      => $request->date,
+                    'quantity'  => $request->quantity
+                ]
+            );
+
+            $product          = $produce->product;
+            $product->produce = $product->produce + $request->quantity;
+            $product->cost    = $cost * $request->quantity;
+            $product->save();
+
+            if ($product->save()) {
+                $history                = new History();
+                $history->product_id    = $product->id;
+                $history->description   = $request->quantity.' '.$product->name.' has been produced';
+                $history->status        = 'Add';
+
+                if ($history->save()) {
+                    $this->notification();
+
+                    return redirect()->route('admin.commissary.produce.index')->withFlashSuccess('Record Saved!');
+                }
+            }
+        } else {
+            return redirect()->back()->withFlashDanger('Check inventory for item stock!');
+        }
     }
 
     public function destroy(Produce $produce){

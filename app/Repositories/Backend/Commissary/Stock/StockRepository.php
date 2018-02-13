@@ -24,7 +24,7 @@ class StockRepository extends BaseRepository
             ->leftJoin('commissary_other_inventories', function($join) {
                 $join->on('commissary_stocks.inventory_id', '=', 'commissary_other_inventories.id');
             })->select('commissary_stocks.*',
-                'drygood_inventories.name',
-                'commissary_other_inventories.name');
+                'drygood_inventories.*',
+                'commissary_other_inventories.*')->get();
 	}
 }

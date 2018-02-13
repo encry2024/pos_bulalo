@@ -4,12 +4,13 @@ namespace App\Models\Stock\Traits\Attribute;
 
 trait StockAttribute
 {
-
-	public function getEditButtonAttribute(){
+	public function getEditButtonAttribute()
+    {
 		return '<a href="'.route('admin.stock.edit', $this).'" class="btn btn-xs btn-primary"><i class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="'.trans('buttons.general.crud.edit').'"></i></a> ';
 	}
 
-	public function getDeleteButtonAttribute(){
+	public function getDeleteButtonAttribute()
+    {
 		return '<a href="'.route('admin.stock.destroy', $this).'"
                  data-method="delete"
                  data-trans-button-cancel="'.trans('buttons.general.cancel').'"
@@ -18,7 +19,8 @@ trait StockAttribute
                  class="btn btn-xs btn-danger"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="'.trans('buttons.general.crud.delete').'"></i></a> ';
 	}
 
-	public function getActionButtonsAttribute(){
+	public function getActionButtonsAttribute()
+    {
 		return $this->edit_button.$this->delete_button;
 	}
 

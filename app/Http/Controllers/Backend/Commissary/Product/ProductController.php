@@ -45,26 +45,6 @@ class ProductController extends Controller
             }
         }
 
-
-    	/*for($i = 0; $i < count($ingredients); $i++)
-        {
-            $name = '';
-
-            if($ingredients[$i]->supplier == 'Other')
-            {
-                $name = $ingredients[$i]->other_inventory->name;
-
-                $selections[$ingredients[$i]->id] = $name;
-            }
-            else
-            {
-                $name = $ingredients[$i]->drygood_inventory->name;
-
-                $selections[$ingredients[$i]->id] = $name;
-            }
-        }
-    	*/
-
     	return view('backend.commissary.product.create', compact('ingredients', 'selections', 'categories'));
     }
 

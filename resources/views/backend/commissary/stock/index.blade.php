@@ -60,7 +60,7 @@
                     { data: 'received' },
                     { data: 'expiration' },
                     { data: 'status' },
-                    { data: 'actions' }
+                    { data: 'actions', searchable: false }
                 ],
                 order:[4, 'desc']
             });

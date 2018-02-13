@@ -30,7 +30,6 @@ trait InventoryRelationship
 		return $this->hasMany(Stock::class)->withTrashed();
 	}
 
-
 	public function commissary_product(){
 		return $this->belongsTo(CommissaryProduct::class, 'inventory_id')->withTrashed();
 	}
