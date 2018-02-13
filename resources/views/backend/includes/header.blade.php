@@ -35,16 +35,12 @@
                         <li class="header">
                             {{ trans_choice('strings.backend.general.you_have.notifications', 0) }}
                         </li>
-                        @if(count($notifications))
-                            @foreach($notifications as $notification)
-                            <li class="header" style="{!! $notification->status == 'new' ? 'background-color: beige;' : 'background-color: white;' !!}">
-                                &nbsp;{{ $notification->description }}
-                                <small class="label label-default pull-right">{{ date('F d, Y h:i A', strtotime($notification->created_at)) }}</small>
-                            </li>
-                            @endforeach
-                        @else
-
-                        @endif
+                        @foreach($notifications as $notification)
+                        <li class="header" style="{!! $notification->status == 'new' ? 'background-color: beige;' : 'background-color: white;' !!}">
+                            &nbsp;{{ $notification->description }}
+                            <small class="label label-default pull-right">{{ date('F d, Y h:i A', strtotime($notification->created_at)) }}</small>
+                        </li>
+                        @endforeach
                         <li class="footer">
                             {{ link_to(route("admin.notification.index"), trans('strings.backend.general.see_all.notifications')) }}
                         </li>
