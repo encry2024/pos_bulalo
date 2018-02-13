@@ -19,6 +19,13 @@ class StockRepository extends BaseRepository
             )
             ->with(['inventory' => function($q) {
                 $q->withTrashed();
-            }])->select('drygood_stocks.id', 'drygood_stocks.quantity', 'drygood_stocks.price', 'drygood_stocks.received', 'drygood_stocks.expiration', 'drygood_stocks.status', 'drygood_stocks.inventory_id', 'drygood_inventories.name');
+            }])->select('drygood_stocks.id',
+                'drygood_stocks.quantity',
+                'drygood_stocks.price',
+                'drygood_stocks.received',
+                'drygood_stocks.expiration',
+                'drygood_stocks.status',
+                'drygood_stocks.inventory_id',
+                'drygood_inventories.name');
 	}
 }

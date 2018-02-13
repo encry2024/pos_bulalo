@@ -31,23 +31,19 @@
                         </span>
                     </a>
 
-                    <ul class="dropdown-menu" id="notification_menu">
-                        @if(count($notifications))
-                            @foreach($notifications as $notification)
-                            <li class="header">
-                                @if($notification->status == 'new')
-                                <span class="label label-danger">New</span>
-                                @else
-                                <span class="label label-default">Read</span>
-                                @endif
-                                &nbsp;{{ $notification->description }}
-                                <small class="pull-right">{{ $notification->date }}</small>
-                            </li>
-                            @endforeach
-                        @else
+                    <ul class="dropdown-menu" id="notification_menu" style="min-width: 410px !important;">
                         <li class="header">
                             {{ trans_choice('strings.backend.general.you_have.notifications', 0) }}
                         </li>
+                        @if(count($notifications))
+                            @foreach($notifications as $notification)
+                            <li class="header" style="{!! $notification->status == 'new' ? 'background-color: beige;' : 'background-color: white;' !!}">
+                                &nbsp;{{ $notification->description }}
+                                <small class="label label-default pull-right">{{ date('F d, Y h:i A', strtotime($notification->created_at)) }}</small>
+                            </li>
+                            @endforeach
+                        @else
+
                         @endif
                         <li class="footer">
                             {{ link_to(route("admin.notification.index"), trans('strings.backend.general.see_all.notifications')) }}

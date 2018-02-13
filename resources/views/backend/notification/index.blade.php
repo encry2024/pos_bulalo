@@ -38,10 +38,6 @@
             </div><!--table-responsive-->
         </div><!-- /.box-body -->
     </div><!--box-->
-
-
-    
-
 @endsection
 
 @section('after-scripts')
@@ -57,7 +53,7 @@
                 ajax: '{!! route('admin.notification.get') !!}',
                 columns: [
                     { data: 'name' },
-                    { data: 'date' },
+                    { data: 'created_at' },
                     { data: 'description' },
                     { data: 'stock_from' },
                     { data: 'status' }

@@ -34,25 +34,21 @@
                         </span>
                     </a>
 
-                    <ul class="dropdown-menu" id="notification_menu">
-                        <?php if(count($notifications)): ?>
-                            <?php $__currentLoopData = $notifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <li class="header">
-                                <?php if($notification->status == 'new'): ?>
-                                <span class="label label-danger">New</span>
-                                <?php else: ?>
-                                <span class="label label-default">Read</span>
-                                <?php endif; ?>
-                                &nbsp;<?php echo e($notification->description); ?>
-
-                                <small class="pull-right"><?php echo e($notification->date); ?></small>
-                            </li>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        <?php else: ?>
+                    <ul class="dropdown-menu" id="notification_menu" style="min-width: 410px !important;">
                         <li class="header">
                             <?php echo e(trans_choice('strings.backend.general.you_have.notifications', 0)); ?>
 
                         </li>
+                        <?php if(count($notifications)): ?>
+                            <?php $__currentLoopData = $notifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li class="header" style="<?php echo $notification->status == 'new' ? 'background-color: beige;' : 'background-color: white;'; ?>">
+                                &nbsp;<?php echo e($notification->description); ?>
+
+                                <small class="label label-default pull-right"><?php echo e(date('F d, Y h:i A', strtotime($notification->created_at))); ?></small>
+                            </li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php else: ?>
+
                         <?php endif; ?>
                         <li class="footer">
                             <?php echo e(link_to(route("admin.notification.index"), trans('strings.backend.general.see_all.notifications'))); ?>

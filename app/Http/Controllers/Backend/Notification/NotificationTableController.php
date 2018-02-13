@@ -18,6 +18,9 @@ class NotificationTableController extends Controller
 
     public function __invoke(Request $request){
 		return Datatables::of($this->notifications->getForDataTable())
+            ->editColumn('created_at', function ($notification) {
+                return date('F d, Y - h:i A', strtotime($notification->created_at));
+            })
 			->make(true);
     }
 }

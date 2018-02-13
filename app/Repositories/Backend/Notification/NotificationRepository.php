@@ -13,6 +13,6 @@ class NotificationRepository extends BaseRepository
 
 	public function getForDataTable(){
 		return $this->query()
-				->with('inventory')->orderBy('date', 'desc');
+				->with('inventory')->orderBy('created_at', 'desc');
 	}
 }
