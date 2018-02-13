@@ -17,6 +17,19 @@ class StockRepository extends BaseRepository
 			->with(['inventory' => function($q) {
 				$q->withTrashed();
 			}])
-			->select('id', 'quantity', 'price', 'received', 'expiration', 'status', 'inventory_id');
+            ->leftJoin('inventories', function($join) {
+                $join->on('stocks.inventory_id', '=', 'inventories.id');
+            })
+            ->leftJoin('commissary_products', function($join) {
+                $join->on('inventories.inventory_id', '=', 'commissary_products.id');
+            })
+            ->leftJoin('drygood_inventories', function($join) {
+                $join->on('inventories.inventory_id', '=', 'drygood_inventories.id');
+            })
+            ->leftJoin('commissary_other_inventories', function($join) {
+                $join->on('stocks.inventory_id', '=', 'commissary_other_inventories.id');
+            })->select('stocks.*',
+                'drygood_inventories.*',
+                'commissary_other_inventories.*')->get();
 	}
 }

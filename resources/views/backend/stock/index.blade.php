@@ -54,13 +54,13 @@
                 serverSide: true,
                 ajax: '{!! route('admin.stock.get') !!}',
                 columns: [
-                    { data: 'inventories' },
+                    { data: 'name' },
                     { data: 'quantity' },
                     { data: 'price' },
                     { data: 'received' },
                     { data: 'expiration' },
                     { data: 'status' },
-                    { data: 'actions' }
+                    { data: 'actions', searchable: false }
                 ],
                 order:[4, 'desc']
             });

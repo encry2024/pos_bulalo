@@ -27,7 +27,7 @@ class StockTableController extends Controller
                 return $stock->name;
             })
             ->editColumn('quantity', function($stock) {
-                return $stock->inventory->stock . ' ' . $stock->inventory->unit_type;
+                return $stock->quantity . ' ' . $stock->inventory->unit_type;
             })
         	->addColumn('actions', function($stock) {
         		return $stock->action_buttons;

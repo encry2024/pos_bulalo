@@ -15,7 +15,7 @@ class StockRepository extends BaseRepository
     {
 		return $this->query()
             ->leftJoin('drygood_inventories',
-                'drygood_inventories.id', '=', 'drygood_stocks.inventory_id'
+                'drygood_stocks.inventory_id', '=', 'drygood_inventories.id'
             )
             ->with(['inventory' => function($q) {
                 $q->withTrashed();
