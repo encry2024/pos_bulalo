@@ -8,12 +8,13 @@ use App\Models\Notification\Notification;
 
 class NotificationController extends Controller
 {
-    public function index(){
+    public function index()
+    {
     	return view('backend.notification.index');
     }
 
-
-	public function readAll(){
+	public function readAll()
+    {
 		$notifications = Notification::where('status','new')->get();
 
 		foreach ($notifications as $notification) {

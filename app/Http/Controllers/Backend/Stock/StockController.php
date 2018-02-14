@@ -33,31 +33,20 @@ class StockController extends Controller
         $ingredients = [];
         $selections  = [];
 
-        foreach($inventories as $inventory)
-        {
+        foreach($inventories as $inventory) {
             $name = '';
             $temp = [];
 
-            if($inventory->supplier == 'Other')
-            {
+            if($inventory->supplier == 'Other') {
                 $name = $inventory->other->name;
-            }
-            elseif($inventory->supplier == 'Commissary Product')
-            {
+            } elseif($inventory->supplier == 'Commissary Product') {
                 $name = $inventory->commissary_product->name;
-            }
-            elseif($inventory->supplier == 'DryGoods Material')
-	        {
+            } elseif($inventory->supplier == 'DryGoods Material') {
 	            $name = $inventory->dry_good_inventory->name;
-	        }
-            else
-            {
-            	if($inventory->commissary_inventory->supplier == 'Other')
-            	{
+	        } else {
+            	if($inventory->commissary_inventory->supplier == 'Other') {
             		$name = $inventory->commissary_inventory->other_inventory->name;
-            	}
-            	else
-            	{
+            	} else {
             		$name = $inventory->commissary_inventory->drygood_inventory->name;
             	}
             }
@@ -69,6 +58,8 @@ class StockController extends Controller
         }
 
         $inventories = (object)$selections;
+
+        // dd($inventories);
 		
 		return view('backend.stock.create', compact('inventories'));
 	}

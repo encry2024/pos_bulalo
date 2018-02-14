@@ -32,12 +32,12 @@ class DeliveryController extends Controller
             return redirect()->back()->withFlashDanger('Please choose an Item.');
         } else {
             if($inventory->stock >= $request->quantity) {
-                $delivery 			 = new Delivery();
-                $delivery->item_id   = $request->item_id;
-                $delivery->quantity  = $request->quantity;
-                $delivery->date 	 = $request->date;
-                $delivery->deliver_to= $request->deliver_to;
-                $delivery->price 	 = count($inventory->stocks) ? $inventory->stocks->last()->price : 0;
+                $delivery 			    = new Delivery();
+                $delivery->item_id      = $request->item_id;
+                $delivery->quantity     = $request->quantity;
+                $delivery->date 	        = $request->date;
+                $delivery->deliver_to   = $request->deliver_to;
+                $delivery->price 	    = count($inventory->stocks) ? $inventory->stocks->last()->price : 0;
                 $delivery->save();
 
                 $inventory->stock = $inventory->stock - $request->quantity;

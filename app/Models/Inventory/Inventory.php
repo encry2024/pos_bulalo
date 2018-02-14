@@ -11,6 +11,8 @@ class Inventory extends Model
 {
 	use InventoryAttribute, InventoryRelationship, SoftDeletes;
 
+	protected $table = 'inventories';
+
     protected $fillable = ['id', 'inventory_id', 'reorder_level', 'unit_type', 'category_id', 'supplier', 'physical_quantity'];
 
     protected $hidden = ['created_at', 'updated_at'];

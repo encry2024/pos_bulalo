@@ -14,22 +14,14 @@ class StockRepository extends BaseRepository
 	public function getForDataTable()
     {
 		return $this->query()
-			->with(['inventory' => function($q) {
-				$q->withTrashed();
-			}])
-            ->leftJoin('inventories', function($join) {
-                $join->on('stocks.inventory_id', '=', 'inventories.id');
+            ->when('inventory.supplier' == 'DryGoods Material', function($q) {
+                $q->with('inventory.dry_good_inventory');
             })
-            ->leftJoin('commissary_products', function($join) {
-                $join->on('inventories.inventory_id', '=', 'commissary_products.id');
+            ->when('inventory.supplier' === 'Commissary Product', function($q) {
+                $q->with('commissary_product');
             })
-            ->leftJoin('drygood_inventories', function($join) {
-                $join->on('inventories.inventory_id', '=', 'drygood_inventories.id');
-            })
-            ->leftJoin('commissary_other_inventories', function($join) {
-                $join->on('stocks.inventory_id', '=', 'commissary_other_inventories.id');
-            })->select('stocks.*',
-                'drygood_inventories.*',
-                'commissary_other_inventories.*')->get();
+            ->when('inventory.supplier' == 'DryGoods Material', function($q) {
+                $q->with('inventory.dry_good_inventory');
+            })->get();
 	}
 }

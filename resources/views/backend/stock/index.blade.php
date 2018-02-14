@@ -54,7 +54,7 @@
                 serverSide: true,
                 ajax: '{!! route('admin.stock.get') !!}',
                 columns: [
-                    { data: 'name' },
+                    { data: 'inventories' },
                     { data: 'quantity' },
                     { data: 'price' },
                     { data: 'received' },

@@ -17,32 +17,39 @@ use App\Models\Other\Inventory as Other;
 trait InventoryRelationship
 {
 
-	public function category(){
+	public function category()
+    {
 		return $this->belongsTo(Category::class);
 	}
 
-	public function product_size(){
+	public function product_size()
+    {
 		return $this->belongsToMany(ProductSize::class, 'inventory_product_size', 'inventory_id' ,'product_size_id')
 			->withPivot('quantity', 'unit_type');
 	}
 
-	public function stocks(){
+	public function stocks()
+    {
 		return $this->hasMany(Stock::class)->withTrashed();
 	}
 
-	public function commissary_product(){
+	public function commissary_product()
+    {
 		return $this->belongsTo(CommissaryProduct::class, 'inventory_id')->withTrashed();
 	}
 
-	public function commissary_inventory(){
+	public function commissary_inventory()
+    {
 		return $this->belongsTo(CommissaryInventory::class, 'inventory_id')->withTrashed();
 	}
 
-	public function dry_good_inventory(){
+	public function dry_good_inventory()
+    {
 		return $this->belongsTo(DryGoodInventory::class, 'inventory_id')->withTrashed();
 	}
 
-	public function other(){
+	public function other()
+    {
 		return $this->belongsTo(Other::class, 'inventory_id');
 	}
 }
