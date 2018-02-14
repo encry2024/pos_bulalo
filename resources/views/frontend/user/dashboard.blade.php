@@ -412,7 +412,7 @@
                                 <p>Cash <span class="pull-right" id="print_cash">0.00</span></p>
                                 <p>Change <span class="pull-right" id="print_change">0.00</span></p>
                                 <p>Discount <span class="pull-right" id="print_discount">0.00</span></p>
-                                <p>Amoun Due <span class="pull-right" id="print_amount_due">0.00</span></p>
+                                <p>Amount Due <span class="pull-right" id="print_amount_due">0.00</span></p>
                                 <p>&nbsp;</p>
                             </div>
                         </div>
@@ -1218,7 +1218,7 @@
                         payable     : payable,
                         discount    : discount,
                         vat         : vat,
-                        charge      : charge,
+                        //charge      : charge,
                         amount_due  : amount_due
                     },
                     success: function(data){
