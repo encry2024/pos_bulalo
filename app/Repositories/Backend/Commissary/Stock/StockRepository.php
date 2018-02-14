@@ -10,7 +10,7 @@ use App\Models\Commissary\Stock\Stock;
 class StockRepository extends BaseRepository
 {
 	const MODEL = Stock::class;
-
+                                                                                                                                                                                                                                                                                                                                                                               
 	public function getForDataTable()
     {
         return $this->query()

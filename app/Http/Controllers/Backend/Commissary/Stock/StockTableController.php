@@ -20,7 +20,7 @@ class StockTableController extends Controller
     {
         $this->stocks = $stocks;
     }
-
+                                                                                                                                                                                            
     public function __invoke(Request $request)
     {
         return Datatables::of($this->stocks->getForDataTable())

@@ -20,6 +20,7 @@ class SettingTableController extends Controller
 
     public function store(TableRequest $request){
         Table::create(['number' => $request->number, 'price' => $request->price]);
+
         return redirect()->route('admin.setting_table.index')->withFlashSuccess('New table has been created!');
     }
 

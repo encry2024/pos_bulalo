@@ -85,15 +85,15 @@
 
                                 <div class="panel-body">
                                     @if(count($products))
-                                    @foreach($products as $product)
-                                        <a class="product-box" id="{{ $product->id }}" data-code="{{ $product->code }}" onclick="product_click(this)">
-                                            <div class="product-title">{{ $product->name }}</div>
+                                        @foreach($products as $product)
+                                            <a class="product-box" id="{{ $product->id }}" data-code="{{ $product->code }}" onclick="product_click(this)">
+                                                <div class="product-title">{{ $product->name }}</div>
 
-                                            <div class="product-body">
-                                                <img src="{{ url('img/product').'/'.$product->image }}">
-                                            </div>
-                                        </a>
-                                    @endforeach
+                                                <div class="product-body">
+                                                    <img src="{{ url('img/product').'/'.$product->image }}">
+                                                </div>
+                                            </a>
+                                        @endforeach
                                     @else
                                     <p>No Product.</p>
                                     @endif
@@ -816,8 +816,9 @@
                         transaction_no: transaction_no
                     },
                     success: function(data){
+                        console.log(data);
                         data = JSON.parse(data);
-                        if(data.status == 'success')
+                        if(data.status == 'succ                                                     ess')
                         {
                             flag = true;
                             $('#saveModal').modal('hide');

@@ -25,11 +25,11 @@ class InventoryTableController extends Controller
             ->editColumn('name', function($inventory) {
                 return $inventory->supplier == 'Other' ? $inventory->other_inventory->name : $inventory->drygood_inventory->name;
             })
-            ->editColumn('comm_stock', function($inventory) {
-                return $inventory->comm_stock;
+            ->editColumn('stock', function($inventory) {
+                return $inventory->stock;
             })
-            ->editColumn('comm_inv_reorder_level', function($inventory) {
-                return $inventory->comm_inv_reorder_level;
+            ->editColumn('reorder_level', function($inventory) {
+                return $inventory->reorder_level;
             })
             ->editColumn('category', function($inventory) {
                 return $inventory->category->name;

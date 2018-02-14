@@ -53,10 +53,10 @@
                 ajax: '{!! route('admin.commissary.inventory.get') !!}',
                 columns: [
                     { data: 'name'},
-                    { data: 'comm_stock',                   searchable: false },
-                    { data: 'comm_inv_reorder_level',       searchable: false },
+                    { data: 'stock',                searchable: false },
+                    { data: 'reorder_level',        searchable: false },
                     { data: 'category'},
-                    { data: 'actions',                      searchable: false }
+                    { data: 'actions',              searchable: false }
                 ],
                 order: [1, 'asc']
             });

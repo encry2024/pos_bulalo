@@ -15,16 +15,21 @@ class InventoryRepository extends BaseRepository
     {
         return $this->query()
             ->with('category')
-            ->leftJoin('commissary_other_inventories',
-                'commissary_inventories.inventory_id', '=', 'commissary_other_inventories.id'
-            )
-            ->leftJoin('drygood_inventories',
-                'commissary_inventories.inventory_id', '=', 'drygood_inventories.id'
-            )->select('commissary_inventories.*',
-                DB::raw('commissary_inventories.stock           as comm_stock'),
-                DB::raw('commissary_inventories.reorder_level   as comm_inv_reorder_level'),
-                'commissary_other_inventories.*',
-                'drygood_inventories.*')
-            ->get();
+            ->when('commissary_inventory.supplier' == 'Other', function($q) {
+                $q->with('commissary_other_inventories');
+            })->when('commissary_inventory.supplier' == 'DryGoods Material', function($q) {
+                $q->with('drygood_inventory');
+            })->get();
+            // ->leftJoin('commissary_other_inventories',
+            //     'commissary_inventories.inventory_id', '=', 'commissary_other_inventories.id'
+            // )
+            // ->leftJoin('drygood_inventories',
+            //     'commissary_inventories.inventory_id', '=', 'drygood_inventories.id'
+            // )->select('commissary_inventories.*',
+            //     DB::raw('commissary_inventories.stock           as comm_stock'),
+            //     DB::raw('commissary_inventories.reorder_level   as comm_inv_reorder_level'),
+            //     'commissary_other_inventories.*',
+            //     'drygood_inventories.*')
+            
 	}
 }

@@ -25,7 +25,7 @@ class TableRequest extends FormRequest
     {
         return [
             'number' => 'required|numeric|unique:Tables,number',
-            'price'  => 'required|numeric|between:1,999',
+            'price'  => 'required|numeric',
         ];
     }
 }

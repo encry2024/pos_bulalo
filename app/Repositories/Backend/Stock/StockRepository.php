@@ -14,14 +14,14 @@ class StockRepository extends BaseRepository
 	public function getForDataTable()
     {
 		return $this->query()
-            ->when('inventory.supplier' == 'DryGoods Material', function($q) {
-                $q->with('inventory.dry_good_inventory');
-            })
-            ->when('inventory.supplier' === 'Commissary Product', function($q) {
-                $q->with('commissary_product');
-            })
-            ->when('inventory.supplier' == 'DryGoods Material', function($q) {
-                $q->with('inventory.dry_good_inventory');
-            })->get();
+        ->when('inventory.supplier' == 'DryGoods Material', function($q) {
+            $q->with('inventory.dry_good_inventory');
+        })
+        ->when('inventory.supplier' === 'Commissary Product', function($q) {
+            $q->with('commissary_product');
+        })
+        ->when('inventory.supplier' == 'DryGoods Material', function($q) {
+            $q->with('inventory.dry_good_inventory');
+        })->get();
 	}
 }
