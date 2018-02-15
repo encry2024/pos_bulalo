@@ -643,11 +643,9 @@
             }
         }
 
-        $('#btn-remove').on('click', function(){
-            if($('#order_list tbody tr.selected').length > 0)
-            {
-                swal(
-                    {
+        $('#btn-remove').on('click', function() {
+            if($('#order_list tbody tr.selected').length > 0) {
+                swal({
                       title: "Are you sure?",
                       text: "You want to remove item from order list?",
                       type: "warning",
@@ -655,8 +653,7 @@
                       confirmButtonColor: "#DD6B55",
                       confirmButtonText: "Remove Item",
                       closeOnConfirm: false
-                    },
-                    function(){
+                    }).then(function() {
                         var rows = $('tr.selected');
                         for(var i = 0; i < rows.length; i++)
                         {
@@ -664,13 +661,11 @@
                             var size = $(rows[i]).attr('data-size');
                             var fix  = $(rows[i]).attr('data-fixed');
                             /* if not fixed remove */
-                            if(!fix)
-                            {
+                            if(!fix) {
+                                console.log("Item can't be remove!");
                                 removeItem(id, size);
                                 swal("Removed!", "Item has been removed!", "success");
-                            }
-                            else
-                            {
+                            } else {
                                 swal("Removed!", "Item can't be remove!", "warning");
                             }
                         }
@@ -695,7 +690,7 @@
                       confirmButtonText: "Remove All",
                       closeOnConfirm: false
                     },
-                    function(){
+                    function() {
                         clearAll();
                         swal("Removed!", "All item has been removed!", "success");
                     }

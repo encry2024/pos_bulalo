@@ -344,45 +344,4 @@ class SaleController extends Controller
             ); 
         }
     }
-
-    public function checkCancelOrder(Request $request)
-    {
-        dd($request->transaction_no);
-        $order = Order::whereTransactionNo($request->transaction_no)->first();
-        dd($order);
-        /*$order = Order::with(['order_list' => function($q) use($request) {
-            $q->whereIn('id', $request->list);
-        },'order_list.product_size'])->find(5);*/
-
-        $order_list = OrderList::whereOrderId(5)->with('product_size')->get();
-
-         // dd($order_list);
-
-         // dd($order);
-
-        foreach($order_list as $list)
-        {
-            $stock = 0;
-
-            foreach($list->product_size->ingredients as $ingredient) {
-                $stock = $list->quantity * $ingredient->pivot->quantity;
-                $ingredient_stock = new Mass($ingredient->stock, $ingredient->unit_type);
-                $overall_stock = $ingredient_stock->add(new Mass($stock, $ingredient->pivot->unit_type));
-                $ingredient->stock = $overall_stock;
-                $ingredient->save();
-
-                $list->delete();
-            }
-        }
-
-        $order = Order::where('transaction_no', $request->transaction_no)->first();
-
-        if(count($order->order_list) == 0)
-        {
-            $order->status = 'Cancelled';
-            $order->save();
-        }
-
-        return json_encode(['status' => $order->status]);
-    }
 }
