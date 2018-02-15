@@ -294,7 +294,7 @@ class SaleController extends Controller
 
         $order = Order::where('transaction_no', $request->transaction_no)->first();
 
-        if(count($order->order_list) == 0)
+        if(count($order->order_list) !== 0)
         {
             $order->status = 'Cancelled';
             $order->save();

@@ -646,9 +646,6 @@
         $('#btn-remove').on('click', function(){
             if($('#order_list tbody tr.selected').length > 0)
             {
-                // 
-                // alert
-                // 
                 swal(
                     {
                       title: "Are you sure?",
@@ -679,9 +676,6 @@
                         }
                     }
                 );
-                // 
-                // end alert
-                // 
             }
         });
 
