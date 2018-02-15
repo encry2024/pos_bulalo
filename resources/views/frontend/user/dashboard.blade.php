@@ -487,7 +487,7 @@
                                     name = ingredients[j]['commissary_inventory']['drygood_inventory']['name'];
                             }
 
-                            var row      =  '<tr' + (stock == 0 || crit > stock ? ' style="background:#b10303;color:white"': '') + ' id="' + name + '">';
+                            var row      =  '<tr' + (stock == 0 || crit > stock ? ' style="background:#b10303;color:white"': '') + ' data-tr-id="' + name + '">';
                                 row      += '<td>' + name + '</td>';
                                 row      += '<td>' + stock + '</td>';
                                 row      += '</tr>';
@@ -495,7 +495,7 @@
                             if(stock == 0)
                                 hasNoStock++;
 
-                            var exist = $(body).find('tr#' + name);
+                            var exist = $(body).find($('tr').data('tr-id'));
 
                             //check for same ingredient name
                             if(exist.length == 0)
@@ -818,7 +818,7 @@
                     success: function(data){
                         console.log(data);
                         data = JSON.parse(data);
-                        if(data.status == 'succ                                                     ess')
+                        if(data.status == 'success')
                         {
                             flag = true;
                             $('#saveModal').modal('hide');
@@ -1334,8 +1334,7 @@
                     showCancelButton: true,
                     confirmButtonText: 'Remove Order',
                     showLoaderOnConfirm: false,
-                    preConfirm: (password) => 
-                    {
+                    preConfirm: (password) => {
                         return new Promise((resolve) => 
                         {
                             $.ajax(
@@ -1451,7 +1450,6 @@
                     list += '</tr>';
                 }
             }
-
 
             $('#transaction_no').text('#' + data.order.transaction_no);
             $('#print_total').text(parseFloat(data.order.payable).toFixed(2));

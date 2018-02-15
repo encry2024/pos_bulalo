@@ -13,7 +13,7 @@
 .product-box:hover{
 	color:#000;
 	text-decoration: none;
-	border: 1px solid red;
+	border: 1px solid #c00000;
 	cursor: pointer;
 }
 .product-title{
@@ -68,7 +68,7 @@ div#options{
   height:20px;
 }
 .selected{
-    background-color: #ff4141;
+    background-color: #c00000;
     color: #fff;
     text-shadow: 1px 1px 3px #000;
 }
