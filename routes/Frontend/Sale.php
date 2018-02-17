@@ -20,4 +20,6 @@ Route::group(['namespace' => 'Sale'], function(){
 
 	Route::post('sale/cancel_order', 'SaleController@cancel_order')->name('sale.cancel_order');
 
+    Route::get('sale/check_cancel_order', 'SaleController@check_cancel_order')->name('sale.cancel_order');
+
 });

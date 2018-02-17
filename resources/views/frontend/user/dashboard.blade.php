@@ -1,7 +1,6 @@
 @extends('frontend.layouts.app')
 
 @section('after-styles')
-
 {{ Html::style('css/dashboard.css') }}
 {{ Html::style('css/sweetalert2.css') }}
 <style type="text/css">
@@ -16,7 +15,6 @@
         text-decoration: none;
     }
 </style>
-
 @endsection
 
 @section('content')
@@ -439,7 +437,7 @@
         var global_table    = 0;
         var dine_in         = false;
 
-        function getIngredients(id){
+        function getIngredients(id) {
             $.ajax({
                 type: 'get',
                 url : '{{ url("dashboard") }}/' + id + '/product',
@@ -452,7 +450,7 @@
                     $(body).find('tr').remove();
                     $('#cup_sizes').find('li').remove();        
 
-                    for(var i = 0; i < prod_sizes.length; i++){
+                    for(var i = 0; i < prod_sizes.length; i++) {
                         var size        = prod_sizes[i]['size'];
                         var price       = prod_sizes[i]['price'];
                         var ingredients = prod_sizes[i]['ingredients'];
@@ -523,7 +521,7 @@
             });
         }        
 
-        function product_click(e){
+        function product_click(e) {
             var id   = $(e).attr('id');
             var code = $(e).attr('data-code');
             var name = $(e).find('.product-title').text();
@@ -535,7 +533,7 @@
             getIngredients(id);
         }
 
-        function product_size(e){
+        function product_size(e) {
             $('li.list-group-item').removeClass('product-active');
             $(e).addClass('product-active');
         }
@@ -560,8 +558,7 @@
             product['qty']  = order[3];
             product['size'] = order[4];
 
-            if(searchItem(product.id, product.size))
-            {
+            if(searchItem(product.id, product.size)) {
                 var row = $('#order_list').find('tr[data-id="' + product.id + '"], tr[data-size="'+ product.size +'"]');
                 var cols = $(row).find('td');
                 var temp = parseInt($($(cols)[1]).text()) + parseInt(product.qty);
@@ -570,9 +567,7 @@
                 $($(cols)[2]).text(temp * product.price);
 
                 updateItem(product.id, product.size, temp);
-            }
-            else
-            {
+            } else {
                 //
                 //append product to orderlist
                 //
@@ -677,9 +672,6 @@
         $('#btn-clear').on('click', function(){
             if($('#order_list tbody tr').length > 0)
             {
-                // 
-                // alert
-                // 
                 swal(
                     {
                       title: "Are you sure?",
@@ -689,15 +681,11 @@
                       confirmButtonColor: "#DD6B55",
                       confirmButtonText: "Remove All",
                       closeOnConfirm: false
-                    },
-                    function() {
+                    }).then(function() {
                         clearAll();
                         swal("Removed!", "All item has been removed!", "success");
                     }
                 );
-                // 
-                // end alert
-                // 
             }
         });
 
@@ -738,6 +726,7 @@
                     url: '{{  url("sale/save") }}',
                     type: 'POST',
                     data: {
+                        _token          : '{{ csrf_token() }}',
                         orders          : JSON.stringify(order_list),
                         cash            : cash,
                         change          : change,
@@ -751,6 +740,8 @@
                     },
                     success: function(data){
                         data = JSON.parse(data);
+
+                        // console.log(data);
 
                         if(data.status == 'success')
                         {
@@ -805,7 +796,6 @@
                         transaction_no: transaction_no
                     },
                     success: function(data){
-                        console.log(data);
                         data = JSON.parse(data);
                         if(data.status == 'success')
                         {
@@ -909,7 +899,7 @@
             }
         }
 
-        function change(){
+        function change() {
             var type = $('#discount_type option:selected').text();
             var val  = $('#discount_type').val();
 
@@ -924,7 +914,7 @@
             $('#change').val(change.toFixed(2));
         }
 
-        function charge_change(){
+        function charge_change() {
             var charge = $('#chargeSaveModal');
             var type = $(charge).find('#discount_type option:selected').text();
             var val  = $(charge).find('#discount_type').val();
@@ -1107,6 +1097,9 @@
             var transact_no = $('#table_order_transact').text();
             order_list.splice(0, order_list.length);
             clearAll();
+            var product = {};
+            var order;
+
 
             if($('#table_list').find('option').length > 0)
             {
@@ -1114,19 +1107,19 @@
                     type: 'GET',
                     url : '{{ url("sale/get_order_list") }}/' + transact_no,
                     success: function(data) {
+
                         var html = '';
                         var total = 0;
 
-                        $('#charge_table tbody').find('tr').remove();
-                        $('#charge_transaction_no').text(data.transaction_no);
 
-                        for(var i = 0; i < Object.keys(data.order_list).length; i++)
-                        {
-                            var product = {};
-                            var order   = data.order_list[i];
+                        $('#charge_table tbody').find('tr').remove();
+                        $('#charge_transaction_no').text(data[0].order.transaction_no);
+                        for(var i = 0; i < Object.keys(data).length; i++) {
+                            // console.log(data[i].order);
+                            order   = data[i];
                             total = total + (order.quantity * order.product_size.price);
 
-                            product['id']   = order.product.id;
+                            product['id']   = order.id;
                             product['code'] = order.product.code;
                             product['price']= order.product_size.price;
                             product['qty']  = order.quantity;
@@ -1136,19 +1129,16 @@
                             //append product to orderlist
                             //
                             order_list.push(product);
-                            
+
                             //
                             // check product size and increase price
-                           //
-                            if(product.size == 'Large' || product.size == 'Medium')
-                            {
+                            //
+                            if(product.size == 'Large' || product.size == 'Medium') {
                                 product.price   = (parseFloat(product.price)).toFixed(2);
                                 code_sz         = product.code  + ' ' + product.size;
                                 qty             = product.qty;
                                 product.price   = parseFloat(product.qty * product.price).toFixed(2);
-                            }
-                            else 
-                            {
+                            } else {
                                 code_sz         = product.code;
                                 qty             = product.qty;
                                 product.price   = (product.qty * product.price).toFixed(2);
@@ -1158,18 +1148,18 @@
                             // add table row
                             //
                             html  = '<tr data-id="' + product.id + '" data-size="' + product.size + '" onclick="toggleActive(this)" data-fixed="1">';
-                            html  = html + '<td>' + code_sz + '</td><td>' + qty + '</td><td>' + product.price + '</td></tr>';
+                            html  += '<td>' + code_sz + '</td><td>' + qty + '</td><td>' + product.price + '</td></tr>';
+                            $('#charge_table tbody').append(html);
                         }
 
-                        if(data.table != null)
+                        /*if(data.order.table != null)
                         {
                             html += '<tr><td>Rent Table</td><td>-</td>';
-                            html += '<td>' + data.table.price + '</td>';
+                            html += '<td>' + data.order.table.price + '</td>';
                             html += '</tr>';
-                            total += parseFloat(data.table.price);
-                        }
-                        
-                        $('#charge_table tbody').append(html);
+                            total += parseFloat(data.order.table.price);
+                        }*/
+
                         $('#charge_total').text(total.toFixed(2));
                         $('#tablesModal').modal('hide');
                     }
@@ -1201,6 +1191,7 @@
                     url: '{{  url("sale/charge_save") }}',
                     type: 'POST',
                     data: {
+                        _token:         '{{ csrf_token() }}',
                         transaction_no: transact,
                         cash        : cash,
                         change      : change,
@@ -1398,20 +1389,23 @@
 
         function print_receipt(data)
         {
+
             var list = '';
-            var _order_list = data.order.order_list;
+            var _order_list = data;
             flag = true;
+
+            // console.log(_order_list);
 
             $('#notify').text('')
             $('#items tbody').find('tr').remove();
 
-
             for(var i = 0; i < Object.keys(_order_list).length; i++)
             {
-                var code  = _order_list[i].product.code;
-                var qty   = _order_list[i].quantity;
-                var price = _order_list[i].price;
-                var size  = _order_list[i].product_size.size;
+                console.log(_order_list.order[i]);
+                var code  = _order_list.order[i].product.code;
+                var qty   = _order_list.order[i].quantity;
+                var price = _order_list.order[i].price;
+                var size  = _order_list.order[i].product_size.size;
                 list += '<tr>';
 
 
@@ -1440,16 +1434,16 @@
                 }
             }
 
-            $('#transaction_no').text('#' + data.order.transaction_no);
-            $('#print_total').text(parseFloat(data.order.payable).toFixed(2));
-            $('#print_cash').text(parseFloat(data.order.cash).toFixed(2));
-            $('#print_change').text(parseFloat(data.order.change).toFixed(2));
-            $('#print_discount').text(parseFloat(data.order.discount).toFixed(2));
-            $('#print_vat').text(parseFloat(data.order.vat).toFixed(2));
-            // $('#print_charge').text(parseFloat(data.order.charge).toFixed(2));
-            $('#print_amount_due').text(parseFloat(data.order.total).toFixed(2));
-            $('#print_type').text(data.order.type);
-            $('#print_table').text(data.order.type == 'Take Out' ? 'N/A' : data.order.table_no);
+            $('#transaction_no').text('#' + data.order[0].order.transaction_no);
+            $('#print_total').text(parseFloat(data.order[0].order.payable).toFixed(2));
+            $('#print_cash').text(parseFloat(data.order[0].order.cash).toFixed(2));
+            $('#print_change').text(parseFloat(data.order[0].order.change).toFixed(2));
+            $('#print_discount').text(parseFloat(data.order[0].order.discount).toFixed(2));
+            $('#print_vat').text(parseFloat(data.order[0].order.vat).toFixed(2));
+            // $('#print_charge').text(parseFloat(data.order[0].order.charge).toFixed(2));
+            $('#print_amount_due').text(parseFloat(data.order[0].order.total).toFixed(2));
+            $('#print_type').text(data.order[0].order.type);
+            $('#print_table').text(data.order[0].order.type == 'Take Out' ? 'N/A' : data.order.table_no);
             $('#items tbody').append(list);
             // $('#payment').hide();
             // $('#official_receipt').show();
