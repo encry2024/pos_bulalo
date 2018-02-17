@@ -22,19 +22,19 @@ class ProductController extends Controller
     public function create(){
         $selections  = [];
     	$ingredients = Inventory::with(
-                            [
-                                'commissary_inventory.other_inventory' => function($q) 
-                                {
-                                    $q->withTrashed();
-                                }, 
-                                'commissary_inventory.drygood_inventory' => function($q)
-                                {
-                                    $q->withTrashed();
-                                }
-                            ]
-                        )
-                        ->withTrashed()
-                        ->get();        
+            [
+                'commissary_inventory.other_inventory' => function($q)
+                {
+                    $q->withTrashed();
+                },
+                'commissary_inventory.drygood_inventory' => function($q)
+                {
+                    $q->withTrashed();
+                }
+            ]
+        )
+        ->withTrashed()
+        ->get();
         
         for($i = 0; $i < count($ingredients); $i++)
         {
@@ -107,11 +107,13 @@ class ProductController extends Controller
     	$product->save();
 
 
-        foreach ($products as $prod) 
+        foreach ($products as $prod)
         {
+
             $cost = 0;
             foreach ($prod->ingredient as $item) 
             {
+
                 $price      = 0;
                 $qty_left   = 0;
                 $last_stock = 0;
@@ -120,33 +122,23 @@ class ProductController extends Controller
 
                 $ingredient = Inventory::findOrFail($item->id);
 
-                if(count($ingredient->stocks))
-                {
+                if(count($ingredient->stocks)) {
                     $price      = $ingredient->stocks->last()->price;
                     $last_stock = $ingredient->stocks->last()->quantity;
                 }
-                if($ingredient->physical_quantity == 'Mass')
-                {
-                    if($ingredient->unit_type == $item->unit_type)
-                    {
+                if($ingredient->physical_quantity == 'Mass') {
+                    if($ingredient->unit_type == $item->unit_type) {
                         $stock_use = $item->quantity;
-                    }
-                    else
-                    {
-                        $stock_qty = new Mass($ingredient->stock, $ingredient->unit_type);
+                    } else {
+                        $stock_qty = new Mass(1, $ingredient->unit_type);
                         $req_qty   = new Mass($item->quantity, $item->unit_type);
                         $qty_left  = $stock_qty->subtract($req_qty);
                         $stock_use = $stock_qty->subtract($qty_left)->toUnit($ingredient->unit_type);
                     }
-                }
-                elseif($ingredient->physical_quantity == 'Volume')
-                {
-                    if($ingredient->unit_type == $item->unit_type)
-                    {
+                } elseif($ingredient->physical_quantity == 'Volume') {
+                    if($ingredient->unit_type == $item->unit_type) {
                         $stock_use = $item->quantity;
-                    }
-                    else
-                    {
+                    } else {
                         $stock_qty = new Volume($ingredient->stock, $ingredient->unit_type);
                         $req_qty   = new Volume($item->quantity, $item->unit_type);
                         $qty_left  = $stock_qty->subtract($req_qty);
@@ -186,19 +178,20 @@ class ProductController extends Controller
             }
         }
 
-    	return redirect()->route('admin.product.index'); 
+    	return redirect()->route('admin.product.index');
     }
 
-    public function show(Product $product){
+    public function show(Product $product)
+    {
         $product = Product::with(
-                    [
-                        'product_size', 
-                        'product_size.ingredients' => function($q) {
-                            $q->withTrashed();
-                        }
-                    ])
-                    ->where('id', $product->id)
-                    ->first();
+        [
+            'product_size',
+            'product_size.ingredients' => function($q) {
+                $q->withTrashed();
+            }
+        ])
+        ->where('id', $product->id)
+        ->first();
 
         return view('backend.product.show', compact('product'));
     }

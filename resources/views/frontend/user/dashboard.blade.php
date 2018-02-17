@@ -1082,7 +1082,7 @@
                         // add table row
                         //
                         html  = '<tr data-id="' + product.id + '" data-size="' + product.size + '" onclick="toggleActive(this)" data-fixed="1">';
-                        html  = html + '<td>' + code_sz + '</td><td>' + qty + '</td><td>' + product.price + '</td></tr>';
+                        html  = '<td>' + code_sz + '</td><td>' + qty + '</td><td>' + product.price + '</td></tr>';
                     }
 
 
@@ -1220,6 +1220,7 @@
                                 clearAll();
                                 global_table = 0;
                                 transaction_no = '';
+                                location.reload();
                             });
                         }
                         else
@@ -1389,33 +1390,31 @@
 
         function print_receipt(data)
         {
-
             var list = '';
             var _order_list = data;
             flag = true;
+
+            // console.log(data);
 
             // console.log(_order_list);
 
             $('#notify').text('')
             $('#items tbody').find('tr').remove();
 
-            for(var i = 0; i < Object.keys(_order_list).length; i++)
+            for(var i = 0; i < Object.keys(_order_list.order).length; i++)
             {
-                console.log(_order_list.order[i]);
+                // console.log(_order_list);
                 var code  = _order_list.order[i].product.code;
                 var qty   = _order_list.order[i].quantity;
                 var price = _order_list.order[i].price;
                 var size  = _order_list.order[i].product_size.size;
+
                 list += '<tr>';
 
-
-                if(qty > 1)
-                {
+                if(qty > 1) {
                     list += '<td>' + qty + '</td>';
                     list += '<td>' + code + ' ' + (size == 'Small' ? '': size) + ' @ ' + (price / qty) + '</td>';
-                }
-                else
-                {
+                } else {
                     list += '<td>' + qty + '</td>';
                     list += '<td>' + code + ' ' + (size == 'Small' ? '': size) + '</td>';
                 }
@@ -1424,10 +1423,8 @@
                 list += '</tr>';
             }
 
-            if(data.order.table != null)
-            {
-                if(data.order.table.price > 0)
-                {
+            if(data.order.table != null) {
+                if(data.order.table.price > 0) {
                     list += '<tr><td></td><td>Rent Table</td>';
                     list += '<td>' + data.order.table.price + '</td>';
                     list += '</tr>';
@@ -1449,6 +1446,7 @@
             // $('#official_receipt').show();
             $('#btn_print').css('visibility', 'visible');
             $('#btn_submit').css('visibility', 'hidden');
+            clearAll();
         }
 
         function get_amount_due(bill, discount, discount_type, companion) {

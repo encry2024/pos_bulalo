@@ -10,7 +10,8 @@ use App\Repositories\Backend\Report\ReportRepository;
 
 class ReportController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $from   = date('Y-m-d');
         $to     = date('Y-m-d');
         $time_from   = date('00:00:00');

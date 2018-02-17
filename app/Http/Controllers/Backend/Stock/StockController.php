@@ -308,30 +308,23 @@ class StockController extends Controller
 	                        $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
 	                    }
 
-					}
-					elseif($ingredient->physical_quantity == 'Volume')
-					{
+					} elseif($ingredient->physical_quantity == 'Volume') {
 					    if($ingredient->unit_type == $ingredient->pivot->quantity)
 	                    {
 	                        $qty_left = $ingredient->pivot->quantity;
-	                    }
-	                    else
-	                    {
+	                    } else {
 	                        $stock_qty = new Mass(1, $ingredient->unit_type);
 
 	                        $req_qty   = new Mass($ingredient->pivot->quantity, $ingredient->pivot->unit_type);
 
 	                        $qty_left  = $stock_qty->subtract($req_qty)->toUnit($ingredient->unit_type);
 	                    }
-					}
-					else
-					{
+					} else {
 					    $qty_left = 1;
 					}
 
-					if($price != 0 && $last_stock != 0)
-					{
-						if($qty_left < 0 || $qty_left == 0)
+					if ($price != 0 && $last_stock != 0) {
+						if ($qty_left < 0 || $qty_left == 0)
 							$qty_left = $ingredient->pivot->quantity;
 
 	                    $total = $price * $qty_left;
