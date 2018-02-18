@@ -259,20 +259,24 @@ class SaleController extends Controller
 
     public function unpaid()
     {
-        $tables = Order::select('table_no')
-                ->where('status', 'Unpaid')
-                ->where('type', 'Dine-in')
-                ->whereBetween('created_at', [Date('Y-m-d 00:00:00'), Date('Y-m-d 23:59:59')])
-                ->get();
+        $tables = Order::select('orders.table_no', 'tables.*')
+            ->rightJoin('tables', function($join) {
+                $join->on('orders.table_no', '=', 'tables.number');
+            })
+        ->where('status', 'Unpaid')
+        ->where('type', 'Dine-in')
+        ->with('table')
+        ->whereBetween('orders.created_at', [Date('Y-m-d 00:00:00'), Date('Y-m-d 23:59:59')])
+        ->get();
 
         return $tables;
     }
 
     public function get_order($table)
     {
-        $order = Order::with(
-                    'order_list', 'order_list.product', 'order_list.product_size', 'table'
-            )->where('status', 'Unpaid')
+        $order = Order::with([
+            'order_list', 'order_list.product', 'order_list.product_size', 'table'
+            ])->where('status', 'Unpaid')
             ->where('type', 'Dine-in')
             ->whereBetween('created_at', [Date('Y-m-d 00:00:00'), Date('Y-m-d 23:59:59')])
             ->where('table_no', $table)

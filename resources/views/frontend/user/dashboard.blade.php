@@ -228,6 +228,8 @@
                     <h4 class="modal-title">TABLES</h4>
                 </div>
                 <div class="modal-body">
+                    <p class="pull-left" style="font-size: 18px; font-weight: bold">TOTAL: <span id="table_rent_price">0.00</span></p>
+                    <hr>
                     <div class="form-group">
                         <label for="table_list">Select Table</label>
                         <select class="form-control" id="table_list">
@@ -1012,15 +1014,13 @@
                     $('#table_order_total').val('0.00');
                     $('#table_list').find('option').remove();
 
-                    for(i = 0; i < data.length; i++)
-                    {
+                    for(i = 0; i < data.length; i++) {
                         options += '<option>' + data[i].table_no + '</option>';
                     }
 
                     $('#table_list').append(options);
 
-                    if(data.length > 0)
-                    {
+                    if(data.length > 0) {
                         table_order($('#table_list').val());
                     }
                 }
@@ -1041,14 +1041,14 @@
                 type: 'GET',
                 url : '{{ url("sale/get_order_list") }}/' + transaction_no,
                 success: function(data) {
-                    var html = '';
+                    var html;
                     $('#order_list tbody').find('tr').remove();
                     order_list.splice(0, Object.keys(order_list).length);
 
-                    for(var i = 0; i < Object.keys(data.order_list).length; i++)
+                    for(var i = 0; i < Object.keys(data).length; i++)
                     {
                         var product = {};
-                        var order   = data.order_list[i];
+                        var order   = data[i];
 
                         product['id']   = order.product.id;
                         product['code'] = order.product.code;
@@ -1063,16 +1063,13 @@
                         
                         //
                         // check product size and increase price
-                       //
-                        if(product.size == 'Large' || product.size == 'Medium')
-                        {
+                        //
+                        if(product.size == 'Large' || product.size == 'Medium') {
                             product.price   = (parseFloat(product.price)).toFixed(2);
                             code_sz         = product.code  + ' ' + product.size;
                             qty             = product.qty;
                             product.price   = parseFloat(product.qty * product.price).toFixed(2);
-                        }
-                        else 
-                        {
+                        } else {
                             code_sz         = product.code;
                             qty             = product.qty;
                             product.price   = (product.qty * product.price).toFixed(2);
@@ -1082,9 +1079,8 @@
                         // add table row
                         //
                         html  = '<tr data-id="' + product.id + '" data-size="' + product.size + '" onclick="toggleActive(this)" data-fixed="1">';
-                        html  = '<td>' + code_sz + '</td><td>' + qty + '</td><td>' + product.price + '</td></tr>';
+                        html  += '<td>' + code_sz + '</td><td>' + qty + '</td><td>' + product.price + '</td></tr>';
                     }
-
 
                     $('#total_amount').text(recompute());
                     $('#order_list tbody').append(html);
@@ -1100,17 +1096,14 @@
             var product = {};
             var order;
 
-
             if($('#table_list').find('option').length > 0)
             {
                 $.ajax({
                     type: 'GET',
                     url : '{{ url("sale/get_order_list") }}/' + transact_no,
                     success: function(data) {
-
                         var html = '';
                         var total = 0;
-
 
                         $('#charge_table tbody').find('tr').remove();
                         $('#charge_transaction_no').text(data[0].order.transaction_no);
@@ -1148,17 +1141,20 @@
                             // add table row
                             //
                             html  = '<tr data-id="' + product.id + '" data-size="' + product.size + '" onclick="toggleActive(this)" data-fixed="1">';
-                            html  += '<td>' + code_sz + '</td><td>' + qty + '</td><td>' + product.price + '</td></tr>';
-                            $('#charge_table tbody').append(html);
+                            html  = html + '<td>' + code_sz + '</td><td>' + qty + '</td><td>' + product.price + '</td></tr>';
+                            // $('#charge_table tbody').append(html);
                         }
 
-                        /*if(data.order.table != null)
+                        console.log(html);
+
+                        if(data[0].order.table.price != null)
                         {
                             html += '<tr><td>Rent Table</td><td>-</td>';
-                            html += '<td>' + data.order.table.price + '</td>';
+                            html += '<td>' + data[0].order.table.price + '</td>';
                             html += '</tr>';
-                            total += parseFloat(data.order.table.price);
-                        }*/
+                            total += parseFloat(data[0].order.table.price);
+                        }
+                        $('#charge_table tbody').append(html);
 
                         $('#charge_total').text(total.toFixed(2));
                         $('#tablesModal').modal('hide');
@@ -1249,10 +1245,13 @@
                 url: '{{ url("sale/order") }}/' + val,
                 success: function(data) {
                     data = JSON.parse(data);
+
                     var rows = '';
                     var _order  =  data.order;
                     var _order_list = _order.order_list;
                     var _order_total = 0;
+
+                    console.log(data);
 
                     $('#table_order_transact').text(_order.transaction_no);
                     $('#table_order_total').text(_order.payable);
@@ -1275,7 +1274,7 @@
                         rows += '</tr>';
                         _order_total += parseFloat(data.order.table.price);
                     }
-                    
+
                     $('#table_order_list tbody').append(rows);
                     $('#table_order_total').text(_order_total.toFixed(2));
                 }

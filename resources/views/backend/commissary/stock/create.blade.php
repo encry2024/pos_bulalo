@@ -50,7 +50,7 @@
                     <div class="col-lg-4">
                         <div class="input-group">
                             <span class="input-group-addon" id="physical_type"></span>
-                            <input name="quantity" type="number" class="form-control" maxlength="191" required="required" id="item-quantity" min="0" value="{{ old('stock') }}">
+                            <input name="quantity" type="number" class="form-control" required="required" id="item-quantity" value="{{ old('stock') }}" step="any">
                         </div>
                     </div>
 

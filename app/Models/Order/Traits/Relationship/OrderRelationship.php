@@ -24,6 +24,6 @@ trait OrderRelationship
 
 	public function table()
     {
-		return $this->belongsTo(Table::class, 'table_no');
+		return $this->belongsTo(Table::class, 'table_no', 'number');
 	}
 }
