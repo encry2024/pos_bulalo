@@ -228,7 +228,11 @@
                     <h4 class="modal-title">TABLES</h4>
                 </div>
                 <div class="modal-body">
-                    <p class="pull-left" style="font-size: 18px; font-weight: bold">TOTAL: <span id="table_rent_price">0.00</span></p>
+                    <p class="pull-left" style="font-size: 15px; font-weight: bold">Creditable Amount: <span id="table_rent_price">0.00</span></p>
+                    <br>
+                    <hr>
+                    <label style="font-size: 15px; font-weight: bold;">Total Creditable Amount: <span id="total_creditable_amount">0.00</span></label>
+                    <br>
                     <hr>
                     <div class="form-group">
                         <label for="table_list">Select Table</label>
@@ -255,11 +259,12 @@
                     
                 </div>
                 <div class="modal-footer">
-                    <p class="pull-left" style="font-size: 18px; font-weight: bold">TOTAL: <span id="table_order_total">0.00</span></p>
                     <button class="btn btn-danger" id="btn_cancel_order">CANCEL ORDER</button>
                     <button type="button" class="btn btn-success" id="btn_additional">ADDITIONAL ORDER</button>
                     <button class="btn btn-default" id="btn-charge">CHARGE BILL</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+
+                    <p class="pull-left" style="font-size: 18px; font-weight: bold">TOTAL: <span id="table_order_total">0.00</span></p>
                 </div>
             </div>
         </div>
@@ -276,6 +281,9 @@
                     <h4 class="modal-title">Transaction No: <b id="charge_transaction_no"></b>&nbsp;</h4>
                 </div>
                 <div class="modal-body">
+                    <p class="pull-left" style="font-size: 15px; font-weight: bold">Creditable Amount: <span id="table_rent_price_charge_modal">0.00</span></p>
+                    <br>
+                    <hr>
                     <div class="row">
                         <div class="col-md-12">
                             <div id="table-wrapper">
@@ -287,7 +295,6 @@
                                             <th style="width:30%;text-align:left"><span class="text">PRICE</span></th>
                                         </thead>
                                         <tbody>
-
                                         </tbody>
                                     </table>
                                 </div>
@@ -1041,12 +1048,13 @@
                 type: 'GET',
                 url : '{{ url("sale/get_order_list") }}/' + transaction_no,
                 success: function(data) {
-                    var html;
+
                     $('#order_list tbody').find('tr').remove();
                     order_list.splice(0, Object.keys(order_list).length);
 
                     for(var i = 0; i < Object.keys(data).length; i++)
                     {
+                        var html = '';
                         var product = {};
                         var order   = data[i];
 
@@ -1104,19 +1112,21 @@
                     success: function(data) {
                         var html = '';
                         var total = 0;
+                        var table_price = '';
+                        var creditable_amount = data[0].order.table.price;
 
                         $('#charge_table tbody').find('tr').remove();
                         $('#charge_transaction_no').text(data[0].order.transaction_no);
+
                         for(var i = 0; i < Object.keys(data).length; i++) {
-                            // console.log(data[i].order);
                             order   = data[i];
                             total = total + (order.quantity * order.product_size.price);
 
-                            product['id']   = order.id;
-                            product['code'] = order.product.code;
-                            product['price']= order.product_size.price;
-                            product['qty']  = order.quantity;
-                            product['size'] = order.product_size.size;
+                            product['id']       = order.id;
+                            product['code']     = order.product.code;
+                            product['price']    = order.product_size.price;
+                            product['qty']      = order.quantity;
+                            product['size']     = order.product_size.size;
 
                             //
                             //append product to orderlist
@@ -1142,21 +1152,20 @@
                             //
                             html  = '<tr data-id="' + product.id + '" data-size="' + product.size + '" onclick="toggleActive(this)" data-fixed="1">';
                             html  = html + '<td>' + code_sz + '</td><td>' + qty + '</td><td>' + product.price + '</td></tr>';
-                            // $('#charge_table tbody').append(html);
+                            $('#charge_table tbody').append(html);
                         }
-
-                        console.log(html);
 
                         if(data[0].order.table.price != null)
                         {
-                            html += '<tr><td>Rent Table</td><td>-</td>';
-                            html += '<td>' + data[0].order.table.price + '</td>';
-                            html += '</tr>';
-                            total += parseFloat(data[0].order.table.price);
+                            table_price += '<tr><td>Rent Table</td><td>-</td>';
+                            table_price += '<td>' + data[0].order.table.price + '</td>';
+                            table_price += '</tr>';
                         }
-                        $('#charge_table tbody').append(html);
 
-                        $('#charge_total').text(total.toFixed(2));
+                        $('#table_rent_price_charge_modal').text(parseFloat(data[0].order.table.price).toFixed(2));
+                        if (data[0].order.table.price < total) {
+                            $('#charge_total').text(parseFloat(total).toFixed(2));
+                        }
                         $('#tablesModal').modal('hide');
                     }
                 });
@@ -1246,10 +1255,12 @@
                 success: function(data) {
                     data = JSON.parse(data);
 
+                    var creditable_amount = data.order.table.price;
                     var rows = '';
                     var _order  =  data.order;
                     var _order_list = _order.order_list;
                     var _order_total = 0;
+                    var total_creditable_amount = 0;
 
                     console.log(data);
 
@@ -1267,16 +1278,23 @@
                         _order_total = _order_total + (_order_list[i].quantity * _order_list[i].product_size.price);
                     }
 
-                    if(data.order.table != null)
+                    /*if(data.order.table != null)
                     {
                         rows += '<tr><td>Rent Table</td><td>-</td>';
                         rows += '<td>' + data.order.table.price + '</td>';
                         rows += '</tr>';
-                        _order_total += parseFloat(data.order.table.price);
+                        _order_total -= parseFloat(data.order.table.price);
+                    }*/
+
+                    total_creditable_amount = creditable_amount - _order_total
+                
+                    $('#table_order_list tbody').append(rows);
+                    if (creditable_amount <= _order_total) {
+                        $('#table_order_total').text(_order_total.toLocaleString(undefined, {minimumFractionDigits: 2}));
                     }
 
-                    $('#table_order_list tbody').append(rows);
-                    $('#table_order_total').text(_order_total.toFixed(2));
+
+                    $('#total_creditable_amount').text("PHP " + total_creditable_amount.toLocaleString(undefined, {minimumFractionDigits: 2}));
                 }
             });
         }
@@ -1353,6 +1371,7 @@
                                 transaction_no: selected_transaction,
                                 list: _c_order
                             }, success: function(data) {
+                                console.log(data);
                                 swal('Item has been removed', '', 'success');
                             }
                         });
@@ -1501,8 +1520,7 @@
             var charge      = 0;
             var amount_due  = 0;
 
-            if(discount_type == 'Senior Citizen')
-            {
+            if(discount_type == 'Senior Citizen') {
                 var discounted      = bill * (discount / 100);  //discount
                 var less_discount   = bill - discounted;        //less discount
 
@@ -1510,9 +1528,7 @@
                 less_vat    = less_discount - vat;  //less vat
                 // charge      = vat * 0.05;           //service charge
                 amount_due  = bill + charge;        //total amount due
-            }
-            else if(discount_type == 'PWD')
-            {
+            } else if(discount_type == 'PWD') {
                 var discounted      = bill * (discount / 100);  //discount
                 var less_discount   = bill - discounted;        //less discount
 
@@ -1520,14 +1536,13 @@
                 less_vat    = less_discount - vat;  //less vat
                 // charge      = vat * 0.05;           //service charge
                 amount_due  = bill + charge;        //total amount due
-            }
-            else
-            {
+            } else {
                 vat         = bill / 1.12;
                 less_vat    = bill - vat;
                 // charge      = vat * 0.05;
                 amount_due  = bill + charge;
             }
+
             var modal = $('#chargeSaveModal');
             $(modal).find('#vat').val(less_vat.toFixed(2));
             $(modal).find('#discount').val(discounted.toFixed(2));

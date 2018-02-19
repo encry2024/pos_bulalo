@@ -297,12 +297,11 @@ class SaleController extends Controller
 
     public function cancel_order(Request $request)
     {
-        $order = Order::whereTransactionNo($request->transaction_no)->first();
-        // dd($order);
-        $order_list = OrderList::whereOrderId($order->id)->with('product_size')->get();
+        // return json_encode(['status' => $request->list]);
+        // $order = Order::whereTransactionNo($request->transaction_no)->first();
+        $order_list = OrderList::whereIn('id', $request->list)->with('product_size')->get();
 
-        foreach($order_list as $list)
-        {
+        foreach($order_list as $list) {
             $stock = 0;
 
             foreach($list->product_size->ingredients as $ingredient) {
