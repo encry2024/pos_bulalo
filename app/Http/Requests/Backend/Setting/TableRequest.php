@@ -24,7 +24,7 @@ class TableRequest extends FormRequest
     public function rules()
     {
         return [
-            'number' => 'required|numeric|unique:Tables,number',
+            'number' => 'required|numeric|unique:tables,number',
             'price'  => 'required|numeric',
         ];
     }
