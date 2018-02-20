@@ -333,7 +333,7 @@
                                     <select class="form-control" id="discount_type" onchange="charge_discount_change(this)">
                                         <option value="0">None</option>
                                         @foreach($settings as $setting)
-                                        <option value="{{ $setting->discount }}">{{ $setting->name }}</option>
+                                            <option value="{{ $setting->discount }}">{{ $setting->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -411,7 +411,7 @@
 
      <!-- Receipt Modal -->
     <div id="printModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-sm">
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
@@ -452,9 +452,13 @@
                                 <p>Creditable Amount <span class="pull-right" id="print_creditable_amount">0.00</span></p>
                                 <p>Excess Amount <span class="pull-right" id="print_creditable_amount">0.00</span></p>
                                 <hr>
-                                <p>Sub Total <span class="pull-right" id="print_total">0.00</span></p>
                                 <!-- <p>Service Charge <span class="pull-right" id="print_charge">0.00</span></p> -->
-                                <p>VAT <span class="pull-right" id="print_vat">0.00</span></p>
+                                <p>VAT Amount <span class="pull-right" id="print_vat">0.00</span></p>
+                                <p>Vatable Sales <span class="pull-right" id="print_vatable_sales">0.00</span></p>
+                                <p>VAT-Exempt Sales <span class="pull-right" id="print_vat_exempt_sales">0.00</span></p>
+                                <p>VAT Zero-Rated Sales <span class="pull-right" id="print_vat_zero_rated_sales">0.00</span></p>
+                                <hr>
+                                <p>Sub Total <span class="pull-right" id="print_total">0.00</span></p>
                                 <p>Cash <span class="pull-right" id="print_cash">0.00</span></p>
                                 <p>Change <span class="pull-right" id="print_change">0.00</span></p>
                                 <p>Discount <span class="pull-right" id="print_discount">0.00</span></p>
