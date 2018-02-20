@@ -186,7 +186,7 @@ class SaleController extends Controller
         $order->status      = 'Paid';
 
         if($order->save()) {
-            $order_list = OrderList::with('product', 'product_size', 'order')->whereOrderId($order->id)->get();
+            $order_list = OrderList::with('product', 'product_size', 'order', 'order.table')->whereOrderId($order->id)->get();
 
             return json_encode(['status' => 'success', 'order' => $order_list]);
         }
@@ -323,8 +323,7 @@ class SaleController extends Controller
 
         $order = Order::where('transaction_no', $request->transaction_no)->first();
 
-        if(count($order->order_list) == 0)
-        {
+        if(count($order->order_list) == 0) {
             $order->status = 'Cancelled';
             $order->save();
         }
