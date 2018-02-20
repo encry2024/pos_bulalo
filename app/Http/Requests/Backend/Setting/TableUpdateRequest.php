@@ -25,7 +25,7 @@ class TableUpdateRequest extends FormRequest
     {
         return [
             'number' => 'required|numeric',
-            'price' => 'required|numeric|between:0,999'
+            'price' => 'required|numeric'
         ];
     }
 }
