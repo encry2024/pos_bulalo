@@ -8,7 +8,8 @@ use App\Models\Setting\Setting;
 
 class SettingController extends Controller
 {
-	public function index(){
+	public function index()
+    {
 		$settings = Setting::all();
 
 		return view('backend.setting.index', compact('settings'));
