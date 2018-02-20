@@ -242,7 +242,7 @@
                     </div>
                     <hr>
                     <h4>Order List</h4>
-                    <p>TRANSACTION NO#: <span id="table_order_transact"></p></span>
+                    <p>TRANSACTION NO#: <span id="table_order_transact"></span></p>
 
                     <table class="table" id="table_order_list">
                         <thead>

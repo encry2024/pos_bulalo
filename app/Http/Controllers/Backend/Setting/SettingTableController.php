@@ -10,18 +10,25 @@ use App\Http\Requests\Backend\Setting\TableUpdateRequest;
 
 class SettingTableController extends Controller
 {
-    public function index() {
+    public function index()
+    {
     	return view('backend.setting.table.index', compact('setting'));
     }
 
-    public function create(){
+    public function create()
+    {
         return view('backend.setting.table.create');
     }
 
-    public function store(TableRequest $request){
-        Table::create(['number' => $request->number, 'price' => $request->price]);
+    public function store(TableRequest $request)
+    {
+        $table = new Table();
+        $table->number = $request->number;
+        $table->price = $request->price;
 
-        return redirect()->route('admin.setting_table.index')->withFlashSuccess('New table has been created!');
+        if($table->save()) {
+            return redirect()->route('admin.setting_table.index')->withFlashSuccess('New table has been created!');
+        }
     }
 
     public function edit(Table $setting_table){

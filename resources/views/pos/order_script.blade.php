@@ -77,7 +77,7 @@
                     product_size($('#cup_sizes').find('li')[0]);
                 }
 
-                if(hasNoStock){
+                if(hasNoStock) {
                     $('#btn_addOrder').attr('disabled', 'disabled');
                 } else {
                     $('#btn_addOrder').removeAttr('disabled');
@@ -1041,6 +1041,8 @@
 
         if(bill > table_charge) {
             total_bill = bill;
+            total_bill_with_12_vat = bill / 1.12;
+            vatable_sales = bill - total_bill_with_12_vat;
         } else {
             total_bill = table_charge;
             total_bill_with_12_vat = table_charge / 1.12;
