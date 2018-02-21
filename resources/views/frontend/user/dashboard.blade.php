@@ -424,7 +424,7 @@
                             <h5>OFFICIAL RECEIPT</h5>
                             <div id="printable">
                                 <p><h4 id="receipt_header">MANDA’S BULALOHAN & GRILL</h4></p>
-                                <p class="text-center">#468 BARANGKA DRIVE, BARANGAY PLAINVIEW MANDALUYONG CITY</p>
+                                <p class="text-center">#468 Barangka Drive, Barangay Plainview Mandaluyong City</p>
                                 <p class="text-center">SEC reg #: CS201733365</p>
                                 <p class="text-center">TIN# 009-841-115-000</p>
                                 <br>
