@@ -419,7 +419,7 @@
                     <h4 class="modal-title"></h4>
                 </div>
                 <div class="modal-body">
-                    <div class="scrollable">
+                    <div class="scrollable" style="margin-left: 3.75rem;">
                         <div id="official_receipt">
                             <h5>OFFICIAL RECEIPT</h5>
                             <div id="printable">
