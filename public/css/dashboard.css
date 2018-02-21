@@ -75,8 +75,6 @@ div#options{
 #official_receipt{
 	width: 360px;
 	margin:0 auto;
-	margin-left: -3.75rem;
-	width: 118%;
 }
 #printable{
 	min-height: 360px; 
