@@ -14,18 +14,21 @@ use App\Http\Requests\Backend\Inventory\StoreInventoryRequest;
 
 class InventoryController extends Controller
 {
-    public function index(){
+    public function index()
+    {
     	return view('backend.commissary.inventory.index');
     }
 
-    public function create(){
+    public function create()
+    {
         $categories = Category::pluck('name', 'id');
         $dry_goods  = DryGood::pluck('name', 'id');
 
     	return view('backend.commissary.inventory.create', compact('categories', 'dry_goods'));
     }
 
-    public function store(StoreInventoryRequest $request){
+    public function store(StoreInventoryRequest $request)
+    {
     	$item = null;
 
         if($request->supplier == 'Other')
@@ -53,7 +56,8 @@ class InventoryController extends Controller
     	return redirect()->route('admin.commissary.inventory.index');
     }
 
-    public function edit(Inventory $inventory){
+    public function edit(Inventory $inventory)
+    {
     	$categories = Category::pluck('name', 'id');
         
     	return view('backend.commissary.inventory.edit', compact('categories', 'inventory'));

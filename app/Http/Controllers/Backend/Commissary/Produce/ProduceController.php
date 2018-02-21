@@ -106,7 +106,7 @@ class ProduceController extends Controller
                     $total_stocks       = $quantity_left;
                 }
 
-                $ingredient->stock = $quantity_left;
+                $ingredient->stock = $total_stocks;
 
                 if (count($ingredient->stock)) {
                     if ($ingredient->physical_quantity == 'Mass') {
@@ -119,7 +119,7 @@ class ProduceController extends Controller
                         $stock_quantity     =   new Volume(1, $ingredient->unit_type);
                         $required_quantity  =   new Volume(($request->quantity * $ingredient->pivot->quantity), $ingredient->pivot->unit_type);
                         $quantity_left      =   $stock_quantity->subtract($required_quantity);
-                        $actual_quantity       =   $quantity_left->toUnit($ingredient->unit_type);
+                        $actual_quantity    =   $quantity_left->toUnit($ingredient->unit_type);
                     } else {
                         $total_stocks       = $ingredient->stock - $request->quantity;
                     }

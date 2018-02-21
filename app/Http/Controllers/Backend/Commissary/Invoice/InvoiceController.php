@@ -30,23 +30,23 @@ class InvoiceController extends Controller
 
 	public function fetchRecord($date) {
 		$inventory = Inventory::with(
-					[
-						'stocks' => function($q) use ($date) 
-						{
-							$q->selectRaw('sum(quantity) as quantity, inventory_id')
-								->where('received', $date)
-								->withTrashed()
-								->groupBy('inventory_id');
-						}
-					])
-					->whereHas('stocks', function($q) use ($date) 
-						{
-							$q->selectRaw('sum(quantity) as quantity, inventory_id')
-								->where('received', $date)
-								->withTrashed()
-								->groupBy('inventory_id');
-						})
-					->get();
+            [
+                'stocks' => function($q) use ($date)
+                {
+                    $q->selectRaw('sum(quantity) as quantity, inventory_id')
+                        ->where('received', $date)
+                        ->withTrashed()
+                        ->groupBy('inventory_id');
+                }
+            ])
+            ->whereHas('stocks', function($q) use ($date)
+                {
+                    $q->selectRaw('sum(quantity) as quantity, inventory_id')
+                        ->where('received', $date)
+                        ->withTrashed()
+                        ->groupBy('inventory_id');
+                })
+            ->get();
 
 		return $inventory;
 	}
