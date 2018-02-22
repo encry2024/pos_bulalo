@@ -69,8 +69,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                        @if(count($orders))
-                            @foreach($orders as $order)
+                        @if(count($order_lists))
+                            @foreach($order_lists as $order_list)
                                 <tr>
                                     <td>{{ $order->transaction_no }}</td>
                                     <td>

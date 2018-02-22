@@ -287,6 +287,12 @@
         var order_type  = $('#order_type').val();
         var table_no    = order_type == 'Take Out' ? 0 : $('#table option:selected').text();
 
+        if (!isNaN(amount_due)) {
+            amount_due = parseFloat($('#total_amount_due').val());
+        } else {
+            amount_due = 0;
+        }
+
         if((cash >= amount_due) && (order_type == 'Take Out'))
         {
             $('#btn_submit').attr('readonly','');
@@ -467,6 +473,12 @@
         var type = $('#discount_type option:selected').text();
         var val  = $('#discount_type').val();
 
+        if (typeof table_charge !== undefined) {
+            var table_charge = table_charge;
+        } else {
+            var table_charge = 0;
+        }
+
         get_amount_due(recompute(), val, type, 0, table_charge);
         var total  = parseFloat($('#total_amount_due').val());
         var change = parseFloat($('#cash').val()) - total;
@@ -544,7 +556,7 @@
             $('#panel_table').show();
             $('#btn_submit').text('Submit');
         } else {
-            get_amount_due(recompute(), 0, 'None', 0);
+            get_amount_due(recompute(), 0, 'None', 0, 0);
             $('#panel_discount_type').show();
             $('#panel_payable').show();
             $('#panel_cash').show();
@@ -718,7 +730,11 @@
                     total_charge_amount = creditable_amount - total;
 
                     $('#table_rent_price_charge_modal').text(charge_modal_price);
-                    $('#table_total_rent_price_charge_modal').text(total_charge_amount);
+                    if (total_charge_amount <= 0) {
+                        $('#table_total_rent_price_charge_modal').text("PHP 0.00");
+                    } else {
+                        $('#table_total_rent_price_charge_modal').text(total_charge_amount);
+                    }
                     $('#charge_total').text(parseFloat(total).toFixed(2));
                     $('#tablesModal').modal('hide');
                 }
@@ -844,7 +860,11 @@
 
                 $('#table_order_total').text(_order_total.toLocaleString(undefined, {minimumFractionDigits: 2}));
                 $('#table_rent_price').text("PHP " + credits.toLocaleString(undefined, {minimumFractionDigits: 2}));
-                $('#total_creditable_amount').text("PHP " + total_creditable_amount.toLocaleString(undefined, {minimumFractionDigits: 2}));
+                if (total_creditable_amount <= 0) {
+                    $('#total_creditable_amount').text("PHP 0.00");
+                } else {
+                    $('#total_creditable_amount').text("PHP " + total_creditable_amount.toLocaleString(undefined, {minimumFractionDigits: 2}));
+                }
             }
         });
     }
@@ -970,6 +990,12 @@
         var amount_due  = 0;
         var table_charge = parseFloat(table_charge);
 
+        if (! isNaN(table_charge)) {
+            table_charge = parseFloat(table_charge);
+        } else {
+            table_charge = 0;
+        }
+
         if(discount_type == 'Senior Citizen')
         {
             var discounted      = bill * (discount / 100);  //discount
@@ -978,7 +1004,7 @@
             vat         = less_discount / 1.12; //net of vat
             less_vat    = less_discount - vat;  //less vat
             // charge      = vat * 0.05;           //service charge
-            amount_due  = bill + charge+ table_charge;        //total amount due
+            amount_due  = bill + charge + table_charge;        //total amount due
         }
         else if(discount_type == 'PWD')
         {
@@ -1087,7 +1113,6 @@
 
         for(var i = 0; i < Object.keys(_order_list.order).length; i++)
         {
-            // console.log(_order_list);
             var code  = _order_list.order[i].product.code;
             var qty   = _order_list.order[i].quantity;
             var price = _order_list.order[i].price;
@@ -1127,7 +1152,7 @@
         $('#print_amount_due').text(parseFloat(data.order[0].order.total).toFixed(2));
         $('#print_type').text(data.order[0].order.type);
         $('#print_table').text(data.order[0].order.type == 'Take Out' ? 'N/A' : data.order[0].order.table_no);
-        $('#print_creditable_amount').text(data.order[0].order.table.price);
+        $('#print_creditable_amount').text(data.order[0].order.type == 'Take Out' ? 'N/A' : data.order[0].order.table.price);
         $('#items tbody').append(list);
         // $('#payment').hide();
         // $('#official_receipt').show();
