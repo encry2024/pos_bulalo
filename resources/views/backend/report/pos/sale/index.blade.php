@@ -60,66 +60,33 @@
             <div class="table-responsive">
                 <table id="datatable" class="table table-condensed table-hover">
                     <thead>
-                    <tr>
-                        <th>TRANSACTION NO</th>
-                        <th>QUANTITY/SIZE</th>
-                        <th>TOTAL PRICE</th>
-                        <th>SOLD DATE</th>
-                        <th>&nbsp;</th>
-                    </tr>
+                        <tr>
+                            <th>TRANS. NO#</th>
+                            <th>DATE</th>
+                            <th>TIME</th>
+                            <th>USER</th>
+                            <th>PROD. NAME</th>
+                            <th>TABLE</th>
+                            <th>DISCOUNT</th>
+                            <th>SELLING PRICE</th>
+                            <th>COST</th>
+                            <th>PROFIT</th>
+                        </tr>
                     </thead>
                     <tbody>
                         @if(count($order_lists))
                             @foreach($order_lists as $order_list)
                                 <tr>
-                                    <td>{{ $order->transaction_no }}</td>
-                                    <td>
-                                        <?php
-                                            $lists  = $order->order_list;
-                                            $size_sm= 0;
-                                            $size_md= 0;
-                                            $size_lg= 0;
-                                            $size   = '';
-
-                                            foreach ($lists as $list) {
-                                                $product = $list->product_size;
-
-                                                if($product->size == 'Small')
-                                                    $size_sm += $list->quantity;
-                                                elseif($product->size == 'Medium')
-                                                    $size_md += $list->quantity;
-                                                else
-                                                    $size_lg += $list->quantity;
-                                            }
-
-                                            if($size_sm > 0){
-                                                $size = $size_sm.' Small';
-                                            }
-
-                                            if($size_md > 0){
-                                                $size .= $size_sm > 0 ? ' / ': '';
-                                                $size .= $size_md.' Medium';
-                                            }
-
-                                            if($size_lg > 0){
-                                                $size .= $size_md > 0 ? ' / ': '';
-                                                $size .= $size_lg.' Large';
-                                            }
-                                            
-                                            echo $size;
-                                        ?> 
-                                    </td>
-                                    <td>
-                                        <?php
-
-                                            $lists  = $order->order_list;
-                                            $total  = $lists->sum('price');
-
-                                            echo number_format($total, 2);
-
-                                        ?>
-                                    </td>
-                                    <td>{{ $order->created_at->format('Y-m-d') }}</td>
+                                    <td>{{ $order_list->order->transaction_no }}</td>
+                                    <td>{{ date('Y-m-d', strtotime($order_list->created_at)) }}</td>
+                                    <td>{{ date('H:i A', strtotime($order_list->created_at)) }}</td>
+                                    <td>{{ $order_list->order->user->full_name }}</td>
+                                    <td>{{ $order_list->product->name }}</td>
+                                    <td>{{ $order_list->order->table_no }}</td>
+                                    <td>{{ $order_list->order->discount }}</td>
+                                    <td>PHP {{ number_format($order_list->product_size->price, 2) }}</td>
+                                    <td>PHP {{ number_format($order_list->product_size->cost, 2) }}</td>
+                                    <td>PHP {{ number_format($order_list->product_size->price - $order_list->product_size->cost, 2) }}</td>
                                 </tr>
                             @endforeach
                         @else
@@ -132,8 +99,6 @@
             </div><!--table-responsive-->
         </div><!-- /.box-body -->
     </div><!--box-->
-
-
 @endsection
 
 @section('after-scripts')

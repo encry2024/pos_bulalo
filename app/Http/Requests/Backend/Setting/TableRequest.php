@@ -26,6 +26,7 @@ class TableRequest extends FormRequest
         return [
             'number' => 'required|numeric|unique:tables,number',
             'price'  => 'required|numeric',
+            'description'   => 'max:100'
         ];
     }
 }

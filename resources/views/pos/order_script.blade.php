@@ -495,6 +495,7 @@
         var type = $(charge).find('#discount_type option:selected').text();
         var val  = $(charge).find('#discount_type').val();
         var table_charge = $('#chargeModal').find('#table_rent_price_charge_modal').text();
+        var service_charge = $(charge).find('#service_charge_option').val();
 
         charge_get_amount_due($(charge).find('#payable').val(), val, type, 0, table_charge);
         var total  = parseFloat($(charge).find('#total_amount_due').val());
@@ -679,6 +680,9 @@
                     var total = 0;
                     var table_price = '';
                     var creditable_amount = data[0].order.table.price;
+                    var td = data[0].order.table.description;
+
+                    console.log(td);
 
                     $('#charge_table tbody').find('tr').remove();
                     $('#charge_transaction_no').text(data[0].order.transaction_no);
@@ -736,7 +740,10 @@
                         $('#table_total_rent_price_charge_modal').text(total_charge_amount);
                     }
                     $('#charge_total').text(parseFloat(total).toFixed(2));
+                    $('#table_desc').text(td);
+                    $('#table_number').text(data[0].order.table.number);
                     $('#tablesModal').modal('hide');
+
                 }
             });
 
@@ -755,7 +762,7 @@
         var discount    = parseFloat($(modal).find('#discount').val());
         var vat         = parseFloat($(modal).find('#vat').val());
         var amount_due  = parseFloat($(modal).find('#total_amount_due').val());
-        // var charge      = parseFloat($(modal).find('#service_charge').val());
+        var charge      = parseFloat($(modal).find('#service_charge_option').val());
         var transact    = $(modal).find('.modal-title').text();
 
         if(cash >= (payable - discount))
@@ -773,7 +780,7 @@
                     payable     : payable,
                     discount    : discount,
                     vat         : vat,
-                    //charge      : charge,
+                    charge      : charge,
                     amount_due  : amount_due
                 },
                 success: function(data) {
@@ -865,6 +872,7 @@
                 } else {
                     $('#total_creditable_amount').text("PHP " + total_creditable_amount.toLocaleString(undefined, {minimumFractionDigits: 2}));
                 }
+                $('#table_description').text(data.order.table.description);
             }
         });
     }
@@ -877,18 +885,20 @@
             backdrop: 'static',
             keyboard: false
         });
-
+        // stop here
         $('#chargeSaveModal').on('shown.bs.modal', function() {
             $('#chargeModal').modal('hide');
             $(this).find('.modal-title').text(transact);
             $(this).find('#payable').val(charge_total);
-            var val = $(this).find('#discount_type option:selected').val();
-            var type = $(this).find('#discount_type option:selected').text();
-            var table_charge = $('#chargeModal').find('#table_rent_price_charge_modal').text();
+            var val             = $(this).find('#discount_type option:selected').val();
+            var type            = $(this).find('#discount_type option:selected').text();
+            var table_charge    = $('#chargeModal').find('#table_rent_price_charge_modal').text();
+            var service_charge  = $(this).find('#service_charge_option').val();
 
-            console.log(table_charge)
+            charge_get_amount_due(charge_total, val, type, 0, table_charge, service_charge);
 
-            charge_get_amount_due(charge_total, val, type, 0, table_charge);
+            $(this).find('#table_number').val($('#chargeModal').find('#table_number').text());
+            $(this).find('#table_description').val($('#chargeModal').find('#table_desc').text());
         });
     });
 
@@ -972,7 +982,7 @@
 
                 for(var i = 0; i < Object.keys(data).length; i++)
                 {
-                    options += '<option value="' + data[i].price + '">' + + data[i].number + '</option>';
+                    options += '<option value="' + data[i].price + '">' + data[i].number + ' - ' + data[i].description +'</option>';
                 }
 
                 $('#table').append(options);
@@ -998,23 +1008,23 @@
 
         if(discount_type == 'Senior Citizen')
         {
-            var discounted      = bill * (discount / 100);  //discount
-            var less_discount   = bill - discounted;        //less discount
+            var discounted      = bill * (discount / 100);      // discount
+            var less_discount   = bill - discounted;            // less discount
 
-            vat         = less_discount / 1.12; //net of vat
-            less_vat    = less_discount - vat;  //less vat
-            // charge      = vat * 0.05;           //service charge
-            amount_due  = bill + charge + table_charge;        //total amount due
+            vat         = less_discount / 1.12;                 // net of vat
+            less_vat    = less_discount - vat;                  // less vat
+            // charge      = vat * 0.05;                        // service charge
+            amount_due  = bill + charge + table_charge;         // total amount due
         }
         else if(discount_type == 'PWD')
         {
-            var discounted      = bill * (discount / 100);  //discount
-            var less_discount   = bill - discounted;        //less discount
+            var discounted      = bill * (discount / 100);      // discount
+            var less_discount   = bill - discounted;            // less discount
 
-            vat         = less_discount / 1.12; //net of vat
-            less_vat    = less_discount - vat;  //less vat
-            // charge      = vat * 0.05;        //service charge
-            amount_due  = bill + charge + table_charge;        //total amount due
+            vat         = less_discount / 1.12;                 // net of vat
+            less_vat    = less_discount - vat;                  // less vat
+            // charge      = vat * 0.05;                        // service charge
+            amount_due  = bill + charge + table_charge;         // total amount due
         }
         else
         {
@@ -1032,36 +1042,38 @@
         $('#total_amount_due').val(amount_due.toFixed(2));
     }
 
-    function charge_get_amount_due(bill, discount, discount_type, companion, table_charge) {
-        bill            = parseFloat(bill);
-        discount        = parseFloat(discount);
-        var discounted  = 0;
-        var vat         = 0;
-        var less_vat    = 0;
-        var charge      = 0;
-        var amount_due  = 0;
-        var table_charge = parseFloat(table_charge);
+    function charge_get_amount_due(bill, discount, discount_type, companion, table_charge, service_charge) {
+        bill                     = parseFloat(bill);
+        discount                 = parseFloat(discount);
+        var discounted           = 0;
+        var vat                  = 0;
+        var less_vat             = 0;
+        var charge               = 0;
+        var amount_due           = 0;
+        var get_vat_with_service = 0;
+        var table_charge         = parseFloat(table_charge);
+        var service_charge_fee   = service_charge;
 
         if(discount_type == 'Senior Citizen') {
-            var discounted      = bill * (discount / 100);  //discount
-            var less_discount   = bill - discounted;        //less discount
+            var discounted      = bill * (discount / 100);  // discount
+            var less_discount   = bill - discounted;        // less discount
 
-            vat         = less_discount / 1.12; //net of vat
-            less_vat    = less_discount - vat;  //less vat
-            // charge      = vat * 0.05;        //service charge
-            amount_due  = bill + charge;        //total amount due
+            vat         = less_discount / 1.12;             // net of vat
+            less_vat    = less_discount - vat;              // less vat
+            charge      = vat * service_charge_fee;         // service charge
+            amount_due  = bill + charge;                    // total amount due
         } else if(discount_type == 'PWD') {
-            var discounted      = bill * (discount / 100);  //discount
-            var less_discount   = bill - discounted;        //less discount
+            var discounted      = bill * (discount / 100);  // discount
+            var less_discount   = bill - discounted;        // less discount
 
-            vat         = less_discount / 1.12; //net of vat
-            less_vat    = less_discount - vat;  //less vat
-            // charge      = vat * 0.05;        //service charge
-            amount_due  = bill + charge;        //total amount due
+            vat         = less_discount / 1.12;             // net of vat
+            less_vat    = less_discount - vat;              // less vat
+            charge      = vat * service_charge_fee;         // service charge
+            amount_due  = bill + charge;                    // total amount due
         } else {
             vat         = bill / 1.12;
             less_vat    = bill - vat;
-            // charge      = vat * 0.05;
+            charge      = vat * service_charge_fee;
             amount_due  = bill + charge;
         }
 
@@ -1151,7 +1163,7 @@
         // $('#print_charge').text(parseFloat(data.order[0].order.charge).toFixed(2));
         $('#print_amount_due').text(parseFloat(data.order[0].order.total).toFixed(2));
         $('#print_type').text(data.order[0].order.type);
-        $('#print_table').text(data.order[0].order.type == 'Take Out' ? 'N/A' : data.order[0].order.table_no);
+        $('#print_table').text(data.order[0].order.type == 'Take Out' ? 'N/A' : data.order[0].order.table_no + ' - ' + data.order[0].order.table.description);
         $('#print_creditable_amount').text(data.order[0].order.type == 'Take Out' ? 'N/A' : data.order[0].order.table.price);
         $('#items tbody').append(list);
         // $('#payment').hide();

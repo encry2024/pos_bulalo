@@ -37,8 +37,6 @@
             </div><!--table-responsive-->
         </div><!-- /.box-body -->
     </div><!--box-->
-
-
 @endsection
 
 @section('after-scripts')

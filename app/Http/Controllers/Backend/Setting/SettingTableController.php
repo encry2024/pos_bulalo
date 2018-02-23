@@ -25,6 +25,7 @@ class SettingTableController extends Controller
         $table = new Table();
         $table->number = $request->number;
         $table->price = $request->price;
+        $table->description = $request->description;
 
         if($table->save()) {
             return redirect()->route('admin.setting_table.index')->withFlashSuccess('New table has been created!');

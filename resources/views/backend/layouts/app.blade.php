@@ -37,7 +37,6 @@
         {{ Html::script('https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js') }}
         <![endif]-->
 
-
         <!-- Scripts -->
         <script>
             window.Laravel = <?php echo json_encode([

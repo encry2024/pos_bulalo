@@ -17,12 +17,17 @@ class ReportController extends Controller
         $time_from   = date('00:00:00');
         $time_to     = date('23:59:59');
 
-        $order_lists = OrderList::whereBetween('created_at', [$from.' '.$time_from, $to.' '.$time_to])
+        /*$order_lists = OrderList::whereBetween('created_at', [$from.' '.$time_from, $to.' '.$time_to])
             ->where('status', 'Paid')
             ->with('orders')
-            ->get();
+            ->get();*/
+        $order_lists = OrderList::with(['order', 'order.table', 'product', 'product_size'])->get();
+
+        /*foreach ($order_lists as $order_list) {
+            dd($order_list);
+        }*/
                 
-    	return view('backend.report.pos.sale.index', compact('orderlists', 'from', 'to', 'time_from', 'time_to'));
+    	return view('backend.report.pos.sale.index', compact('order_lists', 'from', 'to', 'time_from', 'time_to'));
     }
 
     public function store(Request $request)

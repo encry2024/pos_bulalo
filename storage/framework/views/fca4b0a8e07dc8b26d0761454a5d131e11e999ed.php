@@ -43,7 +43,6 @@
 
         <![endif]-->
 
-
         <!-- Scripts -->
         <script>
             window.Laravel = <?php echo json_encode([

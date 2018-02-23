@@ -33,10 +33,18 @@
                         {{ Form::text('number', old('number', 1), ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required']) }}
                     </div>
                 </div>
+
                 <div class="form-group">
                     {{ Form::label('price', 'Price', ['class' => 'col-lg-2 control-label']) }}
                     <div class="col-lg-4">
                         {{ Form::text('price', old('price', 0), ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required']) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ Form::label('description', 'Description', ['class' => 'col-lg-2 control-label']) }}
+                    <div class="col-lg-4">
+                        {{ Form::textarea('description', old('description'), ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required']) }}
                     </div>
                 </div>
             </div><!-- /.box-body -->

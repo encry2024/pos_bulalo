@@ -240,6 +240,10 @@
                             
                         </select>
                     </div>
+                    <br>
+                    <hr>
+                    <label style="font-size: 15px;">Table Description: <span style="font-weight: bold;" id="table_description"></span></label>
+                    <br>
                     <hr>
                     <h4>Order List</h4>
                     <p>TRANSACTION NO#: <span id="table_order_transact"></span></p>
@@ -281,6 +285,9 @@
                     <h4 class="modal-title">Transaction No: <b id="charge_transaction_no"></b>&nbsp;</h4>
                 </div>
                 <div class="modal-body">
+                    <p class="pull-left">Table: <span id="table_number"></span> - <span id="table_desc"></span></p>
+                    <br>
+                    <hr>
                     <p class="pull-left" style="font-size: 15px; font-weight: bold">Creditable Amount: <span id="table_rent_price_charge_modal">0.00</span></p>
                     <br>
                     <hr>
@@ -342,8 +349,26 @@
                             <div class="row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
+                                        <label for="payable">Table Number</label>
+                                        <input type="input" class="form-control" id="table_number" value='0' readonly>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="payable">Table Description</label>
+                                        <input type="input" class="form-control" id="table_description" value='No description...' readonly>
+                                    </div>
+
+                                    <div class="form-group">
                                         <label for="payable">Total Payable</label>
                                         <input type="input" class="form-control" id="payable" value='0.00' readonly>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="payable">Include service charge?</label>
+                                        <select name="" id="service_charge_option" class="form-control">
+                                            <option value="0.05">Yes</option>
+                                            <option value="0">No</option>
+                                        </select>
                                     </div>
                                 </div> <!-- col-lg-4 -->
 
