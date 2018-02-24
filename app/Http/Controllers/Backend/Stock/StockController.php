@@ -15,6 +15,8 @@ use App\Models\Commissary\History\History;
 use App\Models\DryGood\Delivery\Delivery as DryGoodDelivery;
 
 use App\Http\Requests\Backend\Stock\ManageRequest;
+use App\Http\Requests\Backend\Stock\StorePosStockRequest;
+
 use Illuminate\Support\Facades\Auth;
 
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
@@ -37,6 +39,7 @@ class StockController extends Controller
             $name = '';
             $temp = [];
 
+
             if($inventory->supplier == 'Other') {
                 $name = $inventory->other->name;
             } elseif($inventory->supplier == 'Commissary Product') {
@@ -57,150 +60,113 @@ class StockController extends Controller
             array_push($ingredients, $temp);
         }
 
-        $inventories = (object)$selections;
-
-        // dd($inventories);
+        $inventories = $selections;
 		
 		return view('backend.stock.create', compact('inventories'));
 	}
 
-	public function store(ManageRequest $request)
+	public function store(StorePosStockRequest $request)
     {
 		$stock 		= 0;
 		$inventory 	= Inventory::find($request->inventory_id);
-		
+
 		// check if ingredient is from commissary
-		
-		if($inventory->supplier == 'Commissary Product')
-		{
+		if($inventory->supplier == 'Commissary Product') {
 			$delivery = Delivery::where('item_id', $inventory->inventory_id)
 						->where('status', 'NOT RECEIVED')
 						->where('type', 'PRODUCT')
-						->where('quantity', $request->quantity)
 						->first();
-
-			if(!count($delivery))
-			{
-				return redirect()->route('admin.stock.create')->withFlashDanger('Request quantity does not match from delivered quantity!');
-			}
 
 			$delivery->status = 'RECEIVED';
 			$delivery->save();
 
 			$history 				= new History();
 			$history->product_id 	= $delivery->item_id;
-			$history->description 	= 'Stored '.$request->quantity.' '.$delivery->product->name;
+			$history->description 	= 'Stored '.$delivery->quantity.' '.$delivery->product->name;
 			$history->status 		= 'Minus';
 			$history->save();
 
-			$inventory->AddStock($request->quantity);
+			$inventory->AddStock($delivery->quantity);
 			$inventory->save();
 		}
 		elseif($inventory->supplier == 'Commissary Raw Material')
 		{
 			$delivery = Delivery::where('item_id', $inventory->inventory_id)
-						->where('status', 'NOT RECEIVED')
-						->where('type', 'RAW MATERIAL')
-						->where('quantity', $request->quantity)
-						->first();
+                ->where('status', 'NOT RECEIVED')
+                ->where('type', 'RAW MATERIAL')
+                ->first();
 
-			if(!count($delivery))
-			{
-				return redirect()->route('admin.stock.create')->withFlashDanger('Request quantity does not match from delivered quantity!');
-			}
+            $delivery->status = 'RECEIVED';
+            $delivery->save();
 
-			if($delivery->quantity >= $request->quantity)
-			{
-				$delivery->status = 'RECEIVED';
-				$delivery->save();
+            if($inventory->physical_quantity == 'Mass') {
+                $stock_qty = new Mass($inventory->stock, $inventory->unit_type);
 
-				if($inventory->physical_quantity == 'Mass')
-		        {
-		            $stock_qty = new Mass($inventory->stock, $inventory->unit_type);
+                $req_qty   = new Mass($delivery->quantity, $inventory->unit_type);
 
-		            $req_qty   = new Mass($delivery->quantity, $inventory->unit_type);
+                $qty_left  = $stock_qty->add($req_qty);
 
-		            $qty_left  = $stock_qty->add($req_qty);
+                $stock     = $qty_left->toUnit($inventory->unit_type);
+            } elseif($inventory->physical_quantity == 'Volume') {
+                $stock_qty = new Volume($inventory->stock, $inventory->unit_type);
 
-		            $stock     = $qty_left->toUnit($inventory->unit_type);
-		        }
-		        elseif($inventory->physical_quantity == 'Volume')
-		        {
-		            $stock_qty = new Volume($inventory->stock, $inventory->unit_type);
+                $req_qty   = new Volume($delivery->quantity, $inventory->unit_type);
 
-		            $req_qty   = new Volume($delivery->quantity, $inventory->unit_type);
+                $qty_left  = $stock_qty->add($req_qty);
 
-		            $qty_left  = $stock_qty->add($req_qty);
-
-		            $stock     = $qty_left->toUnit($inventory->unit_type);
-		        }
-		        else
-		        {
-		        	$stock = $inventory->stock + $request->quantity;
-		        }
-			}
+                $stock     = $qty_left->toUnit($inventory->unit_type);
+            } else {
+                $stock = $inventory->stock + $delivery->quantity;
+            }
 
 			$inventory->stock = $stock;
 			$inventory->save();
-		}
-		elseif($inventory->supplier == 'DryGoods Material')
-		{
+		} elseif($inventory->supplier == 'DryGoods Material') {
 			$delivery = DryGoodDelivery::where('item_id', $inventory->inventory_id)
-						->where('status', 'NOT RECEIVED')
-						->where('deliver_to', 'POS')
-						->where('quantity', $request->quantity)
-						->first();
+                ->where('status', 'NOT RECEIVED')
+                ->where('deliver_to', 'POS')
+                ->first();
 
-			if(!count($delivery))
-			{
-				return redirect()->route('admin.stock.create')->withFlashDanger('Request quantity does not match from delivered quantity!');
-			}
+            /*dd($request->quantity);*/
 
-			if($delivery->quantity >= $request->quantity)
-			{
-				$delivery->status = 'RECEIVED';
-				$delivery->save();
+            $delivery->status = 'RECEIVED';
+            $delivery->save();
 
-				if($inventory->physical_quantity == 'Mass')
-		        {
-		            $stock_qty = new Mass($inventory->stock, $inventory->unit_type);
-
-		            $req_qty   = new Mass($delivery->quantity, $inventory->unit_type);
-
-		            $qty_left  = $stock_qty->add($req_qty);
-
-		            $stock = $qty_left->toUnit($inventory->unit_type);
-		        }
-		        elseif($inventory->physical_quantity == 'Volume')
-		        {
-		            $stock_qty = new Volume($inventory->stock, $inventory->unit_type);
-
-		            $req_qty   = new Volume($delivery->quantity, $inventory->unit_type);
-
-		            $qty_left  = $stock_qty->add($req_qty);
-
-		            $stock = $qty_left->toUnit($inventory->unit_type);
-		        }
-		        else
-		        {
-		        	$stock = $inventory->stock + $request->quantity;
-		        }
-			}
+            if($inventory->physical_quantity == 'Mass') {
+                $stock_qty  = new Mass($inventory->stock, $inventory->unit_type);
+                $req_qty    = new Mass($delivery->quantity, $inventory->unit_type);
+                $qty_left   = $stock_qty->add($req_qty);
+                $stock      = $qty_left->toUnit($inventory->unit_type);
+            } elseif($inventory->physical_quantity == 'Volume') {
+                $stock_qty  = new Volume($inventory->stock, $inventory->unit_type);
+                $req_qty    = new Volume($delivery->quantity, $inventory->unit_type);
+                $qty_left   = $stock_qty->add($req_qty);
+                $stock      = $qty_left->toUnit($inventory->unit_type);
+            } else {
+                $stock      = $inventory->stock + $delivery->quantity;
+            }
 
 			$inventory->stock = $stock;
 			$inventory->save();
-		}
-		else
-		{
-			$inventory->stock = $inventory->stock + $request->quantity;
+		} else {
+			$inventory->stock = $inventory->stock + $delivery->quantity;
 			$inventory->save();
 		}
 
-		Stock::create($request->all());
+		// Stock::create($request->all());
 
-		$this->updateProductCost();
+		$stock               = new Stock();
+		$stock->inventory_id = $request->inventory_id;
+		$stock->quantity     = $delivery->quantity;
+		$stock->price        = $request->price;
+		$stock->expiration   = $request->expiration;
+		$stock->received     = $request->received;
+		$stock->status       = 'NEW';
 
-		return redirect()->route('admin.stock.index')->withFlashSuccess('Stock Added Successfully!');
+		if($stock->save()) {
+		    $this->updateProductCost();
+            return redirect()->route('admin.stock.index')->withFlashSuccess('Stock Added Successfully!');
+        }
 	}
 
 	public function edit(Stock $stock)

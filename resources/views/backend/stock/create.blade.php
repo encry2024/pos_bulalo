@@ -31,15 +31,26 @@
                     {{ Form::label('inventory_id', 'Ingredient Name', ['class' => 'col-lg-2 control-label']) }}
 
                     <div class="col-lg-10">
-                        {{ Form::select('inventory_id', $inventories ,null, ['class' => 'form-control', 'required' => 'required', 'autofocus' => 'autofocus']) }}
+                        <select name="inventory_id" id="inventory_id" class="form-control" required="required" autofocus="autofocus">
+                            <option disabled selected>-- Select Item From Inventory --</option>
+                            @foreach($inventories as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                            @endforeach
+                        </select>
                     </div><!--col-lg-10-->
                 </div><!--form control-->
 
                 <div class="form-group">
-                    {{ Form::label('quantity', 'Quantity', ['class' => 'col-lg-2 control-label']) }}
+                    {{--{{ Form::label('quantity', 'Quantity', ['class' => 'col-lg-2 control-label']) }}
 
                     <div class="col-lg-4">
                         {{ Form::text('quantity', old('quantity'), ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required']) }}
+                    </div>--}}
+
+                    {{ Form::label('price', 'Price', ['class' => 'col-lg-2 control-label']) }}
+
+                    <div class="col-lg-4">
+                        {{ Form::text('price', old('price'), ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required']) }}
                     </div>
 
                     {{ Form::label('received', 'Received Date', ['class' => 'col-lg-2 control-label']) }}
@@ -51,11 +62,7 @@
                 </div><!--form control-->
 
                 <div class="form-group">
-                    {{ Form::label('price', 'Price', ['class' => 'col-lg-2 control-label']) }}
 
-                    <div class="col-lg-4">
-                        {{ Form::text('price', old('price'), ['class' => 'form-control', 'maxlength' => '191', 'required' => 'required']) }}
-                    </div>
 
                     {{ Form::label('expiration', 'Expiration Date', ['class' => 'col-lg-2 control-label']) }}
 
@@ -92,5 +99,22 @@
     <script type="text/javascript">
         $('.date').datepicker({ 'dateFormat' : 'yy-mm-dd' });
         $('.time').timepicker({ 'timeFormat': 'HH:mm:ss' });
+
+        /*$("#inventory_id").change(function() {
+            item_id = $(this).val();
+
+            $.ajax({
+                type: "post",
+                url: "{{ route('admin.commissary.stock.get_item') }}",
+                data: {
+                    _token:         '{{ csrf_token() }}',
+                    inventory_id:    item_id,
+                },
+                dataType: 'JSON',
+                success: function(data) {
+                    document.getElementById("quantity").value = data.unit_type;
+                }
+            });
+        });*/
     </script>
 @endsection

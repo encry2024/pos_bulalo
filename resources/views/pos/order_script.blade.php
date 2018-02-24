@@ -10,7 +10,8 @@
     var global_table    = 0;
     var dine_in         = false;
 
-    function getIngredients(id) {
+    function getIngredients(id)
+    {
         $.ajax({
             type: 'get',
             url : '{{ url("dashboard") }}/' + id + '/product',
@@ -115,7 +116,7 @@
         return false;
     });
 
-    $('#btn_addOrder').on('click', function(){
+    $('#btn_addOrder').on('click', function() {
         var product = {};
         var html    = '';
         var code_sz = '';
@@ -430,7 +431,8 @@
         order_list.splice(0, order_list.length);
     });
 
-    function recompute(){
+    function recompute()
+    {
         total_amt = 0;
         for(var i = 0; i < order_list.length; i++)
         {
@@ -472,6 +474,7 @@
     function change() {
         var type = $('#discount_type option:selected').text();
         var val  = $('#discount_type').val();
+        var service_charge  = $('#service_charge_option').val();
 
         if (typeof table_charge !== undefined) {
             var table_charge = table_charge;
@@ -479,7 +482,7 @@
             var table_charge = 0;
         }
 
-        get_amount_due(recompute(), val, type, 0, table_charge);
+        get_amount_due(recompute(), val, type, 0, table_charge, service_charge);
         var total  = parseFloat($('#total_amount_due').val());
         var change = parseFloat($('#cash').val()) - total;
 
@@ -519,9 +522,11 @@
         $('#cash').val(val.toFixed(2));
     }
 
-    $('#discount_type').on('change', function(){
+    $('#discount_type').on('change', function() {
         var type = $('#discount_type option:selected').text();
         var val  = $('#discount_type').val();
+
+
         get_amount_due(recompute(), val, type, 0);
         change();
     });
@@ -754,6 +759,7 @@
         }
     });
 
+    // Before receipt
     $('#btn_charge_submit').on('click', function() {
         var modal      = $('#chargeSaveModal');
         var cash        = parseFloat($(modal).find('#cash').val());
@@ -990,7 +996,7 @@
         });
     }
 
-    function get_amount_due(bill, discount, discount_type, companion, table_charge) {
+    function get_amount_due(bill, discount, discount_type, companion, table_charge, service_charge) {
         bill            = parseFloat(bill);
         discount        = parseFloat(discount);
         var discounted  = 0;
@@ -999,6 +1005,7 @@
         var charge      = 0;
         var amount_due  = 0;
         var table_charge = parseFloat(table_charge);
+        var service_charge_fee = service_charge;
 
         if (! isNaN(table_charge)) {
             table_charge = parseFloat(table_charge);
@@ -1013,7 +1020,7 @@
 
             vat         = less_discount / 1.12;                 // net of vat
             less_vat    = less_discount - vat;                  // less vat
-            // charge      = vat * 0.05;                        // service charge
+            charge      = vat * 0.05;                        // service charge
             amount_due  = bill + charge + table_charge;         // total amount due
         }
         else if(discount_type == 'PWD')
@@ -1023,14 +1030,14 @@
 
             vat         = less_discount / 1.12;                 // net of vat
             less_vat    = less_discount - vat;                  // less vat
-            // charge      = vat * 0.05;                        // service charge
+            charge      = vat * 0.05;                        // service charge
             amount_due  = bill + charge + table_charge;         // total amount due
         }
         else
         {
             vat         = bill / 1.12;
             less_vat    = bill - vat;
-            // charge      = vat * 0.05;
+            charge      = vat * 0.05;
             amount_due  = bill + charge + table_charge;
         }
 
@@ -1172,4 +1179,22 @@
         $('#btn_submit').css('visibility', 'hidden');
         clearAll();
     }
+
+    $('#service_charge_option').on('change', function() {
+        var charge = $('#chargeSaveModal');
+        var type = $(charge).find('#discount_type option:selected').text();
+        var val  = $(charge).find('#discount_type').val();
+        var table_charge = $('#chargeModal').find('#table_rent_price_charge_modal').text();
+        var service_charge = $(this).val();
+
+        charge_get_amount_due($(charge).find('#payable').val(), val, type, 0, table_charge, service_charge);
+        var total  = parseFloat($(charge).find('#total_amount_due').val());
+        var change = parseFloat($(charge).find('#cash').val()) - total;
+
+        if(change < 0 || change == undefined || isNaN(change)){
+            change = 0;
+        }
+
+        $(charge).find('#change').val(change.toFixed(2));
+    })
 </script>

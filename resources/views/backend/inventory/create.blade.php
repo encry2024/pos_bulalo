@@ -222,7 +222,7 @@
             }
         }
 
-        function getCurrentUnit(id, supplier, )
+        function getCurrentUnit(id, supplier)
         {
             var url = '{{ URL::to("admin/pos/inventory/get_unit/") }}/' + id + '/' + supplier;
 
