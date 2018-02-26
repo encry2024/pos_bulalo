@@ -149,7 +149,7 @@ class StockController extends Controller
 			$inventory->stock = $stock;
 			$inventory->save();
 		} else {
-			$inventory->stock = $inventory->stock + $delivery->quantity;
+			$inventory->stock = $inventory->stock + $inventory->stock;
 			$inventory->save();
 		}
 
