@@ -7,21 +7,24 @@ use App\Models\Commissary\Produce\Produce;
 use App\Models\Category\Category;
 
 /**
- * Class RoleRelationship.
+ * Class ProductRelationship.
  */
 trait ProductRelationship
 {
 
-	public function ingredients(){
+	public function ingredients()
+	{
 		return $this->belongsToMany(Inventory::class, 'commissary_inventory_product', 'product_id', 'inventory_id')
 			->withPivot('quantity', 'unit_type', 'created_at')->withTrashed();
 	}
 
-	public function produced(){
+	public function produced()
+	{
 		return $this->hasMany(Produce::class);
 	}
 
-	public function category(){
+	public function category()
+	{
 		return $this->belongsTo(Category::class);
 	}
 }

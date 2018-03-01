@@ -39,7 +39,6 @@ class StockController extends Controller
             $name = '';
             $temp = [];
 
-
             if($inventory->supplier == 'Other') {
                 $name = $inventory->other->name;
             } elseif($inventory->supplier == 'Commissary Product') {
@@ -73,28 +72,40 @@ class StockController extends Controller
 		// check if ingredient is from commissary
 		if($inventory->supplier == 'Commissary Product') {
 			$delivery = Delivery::where('item_id', $inventory->inventory_id)
-						->where('status', 'NOT RECEIVED')
-						->where('type', 'PRODUCT')
-						->first();
+                ->where('status', 'NOT RECEIVED')
+                ->where('quantity', $request->quantity)
+                ->where('type', 'PRODUCT')
+                ->first();
+
+            if(!count($delivery))   
+            {   
+                return redirect()->route('admin.stock.create')->withFlashDanger('Request quantity does not match from delivered quantity!');    
+            }
 
 			$delivery->status = 'RECEIVED';
 			$delivery->save();
 
 			$history 				= new History();
 			$history->product_id 	= $delivery->item_id;
-			$history->description 	= 'Stored '.$delivery->quantity.' '.$delivery->product->name;
+			$history->description 	= 'Stored '.$request->quantity.' '.$delivery->product->name;
 			$history->status 		= 'Minus';
 			$history->save();
 
-			$inventory->AddStock($delivery->quantity);
+			$inventory->AddStock($request->quantity);
 			$inventory->save();
 		}
 		elseif($inventory->supplier == 'Commissary Raw Material')
 		{
 			$delivery = Delivery::where('item_id', $inventory->inventory_id)
                 ->where('status', 'NOT RECEIVED')
+                ->where('quantity', $request->quantity)
                 ->where('type', 'RAW MATERIAL')
                 ->first();
+
+            if(!count($delivery))   
+            {   
+                return redirect()->route('admin.stock.create')->withFlashDanger('Request quantity does not match from delivered quantity!');    
+            }
 
             $delivery->status = 'RECEIVED';
             $delivery->save();
@@ -102,7 +113,7 @@ class StockController extends Controller
             if($inventory->physical_quantity == 'Mass') {
                 $stock_qty = new Mass($inventory->stock, $inventory->unit_type);
 
-                $req_qty   = new Mass($delivery->quantity, $inventory->unit_type);
+                $req_qty   = new Mass($request->quantity, $inventory->unit_type);
 
                 $qty_left  = $stock_qty->add($req_qty);
 
@@ -110,13 +121,13 @@ class StockController extends Controller
             } elseif($inventory->physical_quantity == 'Volume') {
                 $stock_qty = new Volume($inventory->stock, $inventory->unit_type);
 
-                $req_qty   = new Volume($delivery->quantity, $inventory->unit_type);
+                $req_qty   = new Volume($request->quantity, $inventory->unit_type);
 
                 $qty_left  = $stock_qty->add($req_qty);
 
                 $stock     = $qty_left->toUnit($inventory->unit_type);
             } else {
-                $stock = $inventory->stock + $delivery->quantity;
+                $stock = $inventory->stock + $request->quantity;
             }
 
 			$inventory->stock = $stock;
@@ -124,8 +135,14 @@ class StockController extends Controller
 		} elseif($inventory->supplier == 'DryGoods Material') {
 			$delivery = DryGoodDelivery::where('item_id', $inventory->inventory_id)
                 ->where('status', 'NOT RECEIVED')
+                ->where('quantity', $request->quantity)
                 ->where('deliver_to', 'POS')
                 ->first();
+
+            if(!count($delivery))   
+            {   
+                return redirect()->route('admin.stock.create')->withFlashDanger('Request quantity does not match from delivered quantity!');    
+            }
 
             /*dd($request->quantity);*/
 
@@ -134,22 +151,22 @@ class StockController extends Controller
 
             if($inventory->physical_quantity == 'Mass') {
                 $stock_qty  = new Mass($inventory->stock, $inventory->unit_type);
-                $req_qty    = new Mass($delivery->quantity, $inventory->unit_type);
+                $req_qty    = new Mass($request->quantity, $inventory->unit_type);
                 $qty_left   = $stock_qty->add($req_qty);
                 $stock      = $qty_left->toUnit($inventory->unit_type);
             } elseif($inventory->physical_quantity == 'Volume') {
                 $stock_qty  = new Volume($inventory->stock, $inventory->unit_type);
-                $req_qty    = new Volume($delivery->quantity, $inventory->unit_type);
+                $req_qty    = new Volume($request->quantity, $inventory->unit_type);
                 $qty_left   = $stock_qty->add($req_qty);
                 $stock      = $qty_left->toUnit($inventory->unit_type);
             } else {
-                $stock      = $inventory->stock + $delivery->quantity;
+                $stock      = $inventory->stock + $request->quantity;
             }
 
 			$inventory->stock = $stock;
 			$inventory->save();
 		} else {
-			$inventory->stock = $inventory->stock + $inventory->stock;
+			$inventory->stock = $inventory->stock + $request->stock;
 			$inventory->save();
 		}
 
@@ -157,7 +174,7 @@ class StockController extends Controller
 
 		$stock               = new Stock();
 		$stock->inventory_id = $request->inventory_id;
-		$stock->quantity     = $delivery->quantity;
+		$stock->quantity     = $request->quantity;
 		$stock->price        = $request->price;
 		$stock->expiration   = $request->expiration;
 		$stock->received     = $request->received;
