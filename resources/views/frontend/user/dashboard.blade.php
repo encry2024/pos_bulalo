@@ -489,7 +489,7 @@
                                 <p>Discount <span class="pull-right" id="print_discount">0.00</span></p>
                                 <p>Amount Due <span class="pull-right" id="print_amount_due">0.00</span></p>
                                 <hr>
-                                <p>This is not and official Receipt</p>
+                                <p>***THIS IS NOT AN OFFICIAL RECEIPT***</p>
                                 <p>&nbsp;</p>
                             </div>
                         </div>
