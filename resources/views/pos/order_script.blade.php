@@ -500,7 +500,7 @@
         var table_charge = $('#chargeModal').find('#table_rent_price_charge_modal').text();
         var service_charge = $(charge).find('#service_charge_option').val();
 
-        charge_get_amount_due($(charge).find('#payable').val(), val, type, 0, table_charge);
+        charge_get_amount_due($(charge).find('#payable').val(), val, type, table_charge, service_charge);
         var total  = parseFloat($(charge).find('#total_amount_due').val());
         var change = parseFloat($(charge).find('#cash').val()) - total;
 
@@ -525,7 +525,6 @@
     $('#discount_type').on('change', function() {
         var type = $('#discount_type option:selected').text();
         var val  = $('#discount_type').val();
-
 
         get_amount_due(recompute(), val, type, 0);
         change();
@@ -686,8 +685,6 @@
                     var table_price = '';
                     var creditable_amount = data[0].order.table.price;
                     var td = data[0].order.table.description;
-
-                    console.log(td);
 
                     $('#charge_table tbody').find('tr').remove();
                     $('#charge_transaction_no').text(data[0].order.transaction_no);
@@ -901,7 +898,9 @@
             var table_charge    = $('#chargeModal').find('#table_rent_price_charge_modal').text();
             var service_charge  = $(this).find('#service_charge_option').val();
 
-            charge_get_amount_due(charge_total, val, type, 0, table_charge, service_charge);
+            console.log(table_charge);
+
+            charge_get_amount_due(charge_total, val, type, table_charge, service_charge);
 
             $(this).find('#table_number').val($('#chargeModal').find('#table_number').text());
             $(this).find('#table_description').val($('#chargeModal').find('#table_desc').text());
@@ -996,16 +995,18 @@
         });
     }
 
-    function get_amount_due(bill, discount, discount_type, companion, table_charge, service_charge) {
-        bill            = parseFloat(bill);
-        discount        = parseFloat(discount);
-        var discounted  = 0;
-        var vat         = 0;
-        var less_vat    = 0;
-        var charge      = 0;
-        var amount_due  = 0;
-        var table_charge = parseFloat(table_charge);
-        var service_charge_fee = service_charge;
+    function get_amount_due(bill, discount, discount_type, table_charge, service_charge) {
+        bill                    = parseFloat(bill);
+        discount                = parseFloat(discount);
+        var discounted          = 0;
+        var vat                 = 0;
+        var bill_with_vat       = 0;
+        var charge              = 0;
+        var amount_due          = 0;
+        var table_charge        = table_charge;
+        var service_charge_fee  = service_charge;
+
+        console.log(discount);
 
         if (! isNaN(table_charge)) {
             table_charge = parseFloat(table_charge);
@@ -1013,108 +1014,96 @@
             table_charge = 0;
         }
 
-        if(discount_type == 'Senior Citizen')
-        {
-            var discounted      = bill * (discount / 100);      // discount
-            var less_discount   = bill - discounted;            // less discount
+        if(discount_type == 'Senior Citizen') {
+            var discounted          = bill * (discount / 100);                      // GET TOTAL DISCOUNT
+            var discounted_bill     = bill - discounted;                            // LESS TOTAL DISCOUNT TO BILL
 
-            vat         = less_discount / 1.12;                 // net of vat
-            less_vat    = less_discount - vat;                  // less vat
-            charge      = vat * 0.05;                        // service charge
-            amount_due  = bill + charge + table_charge;         // total amount due
-        }
-        else if(discount_type == 'PWD')
-        {
-            var discounted      = bill * (discount / 100);      // discount
-            var less_discount   = bill - discounted;            // less discount
+            vat             = discounted_bill * ((0.12 + parseFloat(service_charge_fee))).toFixed(2);        // GET VAT
+            bill_with_vat   = discounted_bill + vat;                                // ADD VAT TO BILL
+            amount_due      = bill_with_vat + table_charge;                         // ADD TABLE CHARGE TO AMOUNT DUE
+        } else if(discount_type == 'PWD') {
+            var discounted          = bill * (discount / 100);                      // GET TOTAL DISCOUNT
+            var discounted_bill     = bill - discounted;                            // LESS TOTAL DISCOUNT TO BILL
 
-            vat         = less_discount / 1.12;                 // net of vat
-            less_vat    = less_discount - vat;                  // less vat
-            charge      = vat * 0.05;                        // service charge
-            amount_due  = bill + charge + table_charge;         // total amount due
-        }
-        else
-        {
-            vat         = bill / 1.12;
-            less_vat    = bill - vat;
-            charge      = vat * 0.05;
-            amount_due  = bill + charge + table_charge;
+            vat                 = discounted_bill * ((0.12 + parseFloat(service_charge_fee))).toFixed(2);    // GET VAT
+            bill_with_vat       = discounted_bill + vat;                            // ADD VAT TO BILL
+            amount_due          = bill_with_vat + table_charge;                     // ADD TABLE CHARGE TO AMOUNT DUE
+        } else {
+            vat                 = bill * ((0.12 + parseFloat(service_charge_fee))).toFixed(2);
+            bill_with_vat       = bill + vat;
+            amount_due          = bill_with_vat + table_charge - discount;
         }
 
-        $('#vat').val(less_vat.toFixed(2));
+        $('#vat').val(bill_with_vat.toFixed(2));
         $('#discount').val(discounted.toFixed(2));
-        // $('#service_charge').val(charge.toFixed(2));
         // here payable
         $('#payable').val(bill.toFixed(2));
         $('#total_amount_due').val(amount_due.toFixed(2));
     }
 
-    function charge_get_amount_due(bill, discount, discount_type, companion, table_charge, service_charge) {
-        bill                     = parseFloat(bill);
+    function charge_get_amount_due(bill, discount, discount_type, table_charge, service_charge) {
+        bill                     = 0;
+        bill                     = (parseFloat(bill) + parseFloat(table_charge)).toFixed(2);
         discount                 = parseFloat(discount);
         var discounted           = 0;
         var vat                  = 0;
-        var less_vat             = 0;
+        var bill_with_vat        = 0;
         var charge               = 0;
         var amount_due           = 0;
         var get_vat_with_service = 0;
         var table_charge         = parseFloat(table_charge);
         var service_charge_fee   = service_charge;
+        let overall_amount_due   = 0;
+
+        console.log(discount);
 
         if(discount_type == 'Senior Citizen') {
-            var discounted      = bill * (discount / 100);  // discount
-            var less_discount   = bill - discounted;        // less discount
+            var discounted      = bill * (discount / 100);                                              // GET TOTAL DISCOUNT
+            var discounted_bill = bill - discounted;                                                    // DEDUCT DISCOUNTED PRICE TO TOTAL BILL
 
-            vat         = less_discount / 1.12;             // net of vat
-            less_vat    = less_discount - vat;              // less vat
-            charge      = vat * service_charge_fee;         // service charge
-            amount_due  = bill + charge;                    // total amount due
+            vat             = discounted_bill * ((0.12 + parseFloat(service_charge_fee))).toFixed(2);   // GET VAT
+            bill_with_vat   = discounted_bill + vat;                                                    // ADD VAT TO DISCOUNT BILL
+            amount_due      = bill_with_vat;                                                            // TOTAL AMOUNT DUE
+            console.log(amount_due + " Senior Citizen Discount");
         } else if(discount_type == 'PWD') {
-            var discounted      = bill * (discount / 100);  // discount
-            var less_discount   = bill - discounted;        // less discount
+            var discounted        = bill * (discount / 100);                                            // GET DISCOUNTED PRICE
+            var discounted_bill   = bill - discounted;                                                  // DEDUCT DISCOUNTED PRICE TO TOTAL BILL
 
-            vat         = less_discount / 1.12;             // net of vat
-            less_vat    = less_discount - vat;              // less vat
-            charge      = vat * service_charge_fee;         // service charge
-            amount_due  = bill + charge;                    // total amount due
+            vat             = discounted_bill * ((0.12 + parseFloat(service_charge_fee))).toFixed(2);   // GET VATTED DISCOUNTED BILL
+            bill_with_vat   = discounted_bill + vat;                                                               // VATTED BILL
+            amount_due      = bill_with_vat;                                                            // TOTAL AMOUNT DUE
         } else {
-            vat         = bill / 1.12;
-            less_vat    = bill - vat;
-            charge      = vat * service_charge_fee;
-            amount_due  = bill + charge;
-        }
-
-        if(bill > table_charge) {
-            total_bill = bill;
-            total_bill_with_12_vat = bill / 1.12;
-            vatable_sales = bill - total_bill_with_12_vat;
-        } else {
-            total_bill = table_charge;
-            total_bill_with_12_vat = table_charge / 1.12;
-            vatable_sales = table_charge - total_bill_with_12_vat;
+            vat             = bill * ((0.12 + parseFloat(service_charge_fee))).toFixed(2);              // GET VATTED BILL
+            bill_with_vat   = bill + vat;                                                               // VATTED BILL
+            amount_due      = bill_with_vat;
         }
 
         if (amount_due > table_charge) {
-            overall_amount_due = amount_due;
+            total_bill                  = bill + table_charge;
+            get_discount                = bill * (discount/100);
+            total_bill_with_12_vat      = total_bill * ((0.12 + parseFloat(service_charge_fee))).toFixed(2);
+            overall_amount_due          = (parseFloat(total_bill) + parseFloat(total_bill_with_12_vat) - parseFloat(get_discount)).toFixed(2);
+            console.log(overall_amount_due);
         } else {
-            overall_amount_due = table_charge;
+            total_bill              = table_charge;
+            get_discount            = bill * (discount/100);
+            total_bill_with_12_vat  = total_bill * ((0.12 + parseFloat(service_charge_fee))).toFixed(2);
+            overall_amount_due      = (parseFloat(total_bill) + parseFloat(total_bill_with_12_vat) - parseFloat(get_discount)).toFixed(2);
+            console.log(overall_amount_due);
         }
-
-        console.log(overall_amount_due);
 
         var modal = $('#chargeSaveModal');
 
-        // $(modal).find('#vat').val(less_vat.toFixed(2));
+        // $(modal).find('#vat').val(bill_with_vat.toFixed(2));
 
         $(modal).find('#discount').val(discounted.toFixed(2));
-        $(modal).find('#vat').val(total_bill_with_12_vat.toFixed(2));
-        $(modal).find('#vatable_sales').val(vatable_sales.toFixed(2));
+        $(modal).find('#vat').val(vat.toFixed(2));
 
         // $(modal).find('#service_charge').val(charge.toFixed(2));
         // here payable table charge
 
-        $(modal).find('#payable').val(total_bill.toFixed(2));
-        $(modal).find('#total_amount_due').val(overall_amount_due.toFixed(2));
+        $(modal).find('#payable').val(parseFloat(bill).toFixed(2));
+        $(modal).find('#total_amount_due').val(parseFloat(overall_amount_due).toFixed(2));
     }
 
     function print_receipt(data)
@@ -1122,10 +1111,6 @@
         var list = '';
         var _order_list = data;
         flag = true;
-
-        // console.log(data);
-
-        // console.log(_order_list);
 
         $('#notify').text('')
         $('#items tbody').find('tr').remove();
@@ -1159,8 +1144,6 @@
             }
         }
 
-        console.log(data.order[0]);
-
         $('#transaction_no').text('#' + data.order[0].order.transaction_no);
         $('#print_total').text(parseFloat(data.order[0].order.payable).toFixed(2));
         $('#print_cash').text(parseFloat(data.order[0].order.cash).toFixed(2));
@@ -1187,7 +1170,9 @@
         var table_charge = $('#chargeModal').find('#table_rent_price_charge_modal').text();
         var service_charge = $(this).val();
 
-        charge_get_amount_due($(charge).find('#payable').val(), val, type, 0, table_charge, service_charge);
+        console.log(service_charge);
+
+        charge_get_amount_due($(charge).find('#payable').val(), val, type, table_charge, service_charge);
         var total  = parseFloat($(charge).find('#total_amount_due').val());
         var change = parseFloat($(charge).find('#cash').val()) - total;
 

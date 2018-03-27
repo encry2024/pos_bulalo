@@ -365,7 +365,7 @@
 
                                     <div class="form-group">
                                         <label for="payable">Include service charge?</label>
-                                        <select name="" id="service_charge_option" class="form-control">
+                                        <select name="service_charge_option" id="service_charge_option" class="form-control">
                                             <option value="0.05">Yes</option>
                                             <option value="0">No</option>
                                         </select>
@@ -378,10 +378,10 @@
                                         <input type="input" class="form-control" id="vat" value='0.00' readonly>
                                     </div> <!-- form-group -->
 
-                                    <div class="form-group">
+                                    <!-- <div class="form-group">
                                         <label for="vat">Vatable Sales</label>
                                         <input type="input" class="form-control" id="vatable_sales" value='0.00' readonly>
-                                    </div> <!-- form-group -->
+                                    </div> -->
 
                                     <div class="form-group">
                                         <label for="vat">VAT-Exempt Sales</label>
